@@ -11,7 +11,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {showLoginFields && !showRoleSelection && (
+      {!showLoginFields && showRoleSelection && (
         <View style={styles.loginFields}>
           <TextInput
             style={styles.input}
@@ -42,8 +42,8 @@ export default function App() {
             <Pressable
               style={styles.pressableButton}
               onPress={() => {
-                setShowLoginFields(false); // Ocultar campos de login
-                setShowRoleSelection(true); // Mostrar opciones de cliente/proveedor
+                setShowLoginFields(showLoginFields); // Ocultar campos de login
+                setShowRoleSelection(showLoginFields); // Mostrar opciones de cliente/proveedor
               }}
             >
               <Text style={styles.buttonText}>REGISTRARSE</Text>
@@ -52,18 +52,24 @@ export default function App() {
         </View>
       )}
 
-      {showRoleSelection && (
+      {!showRoleSelection && (
         <View style={styles.roleSelectionContainer}>
           <Text style={styles.roleText}>Elige tu rol</Text>
           <Pressable
             style={styles.pressableButton}
-            onPress={() => alert('Registrado como Cliente')}
+            onPress={() => {
+                setShowLoginFields(false); // Ocultar campos de login
+                setShowRoleSelection(true); // Mostrar opciones de cliente/proveedor
+              }}
           >
             <Text style={styles.buttonText}>Cliente</Text>
           </Pressable>
           <Pressable
             style={styles.pressableButton}
-            onPress={() => alert('Registrado como Proveedor')}
+            onPress={() => {
+                setShowLoginFields(false); // Ocultar campos de login
+                setShowRoleSelection(true); // Mostrar opciones de cliente/proveedor
+              }}
           >
             <Text style={styles.buttonText}>Proveedor</Text>
           </Pressable>
