@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Pressable, Image, TextInput } from 'react-native';
 import { Tabs } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 export default function App() {
   const [showLoginFields, setShowLoginFields] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter(); 
 
   return (
     <View style={styles.container}>
@@ -45,7 +47,8 @@ export default function App() {
           </View>
         )}
 
-        <Pressable style={styles.linkButton}>
+        <Pressable style={styles.linkButton}
+         onPress={() => router.push('../registrar')}>
           <Text style={styles.linkText}>Registrarse</Text>
         </Pressable>
       </View>
