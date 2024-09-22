@@ -78,7 +78,7 @@ export default function App() {
                 setShowRoleSelection(true); // Mostrar opciones de cliente/proveedor
               }}
           >
-            <Text style={styles.buttonText}>Proveedor</Text>
+            <Text style={styles.buttonText}>Proveedosr</Text>
           </Pressable>
         </View>
       )}
