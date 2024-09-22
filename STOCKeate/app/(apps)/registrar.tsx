@@ -41,12 +41,19 @@ export default function App() {
           <View style={styles.buttonContainer}>
             <Pressable
               style={styles.pressableButton}
+            >
+              <Text style={styles.buttonText}>REGISTRARSE</Text>
+            </Pressable>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Pressable
+              style={styles.pressableButton}
               onPress={() => {
                 setShowLoginFields(showLoginFields); // Ocultar campos de login
                 setShowRoleSelection(showLoginFields); // Mostrar opciones de cliente/proveedor
               }}
             >
-              <Text style={styles.buttonText}>REGISTRARSE</Text>
+              <Text style={styles.buttonText}>Atras</Text>
             </Pressable>
           </View>
         </View>
