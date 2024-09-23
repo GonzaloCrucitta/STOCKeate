@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Pressable, TextInput } from 'react-native';
 
@@ -11,6 +12,7 @@ export default function App() {
   const [role, setRole] = useState(null); 
   const [showLoginFields, setShowLoginFields] = useState(false);
   const [showRoleSelection, setShowRoleSelection] = useState(true);
+  const [showRegister,setShowRegister]=useState(true);
 
   return (
     <View style={styles.container}>
@@ -59,11 +61,11 @@ export default function App() {
             </>
           )}
 
-          <View style={styles.buttonContainer}>
+          { showRegister && (<View style={styles.buttonContainer}>
             <Pressable style={styles.pressableButton}>
               <Text style={styles.buttonText}>REGISTRARSE</Text>
             </Pressable>
-          </View>
+          </View>)}
 
           <View style={styles.buttonContainer}>
             <Pressable
@@ -105,11 +107,11 @@ export default function App() {
         </View>
       )}
 
-      <Pressable style={styles.linkButton}>
+      <Pressable style={styles.linkButton} onPress={() => router.push('../')}>
         <Text style={styles.linkText}>Iniciar sesión</Text>
       </Pressable>
     </View>
-  );
+  );/*wat nose porq pero esto me lleva el index si pongo ../index no funca wat????*/
 }
 
 const styles = StyleSheet.create({
