@@ -12,7 +12,7 @@ export default function App() {
   const [role, setRole] = useState(null); 
   const [showLoginFields, setShowLoginFields] = useState(false);
   const [showRoleSelection, setShowRoleSelection] = useState(true);
-  const [showRegister,setShowRegister]=useState(true);
+  const [showRegister,setShowRegister]=useState(true);//esto cambiaria si la validation es correcta 
 
   return (
     <View style={styles.container}>
