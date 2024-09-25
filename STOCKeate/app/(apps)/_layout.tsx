@@ -14,9 +14,17 @@ export default function TabLayout() {
       <Tabs.Screen
         name="stock"
         options={{
-          title: 'Settings',
+          title: 'stock',
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="cog" color={color} />,
         }}
+      />
+      <Tabs.Screen
+        name="styles"
+        options={{ href: null}}
+      />
+      <Tabs.Screen
+        name="registrar"
+        options={{ href: null, headerShown: false}}
       />
     </Tabs>
   );
