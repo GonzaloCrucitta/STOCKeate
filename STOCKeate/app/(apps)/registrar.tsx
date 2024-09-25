@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Pressable, TextInput } from 'react-native';
 import styles from './styles';
@@ -7,12 +8,16 @@ export default function App() {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
-  const [showLoginFields, setShowLoginFields] = useState(true);  // Para mostrar los campos de registro
-  const [showRoleSelection, setShowRoleSelection] = useState(false); // Para mostrar opciones de cliente/proveedor
+  const [company, setCompany] = useState(''); 
+  const [dnitNumber, setdniNumber] = useState(''); 
+  const [role, setRole] = useState(null); 
+  const [showLoginFields, setShowLoginFields] = useState(false);
+  const [showRoleSelection, setShowRoleSelection] = useState(true);
+  const [showRegister,setShowRegister]=useState(true);//esto cambiaria si la validation es correcta 
 
   return (
     <View style={styles.container}>
-      {!showLoginFields && showRoleSelection && (
+      {!showRoleSelection && (
         <View style={styles.loginFields}>
           <TextInput
             style={styles.input}
@@ -35,60 +40,79 @@ export default function App() {
           />
           <TextInput
             style={styles.input}
-            placeholder="Nombres"
+            placeholder="Nombre"
             value={name}
             onChangeText={setName}
           />
-          <View style={styles.buttonContainer}>
-            <Pressable
-              style={styles.pressableButton}
-            >
+
+          {role === 'Proveedor' && (
+            <>
+              <TextInput
+                style={styles.input}
+                placeholder="Nombre de la Compañía"
+                value={company}
+                onChangeText={setCompany}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="DNI"
+                value={dnitNumber}
+                onChangeText={setdniNumber}
+              />
+            </>
+          )}
+
+          { showRegister && (<View style={styles.buttonContainer}>
+            <Pressable style={styles.pressableButton}>
               <Text style={styles.buttonText}>REGISTRARSE</Text>
             </Pressable>
-          </View>
+          </View>)}
+
           <View style={styles.buttonContainer}>
             <Pressable
               style={styles.pressableButton}
               onPress={() => {
-                setShowLoginFields(showLoginFields); // Ocultar campos de login
-                setShowRoleSelection(showLoginFields); // Mostrar opciones de cliente/proveedor
+                setShowLoginFields(false);
+                setShowRoleSelection(true);
               }}
             >
-              <Text style={styles.buttonText}>Atras</Text>
+              <Text style={styles.buttonText}>Atrás</Text>
             </Pressable>
           </View>
         </View>
       )}
 
-      {!showRoleSelection && (
+      {showRoleSelection && (
         <View style={styles.roleSelectionContainer}>
           <Text style={styles.roleText}>Elige tu rol</Text>
           <Pressable
             style={styles.pressableButton}
             onPress={() => {
-                setShowLoginFields(false); // Ocultar campos de login
-                setShowRoleSelection(true); // Mostrar opciones de cliente/proveedor
-              }}
+              setRole('Cliente');
+              setShowLoginFields(true);
+              setShowRoleSelection(false);
+            }}
           >
             <Text style={styles.buttonText}>Cliente</Text>
           </Pressable>
           <Pressable
             style={styles.pressableButton}
             onPress={() => {
-                setShowLoginFields(false); // Ocultar campos de login
-                setShowRoleSelection(true); // Mostrar opciones de cliente/proveedor
-              }}
+              setRole('Proveedor');
+              setShowLoginFields(true);
+              setShowRoleSelection(false);
+            }}
           >
-            <Text style={styles.buttonText}>Proveedosr</Text>
+            <Text style={styles.buttonText}>Proveedor</Text>
           </Pressable>
         </View>
       )}
 
-      <Pressable style={styles.linkButton}>
+      <Pressable style={styles.linkButton} onPress={() => router.push('../')}>
         <Text style={styles.linkText}>Iniciar sesión</Text>
       </Pressable>
     </View>
-  );
+  );/*wat nose porq pero esto me lleva el index si pongo ../index no funca wat????*/
 }
 
 
