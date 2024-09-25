@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Pressable, Modal } from 'react-native';
+import styles from './styles';
 
 export default function ProvidersMainApp() {
 
@@ -39,49 +40,3 @@ export default function ProvidersMainApp() {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    pressableButton: {
-        backgroundColor: "#2196F3",
-        padding: 15,
-        borderRadius: 5,
-        paddingHorizontal: 40,
-        marginBottom: 10,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    modalView: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        padding: 20,
-    },
-    modalText: {
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 10,
-        fontSize: 18,
-        textAlign: 'center',
-    },
-    closeButton: {
-        backgroundColor: '#f44336',
-        padding: 10,
-        marginTop: 20,
-        borderRadius: 5,
-    },
-    closeButtonText: {
-        color: '#fff',
-        fontSize: 16,
-        textAlign: 'center',
-    },
-});
