@@ -14,23 +14,22 @@ export default function App() {
   const [showLoginFields, setShowLoginFields] = useState(false);
   const [showRoleSelection, setShowRoleSelection] = useState(true);
   const [showRegister, setShowRegister] = useState(true);
-  const [errors, setErrors] = useState({}); // Almacena los errores de validación
+  const [errors, setErrors] = useState({}); 
 
-  // Expresiones regulares
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Validar email
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/; // Validar contraseña
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; 
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
   const validateFields = () => {
     let valid = true;
     let newErrors = {};
 
-    // Validar nombre de usuario
+  
     if (!username) {
       newErrors.username = 'El nombre de usuario es obligatorio';
       valid = false;
     }
 
-    // Validar contraseña con expresión regular
+    
     if (!password) {
       newErrors.password = 'La contraseña es obligatoria';
       valid = false;
@@ -39,7 +38,6 @@ export default function App() {
       valid = false;
     }
 
-    // Validar email con expresión regular
     if (!email) {
       newErrors.email = 'El email es obligatorio';
       valid = false;
@@ -48,13 +46,11 @@ export default function App() {
       valid = false;
     }
 
-    // Validar nombre
     if (!name) {
       newErrors.name = 'El nombre es obligatorio';
       valid = false;
     }
 
-    // Si es Proveedor, validar compañía y DNI
     if (role === 'Proveedor') {
       if (!company) {
         newErrors.company = 'El nombre de la compañía es obligatorio';
@@ -68,7 +64,7 @@ export default function App() {
 
     setErrors(newErrors);
     if (!valid) {
-      Vibration.vibrate(); // Vibración en caso de error
+      Vibration.vibrate();
       Alert.alert('Error', 'Por favor, completa todos los campos obligatorios correctamente');
     }
     return valid;
@@ -76,9 +72,9 @@ export default function App() {
 
   const handleRegister = () => {
     if (validateFields()) {
-      setShowRegister(false); // Si la validación pasa, oculta el botón de registro
+      setShowRegister(false);
       Alert.alert('Registro exitoso', '¡Bienvenido!');
-      // Lógica adicional para manejar el registro
+     
     }
   };
 
@@ -151,7 +147,7 @@ export default function App() {
             <View style={styles.buttonContainer}>
               <Pressable
                 style={styles.pressableButton}
-                onPress={() => Alert.alert('Continuar', 'Continuando al siguiente paso...')} // Acción al continuar
+                onPress={() => Alert.alert('Continuar', 'Continuando al siguiente paso...')} 
               >
                 <Text style={styles.buttonText}>CONTINUAR</Text>
               </Pressable>
