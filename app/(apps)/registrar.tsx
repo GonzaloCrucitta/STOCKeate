@@ -73,7 +73,7 @@ export default function App() {
   const handleRegister = () => {
     if (validateFields()) {
       setShowRegister(false);
-      Alert.alert('Registro exitoso', '¡Bienvenido!');
+      
      
     }
   };
@@ -147,7 +147,7 @@ export default function App() {
             <View style={styles.buttonContainer}>
               <Pressable
                 style={styles.pressableButton}
-                onPress={() => Alert.alert('Continuar', 'Continuando al siguiente paso...')} 
+             
               >
                 <Text style={styles.buttonText}>CONTINUAR</Text>
               </Pressable>
