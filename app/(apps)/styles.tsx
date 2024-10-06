@@ -79,8 +79,21 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 16,
   },
+  itemContainer: {
+    flexDirection: 'row', // Alinea elementos horizontalmente
+    alignItems: 'center', // Alinea verticalmente en el centro
+    justifyContent: 'space-between', // Espacio entre elementos
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
     title: {
     fontSize: 32,
+  },
+  stock: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 10,
   },
   stock_image: {
   width:260,
@@ -94,6 +107,7 @@ const styles = StyleSheet.create({
   // Usados en la pagina de registrar
   flatList: {
     backgroundColor: 'white',
+    marginTop: 20,
   },
   image: {
     width: 50,
@@ -103,6 +117,7 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     color: 'black',
+    fontSize: 16,
   },
   errorText: {
     color: 'red', // Color del texto de error
