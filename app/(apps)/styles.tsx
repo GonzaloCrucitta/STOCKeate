@@ -100,6 +100,10 @@ const styles = StyleSheet.create({
     flex: 1,
     color: 'black',
   },
+  errorText: {
+    color: 'red', // Color del texto de error
+    marginBottom: 10, // Espacio entre el texto de error y el siguiente campo
+  }
 });
 
 export default styles;
