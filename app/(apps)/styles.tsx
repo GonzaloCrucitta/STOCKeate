@@ -136,7 +136,58 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red', // Color del texto de error
     marginBottom: 10, // Espacio entre el texto de error y el siguiente campo
-  }
+  },
+
+  //pagina pedidos pendientes
+
+  inputContainer: {
+    flexDirection: 'row', // Para alinear el TextInput y el botón en línea
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 10,
+    width: '80%',
+    alignSelf: 'center',
+  },
+  orderItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 15,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  orderText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  completedText: {
+    textDecorationLine: 'line-through', // Marca el texto como completado
+    color: '#aaa',
+  },
+  orderActions: {
+    flexDirection: 'row',
+  },
+  completeButton: {
+    color: '#4CAF50', // Verde para el botón de completar
+    marginRight: 10,
+    fontWeight: 'bold',
+  },
+  deleteButton: {
+    color: '#F44336', // Rojo para el botón de eliminar
+    fontWeight: 'bold',
+  },
+
+
+
 });
+
+
+
+
+
+
 
 export default styles;
