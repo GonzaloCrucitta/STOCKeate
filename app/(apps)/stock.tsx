@@ -1,6 +1,7 @@
 import React from 'react';
-import { FlatList, Text, Image, View } from 'react-native';
+import { FlatList, Text, Image, View, Pressable } from 'react-native';
 import styles from './styles';
+import { router } from 'expo-router';
 
 const componentes = () => {
 
@@ -30,11 +31,14 @@ const componentes = () => {
 
 const Item = ({ image, descripcion, stock }: { image: any, descripcion: string, stock: number }) => {
   return (
-    <View style={styles.itemContainer}>
-      <Image source={image} style={styles.image} />
-      <Text style={styles.text}>{descripcion}</Text>
-      <Text style={styles.stock}>{stock} en stock</Text>
-    </View>
+        <Pressable style={styles.linkButton}
+         onPress={() => router.push('../articulo')}>
+          <View style={styles.itemContainer}>
+            <Image source={image} style={styles.image} />
+            <Text style={styles.text}>{descripcion}</Text>
+            <Text style={styles.stock}>{stock} en stock</Text>
+          </View>
+        </Pressable>
   );
 }
 

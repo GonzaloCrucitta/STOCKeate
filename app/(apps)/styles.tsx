@@ -6,6 +6,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  container_articulo: {
+    padding: 20
+  },
   buttonContainer: {
     alignItems: 'center',
   },
@@ -96,12 +99,18 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   stock_image: {
-  width:260,
+    width:260,
     height:300,
     borderWidth:2,
-    borderColor:'#d35647',
+    borderColor:'#e0e0e0',
     resizeMode:'contain',
     margin:8
+  },
+  tag: {
+    backgroundColor: '#e0e0e0',
+    padding: 5,
+    marginRight: 5,
+    borderRadius: 10,
   },
   
   // Usados en la pagina de registrar
@@ -112,6 +121,11 @@ const styles = StyleSheet.create({
   image: {
     width: 50,
     height: 50,
+    marginRight: 10,
+  },
+  image_articulo: {
+    width: 100,
+    height: 100,
     marginRight: 10,
   },
   text: {

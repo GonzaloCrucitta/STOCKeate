@@ -31,7 +31,11 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="registrar"
-        options={{ href: null, headerShown: false}}
+        options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+      />
+      <Tabs.Screen
+        name="articulo"
+        options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
       />
     </Tabs>
   );
