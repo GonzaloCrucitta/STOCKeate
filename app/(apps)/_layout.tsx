@@ -12,13 +12,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="stock"
-        options={{
-          title: 'stock',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="list" color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="main_providers"
         options={{
           title: 'main_providers',
@@ -34,9 +27,17 @@ export default function TabLayout() {
         options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
       />
       <Tabs.Screen
-        name="articulo"
+        name="stock"
         options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
       />
+      {<Tabs.Screen
+        name="articulo"
+        options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+      />}
+      {<Tabs.Screen
+        name="pedidos_pendientes"
+        options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+      />}
     </Tabs>
   );
 }

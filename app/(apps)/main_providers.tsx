@@ -23,7 +23,7 @@ export default function ProvidersMainApp() {
 
     return (
         <View style={styles.container}>
-            <Pressable style={styles.pressableButton} onPress={() => toggleModal('stock')}>
+            <Pressable style={styles.pressableButton} onPress={() => router.push('../stock')}>
                 <Text style={styles.buttonText}>Stock</Text>
             </Pressable>
             <Pressable style={styles.pressableButton} onPress={() => toggleModal('movements')}>
