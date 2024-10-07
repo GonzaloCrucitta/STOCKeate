@@ -54,10 +54,9 @@ const ArticuloProveedor = () => {
         keyExtractor={(item, index) => index.toString()}
       />
       {/* Opción para agregar un nuevo tag */}
-      <Button title="Agregar Tag" onPress={() => agregarTag('nuevoTag')} />
-      {/*<Pressable style={styles.pressableButton} onPress={() => agregarTag('nuevoTag')}}>
+      <Pressable style={styles.pressableButton} onPress={() => agregarTag('nuevoTag')}>
                 <Text style={styles.buttonText}>Agregar Tag</Text>
-      </Pressable>*/}
+      </Pressable>
       {/* Cantidad */}
       <Text style={styles.stock}>Cantidad en stock:</Text>
       <TextInput
