@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { View, Text, TextInput, FlatList, Button, Image, StyleSheet, ScrollView, Pressable } from 'react-native';
 import styles from './styles';
+import { useTheme } from '@react-navigation/native';
 
 const ArticuloProveedor = () => {
   // Estados para manejar los datos del artículo
@@ -18,7 +19,11 @@ const ArticuloProveedor = () => {
   // Función para agregar un nuevo tag
   const agregarTag = (nuevoTag: string) => {
     setTags([...tags, nuevoTag]);
+    setShowTags(!showTags);
+
   };
+  const [showTags, setShowTags] = useState(false);
+  const [tag, setTag] = useState('');
 
   // Función para agregar una nueva imagen
   const agregarImagen = (nuevaImagen: any) => {
@@ -54,9 +59,27 @@ const ArticuloProveedor = () => {
         keyExtractor={(item, index) => index.toString()}
       />
       {/* Opción para agregar un nuevo tag */}
-      <Pressable style={styles.pressableButton} onPress={() => agregarTag('nuevoTag')}>
+      {!showTags &&
+      <Pressable style={styles.pressableButton} 
+        onPress={() => setShowTags(!showTags)}>
                 <Text style={styles.buttonText}>Agregar Tag</Text>
-      </Pressable>
+      </Pressable>}
+
+      {showTags && (
+          <View style={styles.loginFields}>
+            <TextInput
+              style={styles.input}
+              placeholder="ingrese tag"
+              value={tag}
+              onChangeText={setTag}
+            />
+            <Pressable style={styles.pressableButton} 
+              onPress={() => agregarTag(tag) }>
+              <Text style={styles.buttonText}>Confirmar</Text>
+            </Pressable>
+          </View>
+        )}
+
       {/* Cantidad */}
       <Text style={styles.stock}>Cantidad en stock:</Text>
       <TextInput

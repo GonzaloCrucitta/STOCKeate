@@ -6,11 +6,14 @@ import { router } from 'expo-router';
 const componentes = () => {
 
   const data = [
-    { src: require('../../components/producto.png'), key: '1', titulo: 'articulo 1', stock: 10 },
-    { src: require('../../components/producto.png'), key: '2', titulo: 'articulo 2', stock: 5 },
-    { src: require('../../components/producto.png'), key: '3', titulo: 'articulo 3', stock: 8 },
-    { src: require('../../components/producto.png'), key: '4', titulo: 'articulo 4', stock: 2 },
-    { src: require('../../components/producto.png'), key: '5', titulo: 'articulo 5', stock: 20 },
+    { src: require('../../components/producto.png'), key: '1', titulo: 'mate', stock: 10 },
+    { src: require('../../components/producto.png'), key: '2', titulo: 'cafe', stock: 5 },
+    { src: require('../../components/producto.png'), key: '3', titulo: 'harina', stock: 8 },
+    { src: require('../../components/producto.png'), key: '4', titulo: 'palmito', stock: 2 },
+    { src: require('../../components/producto.png'), key: '5', titulo: 'yerba', stock: 20 },
+    { src: require('../../components/producto.png'), key: '6', titulo: 'mermelada', stock: 8 },
+    { src: require('../../components/producto.png'), key: '7', titulo: 'cacao', stock: 3 },
+    { src: require('../../components/producto.png'), key: '8', titulo: 'picadillo', stock: 22 },
   ];
 
   return (
