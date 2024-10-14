@@ -238,6 +238,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
+  //Usados en perfil.tsx
+
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 20,
+  },
+  profileName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  profileEmail: {
+    fontSize: 16,
+    color: 'gray',
+    marginBottom: 20,
+  },
   
 
 });
