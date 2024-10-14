@@ -180,7 +180,65 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
+  //usados en Saliente y resumenSaliente
 
+  container_Sal: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#fff',
+  },
+  heading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  itemContainer_Sal: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingVertical: 8,
+  },
+  text_Sal: {
+    fontSize: 16,
+    color: '#333',
+  },
+  price: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  total: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 16,
+    textAlign: 'center',
+  },
+  input_Sal: {
+    width: '100%',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  sellButton: {
+    backgroundColor: '#007BFF',
+    padding: 16,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  backButton: {
+    backgroundColor: '#6c757d', // Color gris para el botón de volver
+    padding: 16,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  
 
 });
 

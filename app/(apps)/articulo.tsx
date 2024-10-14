@@ -120,7 +120,3 @@ const ArticuloProveedor = () => {
 }
 
 export default ArticuloProveedor;
-/*
-
-});
-*/

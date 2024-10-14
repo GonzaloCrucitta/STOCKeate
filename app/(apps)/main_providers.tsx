@@ -29,11 +29,11 @@ export default function ProvidersMainApp() {
             <Pressable style={styles.pressableButton} onPress={() => toggleModal('movements')}>
                 <Text style={styles.buttonText}>Movimientos</Text>
             </Pressable>
-            <Pressable style={styles.pressableButton} onPress={() => toggleModal('newEntry')}>
-                <Text style={styles.buttonText}>Nuevo Entrante</Text>
+            <Pressable style={styles.pressableButton} onPress={() => router.push('../entrante')}>
+                <Text style={styles.buttonText}>Re Stock</Text>
             </Pressable>
-            <Pressable style={styles.pressableButton} onPress={() => toggleModal('newExit')}>
-                <Text style={styles.buttonText}>Nuevo Saliente</Text>
+            <Pressable style={styles.pressableButton} onPress={() => router.push('../saliente')}>
+                <Text style={styles.buttonText}>Venta</Text>
             </Pressable>
             <Pressable style={styles.pressableButton} onPress={() => router.push('../pedidos_pendientes')}>
                 <Text style={styles.buttonText}>Pedidos Pendientes</Text>

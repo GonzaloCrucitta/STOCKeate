@@ -6,30 +6,36 @@ import { router } from 'expo-router';
 const componentes = () => {
 
   const data = [
-    { src: require('../../components/producto.png'), key: '1', titulo: 'mate', stock: 10 },//la key seria el codigo de barras
-    { src: require('../../components/producto.png'), key: '2', titulo: 'café', stock: 5 },
-    { src: require('../../components/producto.png'), key: '3', titulo: 'harina', stock: 8 },
-    { src: require('../../components/producto.png'), key: '4', titulo: 'palmito', stock: 2 },
-    { src: require('../../components/producto.png'), key: '5', titulo: 'yerba', stock: 20 },
-    { src: require('../../components/producto.png'), key: '6', titulo: 'mermelada', stock: 8 },
-    { src: require('../../components/producto.png'), key: '7', titulo: 'cacao', stock: 3 },
-    { src: require('../../components/producto.png'), key: '8', titulo: 'picadillo', stock: 22 },
-    { src: require('../../components/producto.png'), key: '9', titulo: 'pate', stock: 3 },
-    { src: require('../../components/producto.png'), key: '10', titulo: 'caballa', stock: 9 },
-    { src: require('../../components/producto.png'), key: '11', titulo: 'arroz', stock: 7 },
-    { src: require('../../components/producto.png'), key: '12', titulo: 'arvejas', stock: 11 },
-    { src: require('../../components/producto.png'), key: '13', titulo: 'sardinas', stock: 15 },
-    { src: require('../../components/producto.png'), key: '14', titulo: 'atún', stock: 4 },
-    { src: require('../../components/producto.png'), key: '15', titulo: 'choclo', stock: 17 },
-    { src: require('../../components/producto.png'), key: '16', titulo: 'lentejas', stock: 19 },
+    { src: require('../../components/producto.png'), CodigoBarras: '1', titulo: 'mate', stock: 10 },
+    { src: require('../../components/producto.png'), CodigoBarras: '2', titulo: 'café', stock: 5 },
+    { src: require('../../components/producto.png'), CodigoBarras: '3', titulo: 'harina', stock: 8 },
+    { src: require('../../components/producto.png'), CodigoBarras: '4', titulo: 'palmito', stock: 2 },
+    { src: require('../../components/producto.png'), CodigoBarras: '5', titulo: 'yerba', stock: 20 },
+    { src: require('../../components/producto.png'), CodigoBarras: '6', titulo: 'mermelada', stock: 8 },
+    { src: require('../../components/producto.png'), CodigoBarras: '7', titulo: 'cacao', stock: 3 },
+    { src: require('../../components/producto.png'), CodigoBarras: '8', titulo: 'picadillo', stock: 22 },
+    { src: require('../../components/producto.png'), CodigoBarras: '9', titulo: 'pate', stock: 3 },
+    { src: require('../../components/producto.png'), CodigoBarras: '10', titulo: 'caballa', stock: 9 },
+    { src: require('../../components/producto.png'), CodigoBarras: '11', titulo: 'arroz', stock: 7 },
+    { src: require('../../components/producto.png'), CodigoBarras: '12', titulo: 'arvejas', stock: 11 },
+    { src: require('../../components/producto.png'), CodigoBarras: '13', titulo: 'sardinas', stock: 15 },
+    { src: require('../../components/producto.png'), CodigoBarras: '14', titulo: 'atún', stock: 4 },
+    { src: require('../../components/producto.png'), CodigoBarras: '15', titulo: 'choclo', stock: 17 },
+    { src: require('../../components/producto.png'), CodigoBarras: '16', titulo: 'lentejas', stock: 19 },
   ];
 
   return (
-    <view>
+    <View>
+
       <Pressable style={styles.pressableButton} 
         onPress={() => router.push('../main_providers')}
-       >
+        >
         <Text style={styles.buttonText}>volver</Text>
+      </Pressable>
+      <Pressable style={styles.pressableButton} 
+        onPress={() => router.push('../articulo')}
+        >
+        <Text style={styles.buttonText}>Nuevo Articulo</Text>
       </Pressable>
       <FlatList
         showsHorizontalScrollIndicator={false}
@@ -40,10 +46,10 @@ const componentes = () => {
             descripcion={item.titulo}
             stock={item.stock}
             />}
-        keyExtractor={(item) => item.key}
+        //keyExtractor={(item) => item.CodigoBarras}
         style={styles.flatList}
         />
-    </view>
+    </View>
   );
 }
 

@@ -30,6 +30,14 @@ export default function TabLayout() {
         name="stock"
         options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
       />
+      <Tabs.Screen
+        name="entrante"
+        options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+      />
+      <Tabs.Screen
+        name="saliente"
+        options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+      />
       {<Tabs.Screen
         name="articulo"
         options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
