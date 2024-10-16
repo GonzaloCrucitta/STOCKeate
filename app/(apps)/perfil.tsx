@@ -18,7 +18,7 @@ export default function PerfilPage() {
       />
 
       {/* Información del perfil */}
-      <Text style={styles.profileName}>Rosa Melano</Text>
+      <Text style={styles.profileName}>Rosa Andreani</Text>
       <Text style={styles.profileEmail}>rosita@yahoo.com</Text>
     
       

@@ -140,6 +140,37 @@ const styles = StyleSheet.create({
 
   //pagina pedidos pendientes
 
+  rowContainer: {
+    flexDirection: 'column',
+    width: '100%',
+    paddingHorizontal: 20, // Margen lateral
+    marginBottom: 20,
+  },
+
+  // Estilo para la sección de "Agregar Pedido"
+  inputSection: {
+    flex: 1,  // Ocupará la mitad del espacio disponible
+    width: '100%', // Espacio entre las dos secciones
+  },
+
+  // Estilo para la lista de "Pedidos Pendientes"
+  pendingOrdersSection: {
+    flex: 1,  // Ocupará la otra mitad del espacio
+    marginTop:10,
+    width: '100%'
+  },
+
+  // Título de la lista "Pedidos Pendientes"
+  pendingOrdersTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+
+  
+
+
   inputContainer: {
     flexDirection: 'row', // Para alinear el TextInput y el botón en línea
     justifyContent: 'space-between',
@@ -152,6 +183,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 15,
+    alignItems: 'center',//
     marginVertical: 5,
     marginHorizontal: 10,
     backgroundColor: '#f9f9f9',
@@ -160,8 +192,9 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
   },
   orderText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#333',
+    flex: 1,
   },
   completedText: {
     textDecorationLine: 'line-through', // Marca el texto como completado
@@ -169,6 +202,7 @@ const styles = StyleSheet.create({
   },
   orderActions: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   completeButton: {
     color: '#4CAF50', // Verde para el botón de completar
@@ -178,6 +212,57 @@ const styles = StyleSheet.create({
   deleteButton: {
     color: '#F44336', // Rojo para el botón de eliminar
     fontWeight: 'bold',
+  },
+  container_pedidos_pendientes: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingHorizontal: 20,
+    paddingVertical: 50,
+    justifyContent: 'flex-start',  // Alinea los elementos hacia el inicio
+  },
+
+  // Nueva caja de entrada más pequeña para pedidos pendientes
+  input_pedidos_pendientes: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 8,  // Reducimos el padding
+    borderRadius: 5,
+    marginBottom: 10,
+    width: '70%',  // Caja de texto más pequeña
+    alignSelf: 'center',  // Centra horizontalmente
+  },
+
+  // Botón de agregar pedido más pequeño
+  button_agregar_pedido: {
+    backgroundColor: "#2196F3",
+    padding: 10,  // Reducimos el padding
+    borderRadius: 5,
+    marginVertical: 10,
+    width: '40%',
+    alignSelf: 'center',  // Centrado horizontalmente
+    alignItems: 'center',
+  },
+
+  // Caja de texto de cada pedido pendiente más pequeña
+  orderItem_pedidos_pendientes: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,  // Reducimos el padding
+    marginVertical: 5,
+    marginHorizontal: 10,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  backButton_Pedidos_Pendientes: {
+    backgroundColor: '#6c757d',
+    padding: 16,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,  // Separación superior para alejarlo de la lista
+    marginBottom:20,
   },
 
   //usados en Saliente y resumenSaliente
