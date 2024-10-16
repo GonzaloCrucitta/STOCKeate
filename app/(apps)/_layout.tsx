@@ -35,6 +35,21 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="perfil"
+        options={{
+          title: 'Perfil',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name='id-card' color={color} />,
+          headerRight: () => (
+            <Pressable onPress={() => router.push('../perfil')}>
+              <Image
+                source={require('../../components/perfil.png')}
+                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}
+              />
+            </Pressable>
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="styles"
         options={{ href: null}}
       />
@@ -60,6 +75,10 @@ export default function TabLayout() {
       />}
       {<Tabs.Screen
         name="pedidos_pendientes"
+        options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+      />}
+      {<Tabs.Screen
+        name="resumenSaliente"
         options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
       />}
     </Tabs>

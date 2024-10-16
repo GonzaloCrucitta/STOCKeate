@@ -13,42 +13,35 @@ const Saliente = () => {
   ]);
 
   const productosSeleccionados = data.filter(item => item.cantidadVender > 0);
-
+  const total = productosSeleccionados.reduce((acc,item)=>{
+    return acc + (item.precio * item.cantidadVender);
+    }, 0);
+  const ListHeader = () => (
+    <View style={styles.row}>
+      <Text style={styles.headerText}>Artículo</Text>
+      <Text style={styles.headerText}>Cantidad</Text>
+      <Text style={styles.headerText}>Precio</Text>
+    </View>
+  );
   return (
     <View style={styles.container}>
         <Text style={styles.text}>articulo, cantidad, precio</Text>
       <FlatList
         showsVerticalScrollIndicator={false}
         data={data}
-        // <table
+        ListHeaderComponent={ListHeader} // Agregando el encabezado a la FlatList
         renderItem={({ item }) => (
             <View style={styles.itemContainer}>
-            <Text style={styles.text}>{item.titulo}</Text>
-            <Text style={styles.stock}>{item.cantidadVender}</Text>
-            <Text style={styles.text}>   ${item.precio} </Text>
-            {/* Entrada para la cantidad a vender */}
-            {/* <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              placeholder="Cantidad a vender"
-              value={item.cantidadVender.toString()}
-              onChangeText={(value) => {
-                const cantidad = parseInt(value);
-                setData(prevData =>
-                  prevData.map(producto =>
-                    producto.CodigoBarras === item.CodigoBarras
-                      ? { ...producto, cantidadVender: isNaN(cantidad) ? 0 : cantidad }
-                      : producto
-                  )
-                );
-              }}
-            /> */}
-          </View>
+              <Text style={styles.text}>{item.titulo}</Text>
+              <Text style={styles.stock}>{item.cantidadVender}</Text>
+              <Text style={[styles.text, { textAlign: 'right' }]}>   ${item.precio * item.cantidadVender} </Text>
+              {/* Entrada para la cantidad a vender */}
+            </View>
         )}
         keyExtractor={(item) => item.CodigoBarras}
         style={styles.flatList}
       />
-      <Text style={styles.text}>total: </Text>
+      <Text style={styles.text}>total: ${total}</Text>
 
       {/* Botón para ir a la página de resumen */}
       <Pressable

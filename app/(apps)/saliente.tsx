@@ -1,28 +1,171 @@
 import React, { useState } from 'react';
-import { FlatList, Text, View, Pressable, TextInput } from 'react-native';
+import { FlatList, Text, View, Pressable, TextInput, Modal, TouchableOpacity, Alert } from 'react-native';
 import styles from './styles';
 import { router } from 'expo-router';
 
 const Saliente = () => {
   const [data, setData] = useState([
     { CodigoBarras: '1', titulo: 'mate', stock: 10, cantidadVender: 0, precio: 100 },
-    { CodigoBarras: '2', titulo: 'café', stock: 5, cantidadVender: 0, precio: 150 },
-    { CodigoBarras: '3', titulo: 'harina', stock: 8, cantidadVender: 0, precio: 50 },
-    { CodigoBarras: '4', titulo: 'palmito', stock: 2, cantidadVender: 0, precio: 200 },
-    { CodigoBarras: '5', titulo: 'yerba', stock: 20, cantidadVender: 0, precio: 120 },
-    { CodigoBarras: '6', titulo: 'mermelada', stock: 8, cantidadVender: 0, precio: 80 },
-    { CodigoBarras: '7', titulo: 'cacao', stock: 3, cantidadVender: 0, precio: 90 },
-    { CodigoBarras: '8', titulo: 'picadillo', stock: 22, cantidadVender: 0, precio: 60 },
-    { CodigoBarras: '9', titulo: 'pate', stock: 3, cantidadVender: 0, precio: 110 },
+    ]);
+
+  const [clientes] = useState([
+    { id: '1', name: 'Cliente A' },
+    { id: '2', name: 'Cliente B' },
+    { id: '3', name: 'Cliente.No.Registrado' },
   ]);
+
+  const [selectedClient, setSelectedClient] = useState(clientes[2]); // Cliente por defecto
+  const [modalVisible, setModalVisible] = useState(false); // Control del Modal de cliente
+  const [addItemModalVisible, setAddItemModalVisible] = useState(false); // Control del Modal de agregar item
+  const [newItem, setNewItem] = useState({ titulo: '', stock: '', precio: '' }); // Datos del nuevo producto
+  const [nuevoProducto, setNuevoProducto] = useState('');
+  const [productosFiltrados, setProductosFiltrados] = useState(data);
 
   const productosSeleccionados = data.filter(item => item.cantidadVender > 0);
 
+
+  const buscarProducto = (texto: string) => {
+    setNuevoProducto(texto);
+    const productosFiltrados = data.filter((producto) =>
+      producto.titulo.toLowerCase().includes(texto.toLowerCase())
+    );
+    setProductosFiltrados(productosFiltrados);
+  };
+  
+  // Función para agregar un nuevo producto
+  const handleAddNewItem = () => {
+    if (!newItem.titulo || !newItem.stock || !newItem.precio) {
+      Alert.alert('Error', 'Por favor, rellena todos los campos.');
+      return;
+    }
+
+    const nuevoProducto = {
+      CodigoBarras: (data.length + 1).toString(), // Genera un nuevo código de barras
+      titulo: newItem.titulo,
+      stock: parseInt(newItem.stock),
+      cantidadVender: 0,
+      precio: parseInt(newItem.precio),
+    };
+
+    setData([...data, nuevoProducto]); // Agregar el nuevo producto a la lista
+    setAddItemModalVisible(false); // Cerrar el modal
+    setNewItem({ titulo: '', stock: '', precio: '' }); // Limpiar el formulario
+  };
+
   return (
     <View style={styles.container}>
+
+      {/* Botón para seleccionar cliente */}
+      <Text style={styles.label}>Seleccionar Cliente:</Text>
+      <Pressable
+        style={styles.clientButton}
+        onPress={() => setModalVisible(true)}
+      >
+        <Text style={styles.buttonText}>{selectedClient.name}</Text>
+      </Pressable>
+
+      {/* Modal para seleccionar cliente */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Selecciona un cliente</Text>
+            {clientes.map(cliente => (
+              <TouchableOpacity
+                key={cliente.id}
+                style={styles.modalItem}
+                onPress={() => {
+                  setSelectedClient(cliente);
+                  setModalVisible(false); // Cerrar el modal
+                }}
+              >
+                <Text style={styles.modalText}>{cliente.name}</Text>
+              </TouchableOpacity>
+            ))}
+            <Pressable
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.buttonText}>Cerrar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Botón para agregar nuevo producto */}
+      <Pressable
+        style={styles.addButton}
+        onPress={() => setAddItemModalVisible(true)}
+      >
+        <Text style={styles.buttonText}>Agregar Nuevo Producto</Text>
+      </Pressable>
+
+      {/* Modal para agregar nuevo producto */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={addItemModalVisible}
+        onRequestClose={() => setAddItemModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Buscar Producto</Text>
+
+            {/* Entrada para el nombre del producto */}
+            <TextInput
+              style={styles.input}
+              placeholder="Nombre del Producto"
+              value={newItem.titulo}
+              //onChangeText={buscarProducto}
+              onChangeText={(text) => setNewItem({ ...newItem, titulo: text })}
+            />
+
+            {/* Entrada para el stock */}
+            <TextInput
+              style={styles.input}
+              placeholder="Cantidad en stock"
+              keyboardType="numeric"
+              value={newItem.stock}
+              onChangeText={(text) => setNewItem({ ...newItem, stock: text })}
+            />
+
+            {/* Entrada para el precio */}
+            <TextInput
+              style={styles.input}
+              placeholder="Precio"
+              keyboardType="numeric"
+              value={newItem.precio}
+              onChangeText={(text) => setNewItem({ ...newItem, precio: text })}
+            />
+
+            {/* Botón para confirmar el nuevo producto */}
+            <Pressable
+              style={styles.confirmButton}
+              onPress={handleAddNewItem}
+            >
+              <Text style={styles.buttonText}>Agregar Producto</Text>
+            </Pressable>
+
+            {/* Botón para cerrar el modal */}
+            <Pressable
+              style={styles.closeButton}
+              onPress={() => setAddItemModalVisible(false)}
+            >
+              <Text style={styles.buttonText}>Cerrar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Listado de productos */}
       <FlatList
         showsVerticalScrollIndicator={false}
         data={data}
+
         renderItem={({ item }) => (
           <View style={styles.itemContainer}>
             <Text style={styles.text}>{item.titulo}</Text>
@@ -57,7 +200,10 @@ const Saliente = () => {
         onPress={() => {
           router.push({
             pathname: '../resumenSaliente',
-            params: { productosSeleccionados: JSON.stringify(productosSeleccionados) }
+            params: { 
+              productosSeleccionados: JSON.stringify(productosSeleccionados),
+              clienteSeleccionado: JSON.stringify(selectedClient)
+            }
           });
         }}
       >
@@ -76,60 +222,3 @@ const Saliente = () => {
 }
 
 export default Saliente;
-
-/*
-const styles = StyleSheet.create({
-  
-  itemContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    paddingVertical: 8,
-  },
-  text: {
-    fontSize: 16,
-    color: '#333',
-  },
-  stock: {
-    fontSize: 14,
-    color: '#888',
-  },
-  input: {
-    width: 60,
-    padding: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    textAlign: 'center',
-    marginLeft: 8,
-  },
-  flatList: {
-    marginBottom: 16,
-  },
-  sellButton: {
-    backgroundColor: '#007BFF',
-    padding: 16,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  backButton: {
-    backgroundColor: '#6c757d',
-    padding: 16,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
-
-//export default styles;
-*/
