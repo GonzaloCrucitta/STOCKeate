@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Pressable, FlatList } from 'react-native';
 import styles from './styles';
+import { router } from 'expo-router';
 
 export default function PendingOrdersPage() {
     const [newOrder, setNewOrder] = useState('');
@@ -42,6 +43,11 @@ export default function PendingOrdersPage() {
                 <Pressable style={styles.pressableButton} onPress={addOrder}>
                     <Text style={styles.buttonText}>Agregar Pedido</Text>
                 </Pressable>
+                <Pressable style={styles.pressableButton} 
+                    onPress={() => router.push('../main_providers')}
+                >
+                <Text style={styles.buttonText}>volver</Text>
+                 </Pressable>
             </View>
             
             <FlatList
