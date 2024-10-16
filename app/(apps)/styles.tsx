@@ -257,6 +257,8 @@ const styles = StyleSheet.create({
     color: 'gray',
     marginBottom: 20,
   },
+
+  //usados en resumenSaliente
   label: {
     fontSize: 16,
     fontWeight: 'bold',
