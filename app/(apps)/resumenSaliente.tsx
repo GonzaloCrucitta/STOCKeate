@@ -25,7 +25,6 @@ const Saliente = () => {
   );
   return (
     <View style={styles.container}>
-        <Text style={styles.text}>articulo, cantidad, precio</Text>
       <FlatList
         showsVerticalScrollIndicator={false}
         data={data}
