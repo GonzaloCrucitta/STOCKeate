@@ -6,22 +6,22 @@ import { router } from 'expo-router';
 const componentes = () => {
 
   const data = [
-    { src: require('../../components/producto.png'), CodigoBarras: '1', titulo: 'mate', stock: 10 },
-    { src: require('../../components/producto.png'), CodigoBarras: '2', titulo: 'café', stock: 5 },
-    { src: require('../../components/producto.png'), CodigoBarras: '3', titulo: 'harina', stock: 8 },
-    { src: require('../../components/producto.png'), CodigoBarras: '4', titulo: 'palmito', stock: 2 },
-    { src: require('../../components/producto.png'), CodigoBarras: '5', titulo: 'yerba', stock: 20 },
-    { src: require('../../components/producto.png'), CodigoBarras: '6', titulo: 'mermelada', stock: 8 },
-    { src: require('../../components/producto.png'), CodigoBarras: '7', titulo: 'cacao', stock: 3 },
-    { src: require('../../components/producto.png'), CodigoBarras: '8', titulo: 'picadillo', stock: 22 },
-    { src: require('../../components/producto.png'), CodigoBarras: '9', titulo: 'pate', stock: 3 },
-    { src: require('../../components/producto.png'), CodigoBarras: '10', titulo: 'caballa', stock: 9 },
-    { src: require('../../components/producto.png'), CodigoBarras: '11', titulo: 'arroz', stock: 7 },
-    { src: require('../../components/producto.png'), CodigoBarras: '12', titulo: 'arvejas', stock: 11 },
-    { src: require('../../components/producto.png'), CodigoBarras: '13', titulo: 'sardinas', stock: 15 },
-    { src: require('../../components/producto.png'), CodigoBarras: '14', titulo: 'atún', stock: 4 },
-    { src: require('../../components/producto.png'), CodigoBarras: '15', titulo: 'choclo', stock: 17 },
-    { src: require('../../components/producto.png'), CodigoBarras: '16', titulo: 'lentejas', stock: 19 },
+    { src: require('../../components/producto.png'), CodigoBarras: '1', titulo: 'mate', stock: 10, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '2', titulo: 'café', stock: 5, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '3', titulo: 'harina', stock: 8, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '4', titulo: 'palmito', stock: 2, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '5', titulo: 'yerba', stock: 20, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '6', titulo: 'mermelada', stock: 8, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '7', titulo: 'cacao', stock: 3, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '8', titulo: 'picadillo', stock: 22, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '9', titulo: 'pate', stock: 3, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '10', titulo: 'caballa', stock: 9, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '11', titulo: 'arroz', stock: 7, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '12', titulo: 'arvejas', stock: 11, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '13', titulo: 'sardinas', stock: 15, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '14', titulo: 'atún', stock: 4, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '15', titulo: 'choclo', stock: 17, precio:0 },
+    { src: require('../../components/producto.png'), CodigoBarras: '16', titulo: 'lentejas', stock: 19, precio:0 },
   ];
 
   return (

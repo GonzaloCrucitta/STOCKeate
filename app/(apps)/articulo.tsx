@@ -10,6 +10,7 @@ const ArticuloProveedor = () => {
   const [codigoBarras, setCodigoBarras] = useState('1234567890');
   const [tags, setTags] = useState(['electrónica', 'hogar']);
   const [cantidad, setCantidad] = useState(10);
+  const [precio, setPrecio] = useState(10);
   const [descripcion, setDescripcion] = useState('Descripción del producto');
   const [imagenes, setImagenes] = useState([
     require('../../components/producto.png'),
@@ -87,6 +88,23 @@ const ArticuloProveedor = () => {
         keyboardType="numeric"
         value={cantidad.toString()}
         onChangeText={(value) => setCantidad(parseInt(value))}
+      />
+
+      {/* Precio */}
+      <Text style={styles.stock}>Precio:</Text>
+      <TextInput
+        style={styles.input}
+        keyboardType="numeric"
+        value={precio.toString()}
+        
+        onSubmitEditing={(event) => {
+          const nuevoPrecio = parseFloat(event.nativeEvent.text);
+          if (!isNaN(nuevoPrecio)) {
+              setPrecio(nuevoPrecio);
+          }
+        }}
+      
+        //onChangeText={(value) => setPrecio(parseFloat(value))}
       />
 
       {/* Descripción */}

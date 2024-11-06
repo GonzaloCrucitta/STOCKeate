@@ -24,7 +24,7 @@ export default function PerfilPage() {
       
 
       {/* Botón de cerrar sesión */}
-      <Pressable style={styles.pressableButton} onPress={() => console.log('Logout')}>
+      <Pressable style={styles.pressableButton} onPress={() => router.push('../')}>
         <Text style={styles.buttonText}>Cerrar Sesión</Text>
       </Pressable>
     </View>

@@ -39,14 +39,7 @@ export default function TabLayout() {
         options={{
           title: 'Perfil',
           tabBarIcon: ({ color }) => <FontAwesome size={28} name='id-card' color={color} />,
-          headerRight: () => (
-            <Pressable onPress={() => router.push('../perfil')}>
-              <Image
-                source={require('../../components/perfil.png')}
-                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}
-              />
-            </Pressable>
-          ),
+                  
         }}
       />
       <Tabs.Screen

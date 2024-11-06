@@ -394,11 +394,11 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     backgroundColor: '#28a745',
-    padding: 12,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
     marginTop: 20,
+    padding: 10,
+    borderRadius: 5,
+    width: '100%',
+    alignItems: 'center',
   },
   addButton: {
     backgroundColor: '#007BFF',
@@ -421,6 +421,32 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+  },
+  productItem: {
+    padding: 10,
+    backgroundColor: '#f0f0f0',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    fontSize: 16,
+    color: '#333',
+  },
+  searchButton: {
+    position: 'absolute',
+    right: 10,
+    top: 20,
+    padding: 8,
+    backgroundColor: '#ddd',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  filteredListContainer: {
+    maxHeight: 150, // Limita la altura total de la lista
+    marginVertical: 10,
+    backgroundColor: '#f9f9f9',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
   },
 
 });
