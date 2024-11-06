@@ -18,23 +18,26 @@ const ArticuloProveedor = () => {
   ]);
 
   const newProducto = {
+
     nombre_producto: nombre,
-    codigo_barras:codigoBarras,
-    descripcion:descripcion,
-    cantidad_stock:cantidad,
-    id_proveedor:1,
-    precio:precio,
+    codigo_barras: codigoBarras,
+    descripcion: descripcion,
+    cantidad_stock: cantidad,
+    id_proveedor: 2,
+    precio: precio
 
   };
+
+
   async function crearArticulo(producto: any) {
     try {
-      const response = await fetch('https://n89crwvh-4000.brs.devtunnels.ms/productos', {
+      const response = await   fetch("http://localhost:4000/productos", {
       method: 'POST',
       headers: {
       'Content-Type': 'application/json',
       },
       body: JSON.stringify(producto),
-      mode: 'no-cors',
+     
       });
      
       if (!response.ok) {
