@@ -17,6 +17,39 @@ const ArticuloProveedor = () => {
     require('../../components/producto.png')//aca estarian todas las imagenes del producto
   ]);
 
+  const newProducto = {
+    nombre_producto: nombre,
+    codigo_barras:codigoBarras,
+    descripcion:descripcion,
+    cantidad_stock:cantidad,
+    id_proveedor:1,
+    precio:precio,
+
+  };
+  async function crearArticulo(producto: any) {
+    try {
+      const response = await fetch('https://n89crwvh-4000.brs.devtunnels.ms/productos', {
+      method: 'POST',
+      headers: {
+      'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(producto),
+      mode: 'no-cors',
+      });
+     
+      if (!response.ok) {
+        throw new Error('Failed to upload product');
+      }
+      
+      const newProducto = await response.json();
+      console.log('Producto creado', newProducto);
+      } catch (error) {
+        console.error('Error al crear el producto:', error);
+        console.error('producto:',producto);
+      }
+      }
+     
+
   // Función para agregar un nuevo tag
   const agregarTag = (nuevoTag: string) => {
     setTags([...tags, nuevoTag]);
@@ -130,7 +163,7 @@ const ArticuloProveedor = () => {
                 <Text style={styles.buttonText}>Agregar Imagen</Text>
         </Pressable>
         
-      <Pressable style={styles.pressableButton} onPress={() => router.push('../stock')}>
+      <Pressable style={styles.pressableButton} onPress={() => crearArticulo(newProducto)}>
                 <Text style={styles.buttonText}>Confirmar</Text>
         </Pressable>
     </ScrollView>

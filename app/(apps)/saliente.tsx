@@ -13,6 +13,19 @@ const Saliente = () => {
     { CodigoBarras: '15', titulo: 'choclo', stock: 17, cantidadVender: 0, precio:12 },
     { CodigoBarras: '16', titulo: 'lentejas', stock: 19, cantidadVender: 0, precio:9 },
     ]);
+    /* 
+    model Product {
+  id_producto    Int      @id @default(autoincrement())
+  nombre_producto String
+  codigo_barras   String
+  descripcion     String
+  cantidad_stock  Int
+  id_proveedor    Int
+  proveedor       Proveedor @relation(fields: [id_proveedor], references: [id_proveedor])
+  precio          Float
+  detallesPedido  OrderDetail[]
+  depositos       DepositoProduct[]  // Relación con la tabla intermedia
+} */
   const [data, setData] = useState([
     { CodigoBarras: '', titulo: '', stock: 0, cantidadVender: 0, precio: 0 },
     ]);
@@ -20,7 +33,7 @@ const Saliente = () => {
   const [clientes] = useState([
     { id: '1', name: 'Cliente A' },
     { id: '2', name: 'Cliente B' },
-    { id: '3', name: 'Cliente.No.Registrado' },
+    { id: '3', name: 'Cliente No habitual' },
   ]);
 
   const [selectedClient, setSelectedClient] = useState(clientes[2]); // Cliente por defecto

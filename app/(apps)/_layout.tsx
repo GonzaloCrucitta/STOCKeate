@@ -20,8 +20,6 @@ export default function TabLayout() {
       <Tabs.Screen
         name="main_providers"
         options={{
-          //title: 'main_providers',
-          //tabBarIcon: ({ color }) => <FontAwesome size={28} name="industry" color={color} />,
           title: 'Proveedores',
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="industry" color={color} />,
           headerRight: () => (
@@ -38,7 +36,13 @@ export default function TabLayout() {
         name="perfil"
         options={{
           title: 'Perfil',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name='id-card' color={color} />,
+          href:null,
+          headerRight: () => (
+            <Pressable onPress={() => router.push('../main_providers')} 
+              style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
+              <FontAwesome size={28} name='reply' />
+            </Pressable>
+          ),
                   
         }}
       />
@@ -60,7 +64,10 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="saliente"
-        options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+        options={{ 
+          href: null, 
+          headerShown: false, 
+          tabBarStyle: { display: 'none' }}}
       />
       {<Tabs.Screen
         name="articulo"

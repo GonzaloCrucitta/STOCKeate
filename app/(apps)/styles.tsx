@@ -5,6 +5,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    width:'100%',
   },
   container_articulo: {
     padding: 20
@@ -46,6 +47,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     width: '100%',
+  },
+  input2: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+    width: '30%',
   },
   roleSelectionContainer: {
     alignItems: 'center',
@@ -89,6 +98,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
+    width:'100%',
   },
     title: {
     fontSize: 32,
