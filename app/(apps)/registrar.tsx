@@ -9,7 +9,9 @@ export default function App() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [company, setCompany] = useState(''); 
-  const [dniNumber, setdniNumber] = useState(''); 
+  const [dniNumber, setDniNumber] = useState(''); 
+  const [telefono, setTelefono] = useState(''); 
+  const [direccion, setDireccion] = useState('');
   const [role, setRole] = useState(null); 
   const [showLoginFields, setShowLoginFields] = useState(false);
   const [showRoleSelection, setShowRoleSelection] = useState(true);
@@ -23,13 +25,11 @@ export default function App() {
     let valid = true;
     let newErrors = {};
 
-  
     if (!username) {
       newErrors.username = 'El nombre de usuario es obligatorio';
       valid = false;
     }
 
-    
     if (!password) {
       newErrors.password = 'La contraseña es obligatoria';
       valid = false;
@@ -60,6 +60,14 @@ export default function App() {
         newErrors.dniNumber = 'El DNI es obligatorio';
         valid = false;
       }
+      if (!telefono) {
+        newErrors.telefono = 'El teléfono es obligatorio';
+        valid = false;
+      }
+      if (!direccion) {
+        newErrors.direccion = 'La dirección es obligatoria';
+        valid = false;
+      }
     }
 
     setErrors(newErrors);
@@ -73,10 +81,41 @@ export default function App() {
   const handleRegister = () => {
     if (validateFields()) {
       setShowRegister(false);
-      
-     
     }
   };
+
+  const newProveedor = {
+    nombre: name, 
+    email: email, 
+    telefono: telefono, 
+    direccion: direccion, 
+    nombre_empresa: company, 
+    dni: dniNumber,
+    foto:'default'
+  };
+
+  async function crearProveedor(proveedor) {
+    try {
+      const response = await fetch("http://localhost:4000/provedores", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(proveedor),
+      });
+     
+      if (!response.ok) {
+        throw new Error('Error al crear el proveedor');
+        
+      }
+      
+      const newProveedor = await response.json();
+      console.log('Proveedor creado', newProveedor);
+      router.push('/main_providers');
+    } catch (error) {
+      console.error('Error al crear el proveedor:', error);
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -129,12 +168,28 @@ export default function App() {
                 style={[styles.input, errors.dniNumber ? { borderColor: 'red' } : null]}
                 placeholder="DNI"
                 value={dniNumber}
-                onChangeText={setdniNumber}
+                onChangeText={setDniNumber}
               />
               {errors.dniNumber && <Text style={styles.errorText}>{errors.dniNumber}</Text>}
+
+              <TextInput
+                style={[styles.input, errors.telefono ? { borderColor: 'red' } : null]}
+                placeholder="Teléfono"
+                value={telefono}
+                onChangeText={setTelefono}
+              />
+              {errors.telefono && <Text style={styles.errorText}>{errors.telefono}</Text>}
+
+              <TextInput
+                style={[styles.input, errors.direccion ? { borderColor: 'red' } : null]}
+                placeholder="Dirección"
+                value={direccion}
+                onChangeText={setDireccion}
+              />
+              {errors.direccion && <Text style={styles.errorText}>{errors.direccion}</Text>}
             </>
           )}
-
+          
           {showRegister && (
             <View style={styles.buttonContainer}>
               <Pressable style={styles.pressableButton} onPress={handleRegister}>
@@ -145,10 +200,7 @@ export default function App() {
 
           {!showRegister && (
             <View style={styles.buttonContainer}>
-              <Pressable
-                style={styles.pressableButton}
-             
-              >
+              <Pressable style={styles.pressableButton} onPress={() => crearProveedor(newProveedor)}>
                 <Text style={styles.buttonText}>CONTINUAR</Text>
               </Pressable>
             </View>
