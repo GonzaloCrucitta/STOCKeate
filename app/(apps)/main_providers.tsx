@@ -4,16 +4,19 @@ import styles from './styles';
 import { useRouter } from 'expo-router';
 import { useSelector } from 'react-redux';
 
-// Definir los tipos para el estado global de Redux
 interface RootState {
-  user: {
-    email: string;
-  };
-}
+    user: {
+      email: string;
+      nombre: string;
+      id: number;  // Aquí debes usar 'number' en lugar de 'int' en TypeScript
+    };
+  }
+  
 
 export default function ProvidersMainApp() {
-  // Acceder al email del estado global con useSelector y el tipo adecuado
   const email = useSelector((state: RootState) => state.user.email);
+  const nombre = useSelector((state: RootState) => state.user.nombre);
+  const id= useSelector((state: RootState) => state.user.id);
 
   const [modalVisible, setModalVisible] = useState<{ [key: string]: boolean }>({
     stock: true,
@@ -35,7 +38,7 @@ export default function ProvidersMainApp() {
 
   return (
     <View style={styles.container}>
-      <Text>{email}</Text>
+      <Text>mail: {email}   Nombre: {nombre} id: {id}</Text>
       <Pressable style={styles.pressableButton} onPress={() => router.push('../stock')}>
         <Text style={styles.buttonText}>Stock</Text>
       </Pressable>

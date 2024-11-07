@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, View, Pressable, Image, TextInput, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Provider, useDispatch, useSelector } from 'react-redux';
-import store from './redux/store'; // Importar el store
+import store, { setId, setName } from './redux/store'; // Importar el store
 import styles from './styles';
 import { setEmail } from './redux/store'; // Importar la acción
 
@@ -25,9 +25,12 @@ function AppComponent() {
         if (proveedor.contrasenia === password) {
           // Guardar el email en el estado global con Redux
           dispatch(setEmail(proveedor.email));
+          dispatch(setName(proveedor.nombre));
+          dispatch(setId(proveedor.id_proveedor));
+          console.log("nombre:  ",proveedor.email , " mail: ",proveedor.nombre, "id: ", proveedor.id_proveedor)
           
           // Redirigir a la pantalla principal de proveedores
-          router.push(`/main_providers?email=${encodeURIComponent(proveedor.email)}`);
+          router.push(`/main_providers`);
         } else {
           Alert.alert('Contraseña incorrecta', 'La contraseña ingresada es incorrecta.');
         }
