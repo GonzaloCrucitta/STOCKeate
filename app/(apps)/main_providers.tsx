@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 interface RootState {
     user: {
       email: string;
-      nombre: string;
+      name: string;
       id: number;  // Aquí debes usar 'number' en lugar de 'int' en TypeScript
     };
   }
@@ -15,7 +15,7 @@ interface RootState {
 
 export default function ProvidersMainApp() {
   const email = useSelector((state: RootState) => state.user.email);
-  const nombre = useSelector((state: RootState) => state.user.nombre);
+  const nombre = useSelector((state: RootState) => state.user.name);
   const id= useSelector((state: RootState) => state.user.id);
 
   const [modalVisible, setModalVisible] = useState<{ [key: string]: boolean }>({
