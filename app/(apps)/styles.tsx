@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   textoCarritoComprarPage: {
-    fontSize: 14, // Tamaño de texto más pequeño para los artículos en el carrito
+    fontSize: 14, 
   },
   botonEliminarComprarPage: {
     backgroundColor: 'red',
@@ -561,7 +561,7 @@ const styles = StyleSheet.create({
   },
 });
 
-//comprarPage
+
 
 
 
