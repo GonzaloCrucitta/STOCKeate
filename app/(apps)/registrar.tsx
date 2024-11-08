@@ -89,6 +89,7 @@ export default function App() {
     email: email, 
     telefono: telefono, 
     direccion: direccion, 
+    contrasenia: password,
     nombre_empresa: company, 
     dni: dniNumber,
     foto:'default'
