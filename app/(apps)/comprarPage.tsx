@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Button, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router'; 
+import { useRouter } from 'expo-router'; // Usamos el router para la navegación
 import styles from './styles';
 
 const ComprarPage: React.FC = () => {
@@ -9,9 +9,8 @@ const ComprarPage: React.FC = () => {
     { item: 'Producto 2' },
     { item: 'Producto 3' },
   ]);
-
-  const [carrito, setCarrito] = useState<{ item: string, cantidad: number }[]>([]); 
-  const router = useRouter(); 
+  const [carrito, setCarrito] = useState<{ item: string, cantidad: number }[]>([]);
+  const router = useRouter();
 
   const handleSeleccionarArticulo = (item: string) => {
     const productoExistente = carrito.find((producto) => producto.item === item);
@@ -26,7 +25,6 @@ const ComprarPage: React.FC = () => {
     } else {
       setCarrito([...carrito, { item, cantidad: 1 }]);
     }
-    console.log(`Artículo seleccionado: ${item}`);
   };
 
   const handleEliminarArticulo = (item: string) => {
@@ -42,8 +40,12 @@ const ComprarPage: React.FC = () => {
     } else {
       setCarrito(carrito.filter((producto) => producto.item !== item));
     }
-    console.log(`Artículo eliminado: ${item}`);
   };
+
+  const handleConfirmarCompra = () => {
+    router.push('/confirmarCompra'); 
+  };
+
 
   const handleVolver = () => {
     router.back(); 
@@ -58,14 +60,12 @@ const ComprarPage: React.FC = () => {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => handleSeleccionarArticulo(item.item)}
-            style={styles.botonProductoComprarPage} 
+            style={styles.botonProductoComprarPage}
           >
             <Text>{item.item}</Text>
           </TouchableOpacity>
         )}
       />
-
-
       {carrito.length > 0 && (
         <View style={styles.carritoContainerComprarPage}>
           <Text style={{ fontSize: 18, marginBottom: 10 }}>Artículos en el carrito:</Text>
@@ -76,10 +76,10 @@ const ComprarPage: React.FC = () => {
               <View style={styles.carritoItemComprarPage}>
                 <Text style={styles.textoCarritoComprarPage}>
                   {item.item} - {item.cantidad} {item.cantidad > 1 ? 'unidades' : 'unidad'}
-                </Text> 
+                </Text>
                 <TouchableOpacity
                   onPress={() => handleEliminarArticulo(item.item)}
-                  style={styles.botonEliminarComprarPage} 
+                  style={styles.botonEliminarComprarPage}
                 >
                   <Text style={styles.textoBotonEliminarComprarPage}>Eliminar</Text>
                 </TouchableOpacity>
@@ -90,11 +90,14 @@ const ComprarPage: React.FC = () => {
       )}
 
       <View style={{ marginTop: 20 }}>
-        <Button title="Volver a la compra" onPress={handleVolver} />
+        <Button title="Confirmar Compra" onPress={handleConfirmarCompra} />
+      </View>
+
+      <View style={{ marginTop: 20 }}>
+        <Button title="Volver al Inicio" onPress={handleVolver} />
       </View>
     </ScrollView>
   );
 };
 
 export default ComprarPage;
-
