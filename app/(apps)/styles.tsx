@@ -459,7 +459,109 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 
+  //Página Cliente
+
+  containerCliente: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  nombreCliente: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  botonCompra: {
+    backgroundColor: '#007BFF',
+    padding: 15,
+    borderRadius: 8,
+    marginVertical: 10,
+  },
+  botonLogout: {
+    backgroundColor: '#6c757d',
+    padding: 15,
+    borderRadius: 8,
+    marginVertical: 10,
+  },
+  botonTexto: {
+    color: '#fff',
+    fontSize: 16,
+  },
+
+  //comprarPage
+
+  containerComprarPage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  nombreClienteComprarPage: {
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  botonesComprarPage: {
+    backgroundColor: 'blue',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginBottom: 15,
+  },
+  textoBotonComprarPage: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  carritoContainerComprarPage: {
+    marginTop: 20,
+  },
+  carritoItemComprarPage: {
+    padding: 10,
+    backgroundColor: '#e0e0e0',
+    marginBottom: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  textoCarritoComprarPage: {
+    fontSize: 14, // Tamaño de texto más pequeño para los artículos en el carrito
+  },
+  botonEliminarComprarPage: {
+    backgroundColor: 'red',
+    padding: 5,
+    borderRadius: 5,
+  },
+  textoBotonEliminarComprarPage: {
+    color: 'white',
+    fontSize: 12,
+  },
+  botonProductoComprarPage: {
+    padding: 10,
+    backgroundColor: 'lightgray',
+    marginBottom: 5,
+  },
+
+  //formularioPago
+
+
+  containerFormularioPago: {
+    padding: 20,
+  },
+  titleFormularioPago: {
+    fontSize: 20,
+    marginBottom: 20,
+  },
+  buttonFormularioPago: {
+    backgroundColor: 'green',
+    padding: 10,
+    alignItems: 'center',
+  },
+  buttonTextFormularioPago: {
+    color: 'white',
+    fontSize: 16,
+  },
 });
+
+//comprarPage
 
 
 
