@@ -21,9 +21,25 @@ export default function TabLayout() {
         <Tabs.Screen
           name="main_providers"
           options={{
-            title: 'Proveedores',
+            title: 'Proveedor',
             tabBarStyle: { display: 'none' },
             tabBarIcon: ({ color }) => <FontAwesome size={28} name="industry" color={color} />,
+            headerRight: () => (
+              <Pressable onPress={() => router.push('../perfil')}>
+                <Image
+                  source={require('../../components/perfil.png')}
+                  style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}
+                />
+              </Pressable>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="cliente"
+          options={{
+            title: 'Cliente',
+            tabBarStyle: { display: 'none' },
+            tabBarIcon: ({ color }) => <FontAwesome size={28} name='user-circle' color={color} />,
             headerRight: () => (
               <Pressable onPress={() => router.push('../perfil')}>
                 <Image

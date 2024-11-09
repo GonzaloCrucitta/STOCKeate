@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Pressable, TextInput, Vibration, Alert } from 'react-native';
 import styles from './styles';
+import handleLogin from './index';
 
 export default function App() {
   const [username, setUsername] = useState('');
@@ -113,6 +114,7 @@ export default function App() {
       const newProveedor = await response.json();
       console.log('Proveedor creado', newProveedor);
       router.push('/main_providers');
+      handleLogin();
     } catch (error) {
       console.error('Error al crear el proveedor:', error);
     }
