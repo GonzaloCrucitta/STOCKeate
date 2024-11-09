@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, FlatList, Button, Image, StyleSheet, ScrollView, Pressable } from 'react-native';
 import styles from './styles';
 import { useTheme } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
+import { useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 
 const ArticuloProveedor = () => {
@@ -17,7 +19,15 @@ const ArticuloProveedor = () => {
     require('../../components/producto.png'),
     require('../../components/producto.png')//aca estarian todas las imagenes del producto
   ]);
-
+  
+interface RootState {
+  user: {
+    email: string;
+    name: string;
+    id: number;  // Aquí debes usar 'number' en lugar de 'int' en TypeScript
+  };
+}
+const id= useSelector((state: RootState) => state.user.id);
   //imagepicker
   //const [image, setImage] = useState<string | null>(null);
   const pickImage = async () => {
@@ -42,7 +52,8 @@ const ArticuloProveedor = () => {
     codigo_barras: codigoBarras,
     descripcion: descripcion,
     cantidad_stock: cantidad,
-    id_proveedor: 2,
+    id_proveedor:id ,
+    tags: tags[0], 
     precio: precio
 
   };
