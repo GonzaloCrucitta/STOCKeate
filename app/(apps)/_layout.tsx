@@ -8,7 +8,8 @@ import { router } from 'expo-router'; // Para la navegación
 
 export default function TabLayout() {
   return (
-    <Provider store={store}> {/* Envolvemos las Tabs con el Provider */}
+    <Provider store={store}>
+
       <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
         <Tabs.Screen
           name="index"
@@ -16,11 +17,12 @@ export default function TabLayout() {
             title: 'Home',
             tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
           }}
-        />
+          />
         <Tabs.Screen
           name="main_providers"
           options={{
             title: 'Proveedores',
+            tabBarStyle: { display: 'none' },
             tabBarIcon: ({ color }) => <FontAwesome size={28} name="industry" color={color} />,
             headerRight: () => (
               <Pressable onPress={() => router.push('../perfil')}>
@@ -37,6 +39,7 @@ export default function TabLayout() {
           options={{
             title: 'Perfil',
             href: null,
+            tabBarStyle: { display: 'none' },
             headerRight: () => (
               <Pressable onPress={() => router.push('../main_providers')} 
                 style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
@@ -53,26 +56,61 @@ export default function TabLayout() {
         <Tabs.Screen
           name="registrar"
           options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+          />
+        <Tabs.Screen
+          name="stock"
+          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+          />
+        <Tabs.Screen
+          name="articulo"
+          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+          />
+        <Tabs.Screen
+          name="saliente"
+          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+          />
+        <Tabs.Screen
+          name="entrante"
+          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+          />
+        <Tabs.Screen
+          name="formularioPago"
+          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
         />
+        <Tabs.Screen
+          name="confirmarCompra"
+          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+          />
+        <Tabs.Screen
+          name="resumenSaliente"
+          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+          />
+        <Tabs.Screen
+          name="pedidos_pendientes"
+          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+        />
+        <Tabs.Screen
+          name="redux/store"
+          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+          />
         <Tabs.Screen
           name="comprarPage"
           options={{
+            href: null,
             title: 'Comprar',
             headerShown: false, 
             tabBarStyle: { display: 'none' },
-            tabBarButton: () => (
-              <Pressable onPress={() => router.push('../comprarPage')}>
-                <Text>Ir a la compra</Text> 
-              </Pressable>
-            ),
+            
           }}
         />
         <Tabs.Screen
+          //????
           name="logout"
           options={{
             title: 'Cerrar Sesión',
             tabBarStyle: { display: 'none' }, 
             headerShown: false, 
+            
             tabBarButton: () => (
               <Pressable onPress={() => {
                 // Aquí iría la lógica para cerrar sesión, por ejemplo limpiar el estado de Redux o eliminar un token
@@ -82,8 +120,7 @@ export default function TabLayout() {
               </Pressable>
             ),
           }}
-        />
-        {/* Agrega más pantallas aquí si es necesario */}
+          />
       </Tabs>
     </Provider>
   );
