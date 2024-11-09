@@ -93,7 +93,14 @@ export default function App() {
     contrasenia: password,
     nombre_empresa: company, 
     dni: dniNumber,
-    foto:'default'
+    foto: 'default'
+  };
+  
+  const newCliente = {
+    usuario: name,
+    contrasena: password,
+    email: email,
+    nombre: name  
   };
 
   async function crearProveedor(proveedor) {
@@ -108,7 +115,6 @@ export default function App() {
      
       if (!response.ok) {
         throw new Error('Error al crear el proveedor');
-        
       }
       
       const newProveedor = await response.json();
@@ -117,6 +123,29 @@ export default function App() {
       handleLogin();
     } catch (error) {
       console.error('Error al crear el proveedor:', error);
+    }
+  }
+
+  async function crearCliente(cliente) {
+    try {
+      const response = await fetch("http://localhost:4000/cliente/agregar", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cliente),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al crear el cliente');
+      }
+
+      const newCliente = await response.json();
+      console.log('Cliente creado', newCliente);
+      router.push('/main_clients');
+      handleLogin();
+    } catch (error) {
+      console.error('Error al crear el cliente:', error);
     }
   }
 
@@ -203,7 +232,16 @@ export default function App() {
 
           {!showRegister && (
             <View style={styles.buttonContainer}>
-              <Pressable style={styles.pressableButton} onPress={() => crearProveedor(newProveedor)}>
+              <Pressable
+                style={styles.pressableButton}
+                onPress={() => {
+                  if (role === 'Proveedor') {
+                    crearProveedor(newProveedor);
+                  } else if (role === 'Cliente') {
+                    crearCliente(newCliente);
+                  }
+                }}
+              >
                 <Text style={styles.buttonText}>CONTINUAR</Text>
               </Pressable>
             </View>
