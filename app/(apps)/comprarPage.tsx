@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, ScrollView, FlatList, TouchableOpacity, Button, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSelector, useDispatch } from 'react-redux';
+import { agregarProducto, eliminarProducto } from './redux/store'; // Ruta del archivo store
 import styles from './styles';
 
 const ComprarPage: React.FC = () => {
   const [articulos, setArticulos] = useState<{ id_producto: number, nombre_producto: string, precio: number }[]>([]);
-  const [carrito, setCarrito] = useState<{ item: string, cantidad: number, precio: number }[]>([]);
+  const carrito = useSelector((state: any) => state.carrito.items);
+  const dispatch = useDispatch();
   const router = useRouter();
 
   // Cargar los productos al montar el componente
@@ -28,42 +31,20 @@ const ComprarPage: React.FC = () => {
     obtenerProductos();
   }, []);
 
-  const handleSeleccionarArticulo = (nombre: string, precio: number) => {
-    const productoExistente = carrito.find((producto) => producto.item === nombre);
-    if (productoExistente) {
-      setCarrito(
-        carrito.map((producto) =>
-          producto.item === nombre
-            ? { ...producto, cantidad: producto.cantidad + 1 }
-            : producto
-        )
-      );
-    } else {
-      setCarrito([...carrito, { item: nombre, cantidad: 1, precio }]);
-    }
+  const handleSeleccionarArticulo = (id_producto: number, nombre: string, precio: number) => {
+    dispatch(agregarProducto({ id_producto, nombre, precio }));
   };
 
-  const handleEliminarArticulo = (nombre: string) => {
-    const productoExistente = carrito.find((producto) => producto.item === nombre);
-    if (productoExistente && productoExistente.cantidad > 1) {
-      setCarrito(
-        carrito.map((producto) =>
-          producto.item === nombre
-            ? { ...producto, cantidad: producto.cantidad - 1 }
-            : producto
-        )
-      );
-    } else {
-      setCarrito(carrito.filter((producto) => producto.item !== nombre));
-    }
+  const handleEliminarArticulo = (id_producto: number) => {
+    dispatch(eliminarProducto(id_producto));
   };
 
   const handleConfirmarCompra = () => {
-    router.push('/confirmarCompra'); 
+    router.push('/confirmarCompra');
   };
 
   const handleVolver = () => {
-    router.back(); 
+    router.back();
   };
 
   return (
@@ -74,7 +55,7 @@ const ComprarPage: React.FC = () => {
         keyExtractor={(item) => item.id_producto.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => handleSeleccionarArticulo(item.nombre_producto, item.precio)}
+            onPress={() => handleSeleccionarArticulo(item.id_producto, item.nombre_producto, item.precio)}
             style={styles.botonProductoComprarPage}
           >
             <Text>{item.nombre_producto} - ${item.precio.toFixed(2)}</Text>
@@ -86,14 +67,14 @@ const ComprarPage: React.FC = () => {
           <Text style={{ fontSize: 18, marginBottom: 10 }}>Artículos en el carrito:</Text>
           <FlatList
             data={carrito}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(item) => item.id_producto.toString()}
             renderItem={({ item }) => (
               <View style={styles.carritoItemComprarPage}>
                 <Text style={styles.textoCarritoComprarPage}>
-                  {item.item} - {item.cantidad} {item.cantidad > 1 ? 'unidades' : 'unidad'} - ${item.precio.toFixed(2)} c/u
+                  {item.nombre} - {item.cantidad} {item.cantidad > 1 ? 'unidades' : 'unidad'} - ${item.precio.toFixed(2)} c/u
                 </Text>
                 <TouchableOpacity
-                  onPress={() => handleEliminarArticulo(item.item)}
+                  onPress={() => handleEliminarArticulo(item.id_producto)}
                   style={styles.botonEliminarComprarPage}
                 >
                   <Text style={styles.textoBotonEliminarComprarPage}>Eliminar</Text>
