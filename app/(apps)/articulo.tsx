@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, FlatList, Button, Image, StyleSheet, ScrollView, Pressable } from 'react-native';
 import styles from './styles';
 import { useTheme } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
 
 const ArticuloProveedor = () => {
   // Estados para manejar los datos del artículo
@@ -16,6 +17,24 @@ const ArticuloProveedor = () => {
     require('../../components/producto.png'),
     require('../../components/producto.png')//aca estarian todas las imagenes del producto
   ]);
+
+  //imagepicker
+  //const [image, setImage] = useState<string | null>(null);
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+      console.log(result);
+
+      if (!result.canceled) {
+        return result.assets[0].uri;
+      }
+      return null;
+    };
 
   const newProducto = {
 
@@ -62,10 +81,22 @@ const ArticuloProveedor = () => {
   const [showTags, setShowTags] = useState(false);
   const [tag, setTag] = useState('');
 
-  // Función para agregar una nueva imagen
-  const agregarImagen = (nuevaImagen: any) => {
-    setImagenes([...imagenes, nuevaImagen]);
+  // Función para agregar y eliminar una imagen
+  const agregarImagen = async () => {
+    const nuevaImagen = await pickImage(); // Obtiene la imagen seleccionada directamente
+    if (nuevaImagen) {
+        setImagenes([...imagenes, { uri: nuevaImagen }]); // Agrega la imagen seleccionada
+    }
   };
+  const eliminarImagen = (index: number) => {
+    const nuevasImagenes = imagenes.filter((_, i) => i !== index);
+    setImagenes(nuevasImagenes);
+  };
+
+  const eliminarTag = (index: number) => {
+    const nuevosTags = tags.filter((_, i) => i !== index);
+    setTags(nuevosTags);
+  }
 
   return (
     <ScrollView style={styles.container_articulo}>
@@ -90,11 +121,30 @@ const ArticuloProveedor = () => {
       <FlatList
         horizontal
         data={tags}
-        renderItem={({ item }) => (
+        renderItem={({ item,index }) => (
+          <Pressable onLongPress={() => eliminarTag(index)}>
           <Text style={styles.tag}>{item}</Text>
+          {/* <Image source={item} style={styles.image_articulo} /> */}
+        </Pressable> 
         )}
+        /* 
+         renderItem={({ item,index }) => (
+          <Pressable onLongPress={() => eliminarImagen(index)}>
+            <Image source={item} style={styles.image_articulo} />
+          </Pressable> 
+        )}
+
+         */
         keyExtractor={(item, index) => index.toString()}
       />
+
+      {/* 
+      
+      <Pressable onLongPress={() => eliminarImagen(index)}>
+            <Image source={item} style={styles.image_articulo} />
+          </Pressable> 
+      
+      */}
       {/* Opción para agregar un nuevo tag */}
       {!showTags &&
       <Pressable style={styles.pressableButton} 
@@ -125,6 +175,7 @@ const ArticuloProveedor = () => {
         value={cantidad.toString()}
         onChangeText={(value) => setCantidad(parseInt(value))}
       />
+      
 
       {/* Precio */}
       <Text style={styles.stock}>Precio:</Text>
@@ -153,19 +204,23 @@ const ArticuloProveedor = () => {
       />
 
       {/* Imágenes del producto */}
-      <Text style={styles.stock}>Imágenes del producto:</Text>
+      <Text style={styles.stock}>Imágenes del producto (Mantene para borrar):</Text>
       <FlatList
         horizontal
         data={imagenes}
-        renderItem={({ item }) => (
-          <Image source={item} style={styles.image_articulo} />
+        renderItem={({ item,index }) => (
+          <Pressable onLongPress={() => eliminarImagen(index)}>
+            <Image source={item} style={styles.image_articulo} />
+          </Pressable> 
         )}
         keyExtractor={(item, index) => index.toString()}
       />
-      <Pressable style={styles.pressableButton} onPress={() => agregarImagen(require('../../components/producto.png'))}>
-                <Text style={styles.buttonText}>Agregar Imagen</Text>
-        </Pressable>
         
+      <Pressable style={styles.pressableButton} onPress={() => agregarImagen()}>
+                <Text style={styles.buttonText}>Seleccionar imagen</Text>
+      </Pressable>
+      
+
       <Pressable style={styles.pressableButton} onPress={() => crearArticulo(newProducto)}>
                 <Text style={styles.buttonText}>Confirmar</Text>
         </Pressable>
