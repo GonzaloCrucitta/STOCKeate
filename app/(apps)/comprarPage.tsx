@@ -1,51 +1,66 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Button, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router'; // Usamos el router para la navegación
+import React, { useEffect, useState } from 'react';
+import { Text, View, ScrollView, FlatList, TouchableOpacity, Button, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 import styles from './styles';
 
 const ComprarPage: React.FC = () => {
-  const [articulos, setArticulos] = useState<{ item: string }[]>([
-    { item: 'Producto 1' },
-    { item: 'Producto 2' },
-    { item: 'Producto 3' },
-  ]);
-  const [carrito, setCarrito] = useState<{ item: string, cantidad: number }[]>([]);
+  const [articulos, setArticulos] = useState<{ id_producto: number, nombre_producto: string, precio: number }[]>([]);
+  const [carrito, setCarrito] = useState<{ item: string, cantidad: number, precio: number }[]>([]);
   const router = useRouter();
 
-  const handleSeleccionarArticulo = (item: string) => {
-    const productoExistente = carrito.find((producto) => producto.item === item);
+  // Cargar los productos al montar el componente
+  useEffect(() => {
+    const obtenerProductos = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/productos');
+        if (response.ok) {
+          const productos = await response.json();
+          setArticulos(productos);
+        } else {
+          Alert.alert('Error', 'No se pudieron obtener los productos.');
+        }
+      } catch (error) {
+        console.error('Error al obtener los productos:', error);
+        Alert.alert('Error', 'Hubo un problema al conectar con el servidor.');
+      }
+    };
+
+    obtenerProductos();
+  }, []);
+
+  const handleSeleccionarArticulo = (nombre: string, precio: number) => {
+    const productoExistente = carrito.find((producto) => producto.item === nombre);
     if (productoExistente) {
       setCarrito(
         carrito.map((producto) =>
-          producto.item === item
+          producto.item === nombre
             ? { ...producto, cantidad: producto.cantidad + 1 }
             : producto
         )
       );
     } else {
-      setCarrito([...carrito, { item, cantidad: 1 }]);
+      setCarrito([...carrito, { item: nombre, cantidad: 1, precio }]);
     }
   };
 
-  const handleEliminarArticulo = (item: string) => {
-    const productoExistente = carrito.find((producto) => producto.item === item);
+  const handleEliminarArticulo = (nombre: string) => {
+    const productoExistente = carrito.find((producto) => producto.item === nombre);
     if (productoExistente && productoExistente.cantidad > 1) {
       setCarrito(
         carrito.map((producto) =>
-          producto.item === item
+          producto.item === nombre
             ? { ...producto, cantidad: producto.cantidad - 1 }
             : producto
         )
       );
     } else {
-      setCarrito(carrito.filter((producto) => producto.item !== item));
+      setCarrito(carrito.filter((producto) => producto.item !== nombre));
     }
   };
 
   const handleConfirmarCompra = () => {
     router.push('/confirmarCompra'); 
   };
-
 
   const handleVolver = () => {
     router.back(); 
@@ -56,13 +71,13 @@ const ComprarPage: React.FC = () => {
       <Text style={{ fontSize: 20, marginBottom: 10 }}>Seleccione los artículos para comprar:</Text>
       <FlatList
         data={articulos}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.id_producto.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => handleSeleccionarArticulo(item.item)}
+            onPress={() => handleSeleccionarArticulo(item.nombre_producto, item.precio)}
             style={styles.botonProductoComprarPage}
           >
-            <Text>{item.item}</Text>
+            <Text>{item.nombre_producto} - ${item.precio.toFixed(2)}</Text>
           </TouchableOpacity>
         )}
       />
@@ -75,7 +90,7 @@ const ComprarPage: React.FC = () => {
             renderItem={({ item }) => (
               <View style={styles.carritoItemComprarPage}>
                 <Text style={styles.textoCarritoComprarPage}>
-                  {item.item} - {item.cantidad} {item.cantidad > 1 ? 'unidades' : 'unidad'}
+                  {item.item} - {item.cantidad} {item.cantidad > 1 ? 'unidades' : 'unidad'} - ${item.precio.toFixed(2)} c/u
                 </Text>
                 <TouchableOpacity
                   onPress={() => handleEliminarArticulo(item.item)}
