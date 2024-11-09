@@ -54,6 +54,7 @@ const id= useSelector((state: RootState) => state.user.id);
     cantidad_stock: cantidad,
     id_proveedor:id ,
     tags: tags[0], 
+    foto:"",
     precio: precio
 
   };
