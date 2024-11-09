@@ -4,11 +4,19 @@ import { useRouter } from 'expo-router';
 import styles from './styles';
 import { useSelector } from 'react-redux';
 
+interface RootState {
+  user: {
+    email: string;
+    name: string;
+    id: number;  // Aquí debes usar 'number' en lugar de 'int' en TypeScript
+  };
+}
+
 
 
 const ClientePage = () => {
   const router = useRouter();
-
+  const nombre = useSelector((state: RootState) => state.user.name);
   const handleComprar = () => {
     router.push('../comprarPage');
   };
