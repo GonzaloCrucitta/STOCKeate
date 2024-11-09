@@ -1,42 +1,59 @@
 import React, { useState } from 'react';
 import { Text, View, Pressable, Image, TextInput, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Provider, useDispatch, useSelector } from 'react-redux';
-import store, { setId, setName } from './redux/store'; // Importar el store
+import { Provider, useDispatch } from 'react-redux';
+import store, { setId, setName, setEmail } from './redux/store';
 import styles from './styles';
-import { setEmail } from './redux/store'; // Importar la acción
 
 function AppComponent() {
   const [showLoginFields, setShowLoginFields] = useState(false);
   const [email, setEmailLocal] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter(); 
-  const dispatch = useDispatch(); // Para despachar acciones
+  const dispatch = useDispatch();
 
-  // Función para guardar el email en Redux
   const handleLogin = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/provedores/email/${email}`);
-      if (response.status === 404) {
-        Alert.alert('Email no encontrado', 'El email ingresado no está registrado.');
-      } else if (response.ok) {
+      // Intentar verificar el usuario como "Proveedor"
+      let response = await fetch(`http://localhost:4000/provedores/email/${email}`);
+      if (response.status === 200) {
         const proveedor = await response.json();
-
         if (proveedor.contrasenia === password) {
-          // Guardar el email en el estado global con Redux
           dispatch(setEmail(proveedor.email));
           dispatch(setName(proveedor.nombre));
           dispatch(setId(proveedor.id_proveedor));
-          console.log("nombre:  ",proveedor.email , " mail: ",proveedor.nombre, "id: ", proveedor.id_proveedor)
-          
+          console.log("Proveedor - nombre: ", proveedor.nombre, " email: ", proveedor.email, " id: ", proveedor.id_proveedor);
+
           // Redirigir a la pantalla principal de proveedores
           router.push(`/main_providers`);
+          return;
         } else {
           Alert.alert('Contraseña incorrecta', 'La contraseña ingresada es incorrecta.');
+          return;
         }
-      } else {
-        Alert.alert('Error', 'Hubo un problema al verificar el email.');
       }
+
+      // Si no es un proveedor, intentar verificar como "Cliente"
+      response = await fetch(`http://localhost:4000/cliente/buscar/email/${email}`);
+      if (response.status === 200) {
+        const cliente = await response.json();
+        if (cliente.contrasena === password) {
+          dispatch(setEmail(cliente.email));
+          dispatch(setName(cliente.nombre));
+          dispatch(setId(cliente.id_cliente));
+          console.log("Cliente - nombre: ", cliente.nombre, " email: ", cliente.email, " id: ", cliente.id_cliente);
+
+          // Redirigir a la pantalla principal de clientes
+          router.push(`/cliente`);
+          return;
+        } else {
+          Alert.alert('Contraseña incorrecta', 'La contraseña ingresada es incorrecta.');
+          return;
+        }
+      }
+
+      // Si no se encontró como proveedor ni cliente, mostrar alerta
+      Alert.alert('Email no encontrado', 'El email ingresado no está registrado.');
     } catch (error) {
       Alert.alert('Error', 'No se pudo conectar al servidor.');
       console.error('Error al verificar el email:', error);
@@ -49,10 +66,10 @@ function AppComponent() {
         <Pressable>
           <Image
             source={require('../../components/logo.png')}
-            style={[styles.logoImage]}
+            style={styles.logoImage}
           />
         </Pressable>
-        <Text style={[styles.logoText]}>Stockeate</Text>
+        <Text style={styles.logoText}>Stockeate</Text>
       </View>
 
       <View style={styles.buttonContainer}>
@@ -87,8 +104,7 @@ function AppComponent() {
           </View>
         )}
 
-        <Pressable style={styles.linkButton}
-          onPress={() => router.push('../registrar')}>
+        <Pressable style={styles.linkButton} onPress={() => router.push('../registrar')}>
           <Text style={styles.linkText}>Registrarse</Text>
         </Pressable>
       </View>
@@ -98,7 +114,7 @@ function AppComponent() {
 
 export default function App() {
   return (
-    <Provider store={store}> {/* Proveedor de Redux */}
+    <Provider store={store}>
       <AppComponent />
     </Provider>
   );
