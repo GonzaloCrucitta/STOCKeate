@@ -26,7 +26,24 @@ export default function PerfilPage() {
   useEffect(() => {getUri()}, []);
 
   async function getUri() {
-    const serverUri = 'https://n89crwvh-4000.brs.devtunnels.ms/foto/download/archivo-20241012_221457.png';
+    try {
+      const response = await   fetch("http://localhost:4000/provedores/"+id, {
+        method: 'GET',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+          
+      });
+      if (!response.ok) {
+        throw new Error('No hay respuesta del servidor al pedir foto');
+      }
+      const usuario = await response.json();
+      var uri_foto=usuario.foto;
+    } catch (error) {
+      console.error('Error al obtener foto:', error);
+  }
+    console.log('uri del usuario:'+uri_foto)
+    const serverUri = 'http://localhost:4000/foto/download/'+uri_foto;
     try {
       const response = await fetch(serverUri);
       if (response.ok) {
@@ -44,15 +61,6 @@ export default function PerfilPage() {
     console.log("Rol: "+role);
     router.push('/');
   }
-
-  //const [foto,setFoto]=useState(null);
-  //const [id,setId]=useState(0)
-  
- /*  useEffect(() => {
-    fetch('https://n89crwvh-4000.brs.devtunnels.ms/foto/download')
-    .then(response=> response.json())
-    .then(data => setData(data));
-  }) */
 
 
   return (

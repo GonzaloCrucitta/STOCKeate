@@ -1,5 +1,5 @@
 import React from 'react';
-import { Provider, useSelector } from 'react-redux'; // Importar el Provider de Redux
+import { Provider } from 'react-redux'; // Importar el Provider de Redux
 import { Tabs } from 'expo-router'; // Importar el componente Tabs de expo-router
 import store from './redux/store'; // Importar el store de Redux
 import FontAwesome from '@expo/vector-icons/FontAwesome'; 
@@ -7,20 +7,6 @@ import { Pressable, Image, Text } from 'react-native';
 import { router } from 'expo-router'; // Para la navegación
 
 export default function TabLayout() {
-  interface RootState {
-    user: {
-      role: string;
-    };
-  }
-  const role= useSelector((state: RootState) => state.user.role);
-  function botonVolver(){
-    if (role==="Proveedor"){
-      router.push("./main_providers")
-    }
-    else{
-      router.push("./cliente")
-    }
-  }
   return (
     <Provider store={store}>
 
@@ -71,7 +57,7 @@ export default function TabLayout() {
             href: null,
             tabBarStyle: { display: 'none' },
             headerRight: () => (
-              <Pressable onPress={() => botonVolver()} 
+              <Pressable onPress={() => router.push('../main_providers')} 
                 style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
                 <FontAwesome size={28} name="reply" />
               </Pressable>

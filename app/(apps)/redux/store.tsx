@@ -7,7 +7,8 @@ const userSlice = createSlice({
     email: '',
     name: '',
     id: '',
-    role:''
+    role:'',
+    urifoto:''
   },
   reducers: {
     setEmail: (state, action: PayloadAction<string>) => {
