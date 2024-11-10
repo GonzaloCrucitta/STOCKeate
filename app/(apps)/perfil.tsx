@@ -9,6 +9,7 @@ interface RootState {
     email: string;
     name: string;
     id: number;  // Aquí debes usar 'number' en lugar de 'int' en TypeScript
+    role: string;
   };
 }
 
@@ -34,6 +35,7 @@ export default function PerfilPage() {
       setImageUri(defaultUri);
     }
   }
+  
   //const [foto,setFoto]=useState(null);
   //const [id,setId]=useState(0)
   

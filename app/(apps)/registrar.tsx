@@ -141,7 +141,7 @@ export default function App() {
 
       const newCliente = await response.json();
       console.log('Cliente creado', newCliente);
-      router.push('/main_clients');
+      router.push('/cliente');
       handleLogin();
     } catch (error) {
       console.error('Error al crear el cliente:', error);

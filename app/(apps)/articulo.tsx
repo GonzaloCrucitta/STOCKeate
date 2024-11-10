@@ -15,10 +15,9 @@ const ArticuloProveedor = () => {
   const [cantidad, setCantidad] = useState(10);
   const [precio, setPrecio] = useState(10);
   const [descripcion, setDescripcion] = useState('Descripción del producto');
-  const [imagenes, setImagenes] = useState([
-    require('../../components/producto.png'),
-    require('../../components/producto.png')//aca estarian todas las imagenes del producto
-  ]);
+  const [imagen, setImagen] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);  // Estado de carga de animacion
+
   
 interface RootState {
   user: {
@@ -29,8 +28,7 @@ interface RootState {
 }
 const id= useSelector((state: RootState) => state.user.id);
   //imagepicker
-  //const [image, setImage] = useState<string | null>(null);
-  const pickImage = async () => {
+  const agregarImagen = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -41,9 +39,8 @@ const id= useSelector((state: RootState) => state.user.id);
       console.log(result);
 
       if (!result.canceled) {
-        return result.assets[0].uri;
+        setImagen(result.assets[0].uri)
       }
-      return null;
     };
 
   const newProducto = {
@@ -61,6 +58,7 @@ const id= useSelector((state: RootState) => state.user.id);
 
 
   async function crearArticulo(producto: any) {
+    setIsLoading(true);
     try {
       const response = await   fetch("http://localhost:4000/productos", {
       method: 'POST',
@@ -77,9 +75,11 @@ const id= useSelector((state: RootState) => state.user.id);
       
       const newProducto = await response.json();
       console.log('Producto creado', newProducto);
+      router.push('./stock')
       } catch (error) {
         console.error('Error al crear el producto:', error);
         console.error('producto:',producto);
+        setIsLoading(true);//por si tira error, se puede volver a intentar
       }
       }
      
@@ -93,16 +93,9 @@ const id= useSelector((state: RootState) => state.user.id);
   const [showTags, setShowTags] = useState(false);
   const [tag, setTag] = useState('');
 
-  // Función para agregar y eliminar una imagen
-  const agregarImagen = async () => {
-    const nuevaImagen = await pickImage(); // Obtiene la imagen seleccionada directamente
-    if (nuevaImagen) {
-        setImagenes([...imagenes, { uri: nuevaImagen }]); // Agrega la imagen seleccionada
-    }
-  };
+  
   const eliminarImagen = (index: number) => {
-    const nuevasImagenes = imagenes.filter((_, i) => i !== index);
-    setImagenes(nuevasImagenes);
+    setImagen(null);
   };
 
   const eliminarTag = (index: number) => {
@@ -136,27 +129,11 @@ const id= useSelector((state: RootState) => state.user.id);
         renderItem={({ item,index }) => (
           <Pressable onLongPress={() => eliminarTag(index)}>
           <Text style={styles.tag}>{item}</Text>
-          {/* <Image source={item} style={styles.image_articulo} /> */}
         </Pressable> 
         )}
-        /* 
-         renderItem={({ item,index }) => (
-          <Pressable onLongPress={() => eliminarImagen(index)}>
-            <Image source={item} style={styles.image_articulo} />
-          </Pressable> 
-        )}
-
-         */
         keyExtractor={(item, index) => index.toString()}
       />
 
-      {/* 
-      
-      <Pressable onLongPress={() => eliminarImagen(index)}>
-            <Image source={item} style={styles.image_articulo} />
-          </Pressable> 
-      
-      */}
       {/* Opción para agregar un nuevo tag */}
       {!showTags &&
       <Pressable style={styles.pressableButton} 
@@ -203,7 +180,6 @@ const id= useSelector((state: RootState) => state.user.id);
           }
         }}
       
-        //onChangeText={(value) => setPrecio(parseFloat(value))}
       />
 
       {/* Descripción */}
@@ -215,25 +191,20 @@ const id= useSelector((state: RootState) => state.user.id);
         onChangeText={setDescripcion}
       />
 
-      {/* Imágenes del producto */}
-      <Text style={styles.stock}>Imágenes del producto (Mantene para borrar):</Text>
-      <FlatList
-        horizontal
-        data={imagenes}
-        renderItem={({ item,index }) => (
-          <Pressable onLongPress={() => eliminarImagen(index)}>
-            <Image source={item} style={styles.image_articulo} />
-          </Pressable> 
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
+      {/* Imágen del producto */}
+      <Text style={styles.stock}>Imágen del producto (Mantene para borrar):</Text>
+      {imagen && (
+        <Pressable onLongPress={() => setImagen(null)}>
+          <Image source={{ uri: imagen }} style={styles.image_articulo} />
+        </Pressable>
+      )}
         
       <Pressable style={styles.pressableButton} onPress={() => agregarImagen()}>
                 <Text style={styles.buttonText}>Seleccionar imagen</Text>
       </Pressable>
       
 
-      <Pressable style={styles.pressableButton} onPress={() => crearArticulo(newProducto)}>
+      <Pressable style={styles.pressableButton} onPress={() => crearArticulo(newProducto)} disabled={isLoading}>
                 <Text style={styles.buttonText}>Confirmar</Text>
         </Pressable>
     </ScrollView>
