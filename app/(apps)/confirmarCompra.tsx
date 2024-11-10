@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router'; 
+import { View, TextInput, Button, Text, ScrollView, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useSelector } from 'react-redux';
 import styles from './styles';
 
 const ConfirmarCompra: React.FC = () => {
@@ -10,20 +11,49 @@ const ConfirmarCompra: React.FC = () => {
   const [mensajeConfirmacion, setMensajeConfirmacion] = useState('');
   const router = useRouter();
 
-  const handleProcesarCompra = () => {
+  // Obtener id_cliente y carrito de Redux
+  const id_cliente = useSelector((state: any) => state.user.id);
+  const carrito = useSelector((state: any) => state.carrito.items);
+
+  // Función para procesar la compra y enviar el pedido al servidor
+  const handleProcesarCompra = async () => {
     if (!numeroTarjeta || !fechaVencimiento || !cvv) {
-      alert('Por favor ingresa todos los datos de la tarjeta.');
+      Alert.alert('Error', 'Por favor ingresa todos los datos de la tarjeta.');
       return;
     }
 
+    try {
+      // Crear el formato de productos para el pedido
+      const productos = carrito.map((producto: any) => ({
+        id_producto: producto.id_producto,
+        cantidad: producto.cantidad,
+      }));
 
-    setTimeout(() => {
-      setMensajeConfirmacion('¡Su pedido ha sido Enviado!');
-    }, 2000); 
+      const response = await fetch('http://localhost:4000/crearpedidos/crear', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id_cliente,
+          productos,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setMensajeConfirmacion('¡Su pedido ha sido enviado!');
+      } else {
+        Alert.alert('Error', data.error || 'Error al procesar el pedido');
+      }
+    } catch (error) {
+      console.error('Error al procesar la compra:', error);
+      Alert.alert('Error', 'No se pudo conectar con el servidor.');
+    }
   };
 
   const handleVolver = () => {
-    router.back(); 
+    router.back();
   };
 
   return (
@@ -57,7 +87,6 @@ const ConfirmarCompra: React.FC = () => {
         <Button title="Procesar Compra" onPress={handleProcesarCompra} />
       </View>
 
-    
       {mensajeConfirmacion && (
         <View style={{ marginTop: 20 }}>
           <Text style={{ fontSize: 18, color: 'green' }}>{mensajeConfirmacion}</Text>
