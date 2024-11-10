@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, Pressable } from 'react-native';
 import styles from './styles';
 import { router } from 'expo-router';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { vaciar } from './redux/store';
 
 interface RootState {
   user: {
@@ -18,6 +19,8 @@ export default function PerfilPage() {
   const email = useSelector((state: RootState) => state.user.email);
   const nombre = useSelector((state: RootState) => state.user.name);
   const id= useSelector((state: RootState) => state.user.id);
+  const role= useSelector((state: RootState) => state.user.role);
+  const dispatch = useDispatch();
   const defaultUri = '../../components/perfil.png'; // URI de imagen por defecto
   const [imageUri, setImageUri] = useState('');
   useEffect(() => {getUri()}, []);
@@ -36,6 +39,12 @@ export default function PerfilPage() {
     }
   }
   
+  function salir(){
+    dispatch(vaciar());
+    console.log("Rol: "+role);
+    router.push('/');
+  }
+
   //const [foto,setFoto]=useState(null);
   //const [id,setId]=useState(0)
   
@@ -63,7 +72,7 @@ export default function PerfilPage() {
       
 
       {/* Botón de cerrar sesión */}
-      <Pressable style={styles.pressableButton} onPress={() => router.push('../')}>
+      <Pressable style={styles.pressableButton} onPress={() => salir() }>
         <Text style={styles.buttonText}>Cerrar Sesión</Text>
       </Pressable>
     </View>

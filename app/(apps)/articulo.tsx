@@ -93,11 +93,6 @@ const id= useSelector((state: RootState) => state.user.id);
   const [showTags, setShowTags] = useState(false);
   const [tag, setTag] = useState('');
 
-  
-  const eliminarImagen = (index: number) => {
-    setImagen(null);
-  };
-
   const eliminarTag = (index: number) => {
     const nuevosTags = tags.filter((_, i) => i !== index);
     setTags(nuevosTags);

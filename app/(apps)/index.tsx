@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, View, Pressable, Image, TextInput, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Provider, useDispatch } from 'react-redux';
-import store, { setId, setName, setEmail } from './redux/store';
+import store, { setId, setName, setEmail, setRole } from './redux/store';
 import styles from './styles';
 
 function AppComponent() {
@@ -22,6 +22,7 @@ function AppComponent() {
           dispatch(setEmail(proveedor.email));
           dispatch(setName(proveedor.nombre));
           dispatch(setId(proveedor.id_proveedor));
+          dispatch(setRole("Proveedor"));
           console.log("Proveedor - nombre: ", proveedor.nombre, " email: ", proveedor.email, " id: ", proveedor.id_proveedor);
 
           // Redirigir a la pantalla principal de proveedores
@@ -41,6 +42,7 @@ function AppComponent() {
           dispatch(setEmail(cliente.email));
           dispatch(setName(cliente.nombre));
           dispatch(setId(cliente.id_cliente));
+          dispatch(setRole("Cliente"));
           console.log("Cliente - nombre: ", cliente.nombre, " email: ", cliente.email, " id: ", cliente.id_cliente);
 
           // Redirigir a la pantalla principal de clientes
