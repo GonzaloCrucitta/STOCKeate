@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import { useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 
+
 const ArticuloProveedor = () => {
   // Estados para manejar los datos del artículo
   const [nombre, setNombre] = useState('Nombre del producto');
@@ -16,73 +17,104 @@ const ArticuloProveedor = () => {
   const [precio, setPrecio] = useState(10);
   const [descripcion, setDescripcion] = useState('Descripción del producto');
   const [imagen, setImagen] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);  // Estado de carga de animacion
-
+  const [isLoading, setIsLoading] = useState(false); // Estado de carga de animación
   
-interface RootState {
-  user: {
-    email: string;
-    name: string;
-    id: number;  // Aquí debes usar 'number' en lugar de 'int' en TypeScript
-  };
-}
-const id= useSelector((state: RootState) => state.user.id);
-  //imagepicker
+  const router = useRouter();
+
+  interface RootState {
+    user: {
+      email: string;
+      name: string;
+      id: number;
+    };
+  }
+
+  const id = useSelector((state: RootState) => state.user.id); // ID del proveedor
+
+  // Función para seleccionar la imagen
   const agregarImagen = async () => {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
-      console.log(result);
 
-      if (!result.canceled) {
-        setImagen(result.assets[0].uri)
-      }
-    };
-
-  const newProducto = {
-
-    nombre_producto: nombre,
-    codigo_barras: codigoBarras,
-    descripcion: descripcion,
-    cantidad_stock: cantidad,
-    id_proveedor:id ,
-    tags: tags[0], 
-    foto:"",
-    precio: precio
-
+    if (!result.canceled) {
+      setImagen(result.assets[0].uri);
+    }
   };
 
-
-  async function crearArticulo(producto: any) {
+  // Función para crear el producto
+  const crearArticulo = async () => {
     setIsLoading(true);
-    try {
-      const response = await   fetch("http://localhost:4000/productos", {
-      method: 'POST',
-      headers: {
-      'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(producto),
-     
+
+    // Si hay una imagen, la subimos al servidor
+    let imagenUrl = '';
+    if (imagen) {
+      const formData = new FormData();
+      formData.append('archivo', {
+        uri: imagen,
+        type: 'image/jpeg', // O el tipo correcto de la imagen
+        name: 'image.jpg',
       });
-     
-      if (!response.ok) {
-        throw new Error('Failed to upload product');
-      }
-      
-      const newProducto = await response.json();
-      console.log('Producto creado', newProducto);
-      router.push('./stock')
+
+      // Subimos la imagen al servidor
+      try {
+        const imagenResponse = await fetch('http://localhost:4000/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const imagenData = await imagenResponse.json();
+        imagenUrl = imagenData.rutaArchivo; // Obtenemos la ruta de la imagen
+
+        if (!imagenResponse.ok) {
+          throw new Error('No se pudo subir la imagen');
+        }
       } catch (error) {
-        console.error('Error al crear el producto:', error);
-        console.error('producto:',producto);
-        setIsLoading(true);//por si tira error, se puede volver a intentar
+        console.error('Error al subir la imagen:', error);
+        setIsLoading(false);
+        return; // Salimos si no se pudo subir la imagen
       }
+    }
+
+    // Ahora creamos el producto con la ruta de la imagen
+    const newProducto = {
+      nombre_producto: nombre,
+      codigo_barras: codigoBarras,
+      descripcion: descripcion,
+      cantidad_stock: cantidad,
+      id_proveedor: id,
+      tags: tags[0], // Solo agregamos el primer tag, puedes modificar esto según tus necesidades
+      foto: imagenUrl, // Ruta de la imagen que subimos
+      precio: precio,
+    };
+
+    // Enviamos los datos del producto al servidor
+    try {
+      const response = await fetch('http://localhost:4000/productos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProducto),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al crear el producto');
       }
-     
+
+      const createdProducto = await response.json();
+      console.log('Producto creado', createdProducto);
+
+      router.push('./stock'); // Redirigimos a la página de stock
+
+    } catch (error) {
+      console.error('Error al crear el producto:', error);
+      setIsLoading(false); // Detenemos la carga si hubo un error
+    }
+  };
 
   // Función para agregar un nuevo tag
   const agregarTag = (nuevoTag: string) => {
