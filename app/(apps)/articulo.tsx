@@ -100,7 +100,7 @@ const ArticuloProveedor = () => {
       id_proveedor: id,
       precio: Number(precio)*1.2,
       tags: tags[0], // Solo agregamos el primer tag, puedes modificar esto según tus necesidades
-      foto: imagenUrl, // Ruta de la imagen que subimos
+      foto: imagenUrl.split('\\').pop(), // Ruta de la imagen que subimos
       preciocompra: Number(precio),
     };
 

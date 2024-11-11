@@ -1,104 +1,71 @@
-import React, { useState } from 'react';
-import { FlatList, Text, View, Pressable, TextInput, Modal, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Text, View, Pressable, TextInput, Modal, TouchableOpacity, Alert } from 'react-native';
 import styles from './styles';
 import { router } from 'expo-router';
+import { useSelector } from 'react-redux';
 
 const Saliente = () => {
-  const [data, setData] = useState([
-    { CodigoBarras: '1', titulo: 'mate', stock: 10, cantidadVender: 0, precio: 100 },
-    { CodigoBarras: '2', titulo: 'café', stock: 5, cantidadVender: 0, precio: 150 },
-    { CodigoBarras: '3', titulo: 'harina', stock: 8, cantidadVender: 0, precio: 50 },
-    { CodigoBarras: '4', titulo: 'palmito', stock: 2, cantidadVender: 0, precio: 200 },
-    { CodigoBarras: '5', titulo: 'yerba', stock: 20, cantidadVender: 0, precio: 120 },
-    { CodigoBarras: '6', titulo: 'mermelada', stock: 8, cantidadVender: 0, precio: 80 },
-    { CodigoBarras: '7', titulo: 'cacao', stock: 3, cantidadVender: 0, precio: 90 },
-    { CodigoBarras: '8', titulo: 'picadillo', stock: 22, cantidadVender: 0, precio: 60 },
-    { CodigoBarras: '9', titulo: 'pate', stock: 3, cantidadVender: 0, precio: 110 },
-  ]);
+  const [articulos, setArticulos] = useState<{ id_producto: number, nombre_producto: string, precio: number, cantidad_stock: number, cantidad_vender:0 }[]>([]);
+  function productosSeleccionados(){
+    return articulos.filter((item)=>{item.cantidad_vender>0?item:null})
+  }
+  useEffect(() => {
+    const obtenerProductos = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/productos/provedor/'+id);
+        if (response.ok) {
+          const productos = await response.json();
+          setArticulos(productos);
+        } else {
+          Alert.alert('Error', 'No se pudieron obtener los productos.');
+        }
+      } catch (error) {
+        console.error('Error al obtener los productos:', error);
+        Alert.alert('Error', 'Hubo un problema al conectar con el servidor.');
+      }
+    };
 
-  const [clientes] = useState([
-    { id: '1', name: 'Proveedor A' },
-    { id: '2', name: 'Proveedor B' },
-    { id: '3', name: 'Proveedor No habitual' },
-  ]);
+    obtenerProductos();
+  }, []);
+  interface RootState {
+    user: {
+      email: string;
+      name: string;
+      id: number;  // Aquí debes usar 'number' en lugar de 'int' en TypeScript
+      role: string;
+    };
+  }
 
-  const [selectedClient, setSelectedClient] = useState(clientes[2]); // Cliente por defecto
-  const [modalVisible, setModalVisible] = useState(false); // Control del Modal
+  const id= useSelector((state: RootState) => state.user.id);
 
-  const productosSeleccionados = data.filter(item => item.cantidadVender > 0);
+
+  //const productosSeleccionados = data.filter(item => item.cantidadVender > 0);
+
+
 
   return (
     <View style={styles.container}>
 
-      <Text style={styles.label}>Seleccionar Proovedor:</Text>
-      <Pressable
-        style={styles.clientButton}
-        onPress={() => setModalVisible(true)}
-      >
-        <Text style={styles.buttonText}>{selectedClient.name}</Text>
-      </Pressable>
-
-      {/* Modal para seleccionar cliente */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Selecciona un cliente</Text>
-            {clientes.map(cliente => (
-              <TouchableOpacity
-                key={cliente.id}
-                style={styles.modalItem}
-                onPress={() => {
-                  setSelectedClient(cliente);
-                  setModalVisible(false); // Cerrar el modal
-                }}
-              >
-                <Text style={styles.modalText}>{cliente.name}</Text>
-              </TouchableOpacity>
-            ))}
-            <Pressable
-              style={styles.closeButton}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.buttonText}>Cerrar</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-
       {/* Listado de productos */}
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={data}
+        data={articulos}
         renderItem={({ item }) => (
           <View style={styles.itemContainer}>
-            <Text style={styles.text}>{item.titulo}</Text>
-            <Text style={styles.stock}>{item.stock} en stock</Text>
+            <Text style={styles.text}>{item.nombre_producto}</Text>
+            <Text style={styles.stock}>{item.cantidad_stock} en stock</Text>
             
             {/* Entrada para la cantidad a vender */}
             <TextInput
               style={styles.input}
               keyboardType="numeric"
               placeholder="Cantidad a vender"
-              value={item.cantidadVender.toString()}
-              onChangeText={(value) => {
-                const cantidad = parseInt(value);
-                setData(prevData =>
-                  prevData.map(producto =>
-                    producto.CodigoBarras === item.CodigoBarras
-                      ? { ...producto, cantidadVender: isNaN(cantidad) ? 0 : cantidad }
-                      : producto
-                  )
-                );
-              }}
+              value={item.cantidad_vender ? item.cantidad_vender : '0'}
+              
             />
           </View>
         )}
-        keyExtractor={(item) => item.CodigoBarras}
+        keyExtractor={(item) => item.id_producto.toString()}
         style={styles.flatList}
       />
 
@@ -109,8 +76,7 @@ const Saliente = () => {
           router.push({
             pathname: '../resumenSaliente',
             params: { 
-              productosSeleccionados: JSON.stringify(productosSeleccionados),
-              clienteSeleccionado: JSON.stringify(selectedClient)
+              productosSeleccionados: JSON.stringify(productosSeleccionados()),
             }
           });
         }}
@@ -121,7 +87,7 @@ const Saliente = () => {
       {/* Botón para volver */}
       <Pressable
         style={styles.backButton}
-        onPress={() => router.push('../main_providers')}
+        onPress={() => router.push('./')}
       >
         <Text style={styles.buttonText}>Volver</Text>
       </Pressable>
