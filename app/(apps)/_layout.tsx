@@ -75,7 +75,18 @@ export default function TabLayout() {
           />
         <Tabs.Screen
           name="stock"
-          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+          options={{
+            title: 'stock',
+            href: null,
+            tabBarStyle: { display: 'none' },
+            headerRight: () => (
+              <Pressable onPress={() => router.push('../main_providers')} 
+                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
+                <FontAwesome size={28} name="reply" />
+              </Pressable>
+            ),
+          }}
+          
           />
         <Tabs.Screen
           name="articulo"
