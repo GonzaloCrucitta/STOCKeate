@@ -18,6 +18,9 @@ const ClientePage = () => {
   const handleComprar = () => {
     router.push('../comprarPage');
   };
+  const handleVerEstadoPedido = () => {
+    router.push('../estadoPedidoCliente');
+  };
 
   return (
     <View style={styles.container}>
@@ -25,6 +28,7 @@ const ClientePage = () => {
       </Text>
 
       <Button title="Ir a la Compra" onPress={handleComprar} />
+      <Button title="Ver Estado del Pedido" onPress={handleVerEstadoPedido} />
     </View>
   );
 };
