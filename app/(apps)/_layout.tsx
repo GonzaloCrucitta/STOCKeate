@@ -79,15 +79,15 @@ export default function TabLayout() {
             title: 'Conteo inventario',
             href: null,
             tabBarStyle: { display: 'none' },
-            headerLeft: () => (
+            headerRight: () => (
               <Pressable onPress={() => router.push('../main_providers')} 
-                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
+                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 15 }}>
                 <FontAwesome size={28} name="reply" />
               </Pressable>
             ),
-            headerRight: () => (
+            headerLeft: () => (
               <Pressable onPress={() => router.push('../articulo')} 
-                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
+                style={{ width: 30, height: 30, borderRadius: 15, marginLeft: 15 }}>
                 <FontAwesome size={28} name='plus' />
               </Pressable>
             ),
