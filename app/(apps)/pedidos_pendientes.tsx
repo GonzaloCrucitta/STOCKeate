@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Pressable } from 'react-native';
+import React, { useEffect, useState } from 'react'; 
+import { View, Text, FlatList, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Pressable, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
-import styles from './styles';
 import { router } from 'expo-router';
 
 interface RootState {
@@ -40,6 +39,34 @@ export default function PendingOrdersPage() {
         fetchPendingOrders();
     }, [providerId]);
 
+    const handleChangeOrderStatus = async (idDetallePedido: number, newStatus: string) => {
+        try {
+            const response = await fetch(`http://localhost:4000/crearpedidos/actualizar-estado-detalle/${idDetallePedido}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ estado_proveedor: newStatus }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al actualizar el estado del pedido');
+            }
+
+            const updatedOrder = await response.json();
+            // Actualizar el estado del pedido localmente
+            setOrders(prevOrders => 
+                prevOrders.map(order => 
+                    order.id_detalle_pedido === idDetallePedido 
+                    ? { ...order, estado_proveedor: newStatus }
+                    : order
+                )
+            );
+        } catch (error) {
+            console.error("Error updating order status:", error);
+        }
+    };
+
     return (
         <KeyboardAvoidingView
             style={styles.container_pedidos_pendientes}
@@ -54,7 +81,7 @@ export default function PendingOrdersPage() {
                     <View style={styles.pendingOrdersSection}>
                         <FlatList
                             data={orders}
-                            keyExtractor={(item) => item.id_detalle_pedido ? item.id_detalle_pedido.toString() : '0'}
+                            keyExtractor={(item) => item.id_detalle_pedido.toString()}
                             renderItem={({ item }) => (
                                 <View style={styles.orderItem_pedidos_pendientes}>
                                     <Text style={styles.orderText}>
@@ -69,6 +96,24 @@ export default function PendingOrdersPage() {
                                     <Text style={styles.orderText}>
                                         Estado: {item.estado_proveedor}
                                     </Text>
+
+                                    {/* Botones de Aceptar y Rechazar */}
+                                    {item.estado_proveedor === 'pendiente' && (
+                                        <View style={styles.buttonsContainer}>
+                                            <Pressable
+                                                style={styles.acceptButton}
+                                                onPress={() => handleChangeOrderStatus(item.id_detalle_pedido, 'aceptado')}
+                                            >
+                                                <Text style={styles.buttonText}>Aceptar</Text>
+                                            </Pressable>
+                                            <Pressable
+                                                style={styles.rejectButton}
+                                                onPress={() => handleChangeOrderStatus(item.id_detalle_pedido, 'rechazado')}
+                                            >
+                                                <Text style={styles.buttonText}>Rechazar</Text>
+                                            </Pressable>
+                                        </View>
+                                    )}
                                 </View>
                             )}
                         />
@@ -86,3 +131,67 @@ export default function PendingOrdersPage() {
         </KeyboardAvoidingView>
     );
 }
+
+// Estilos adicionales para los botones
+const styles = StyleSheet.create({
+    container_pedidos_pendientes: {
+        flex: 1,
+        padding: 20,
+        backgroundColor: '#f5f5f5',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    pendingOrdersSection: {
+        marginBottom: 20,
+    },
+    orderItem_pedidos_pendientes: {
+        backgroundColor: '#fff',
+        padding: 15,
+        marginBottom: 10,
+        borderRadius: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    orderText: {
+        fontSize: 16,
+        marginBottom: 5,
+    },
+    buttonsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 10,
+    },
+    acceptButton: {
+        backgroundColor: 'green',
+        padding: 10,
+        borderRadius: 5,
+        flex: 1,
+        marginRight: 5,
+        alignItems: 'center',
+    },
+    rejectButton: {
+        backgroundColor: 'red',
+        padding: 10,
+        borderRadius: 5,
+        flex: 1,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+    },
+    backButton_Pedidos_Pendientes: {
+        marginTop: 20,
+        backgroundColor: '#007bff',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+});
