@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator, StyleSheet, Button } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, StyleSheet, Button, Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
+import { router } from 'expo-router';
 
 interface RootState {
   user: {
@@ -40,7 +41,7 @@ const OrderPage = () => {
   const idCliente = useSelector((state: RootState) => state.user.id);
 
   const fetchPedidos = async () => {
-    setLoading(true); // Muestra el indicador de carga mientras se actualizan los pedidos
+    setLoading(true);
     try {
       const response = await fetch(`http://localhost:4000/crearpedidos/estado-pedido-cliente/${idCliente}`);
       if (!response.ok) {
@@ -48,17 +49,17 @@ const OrderPage = () => {
       }
       const data = await response.json();
       setPedidos(data);
-      setError(null); // Limpia el error en caso de éxito
+      setError(null);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Error desconocido');
       console.error("Error fetching orders:", error);
     } finally {
-      setLoading(false); // Oculta el indicador de carga al finalizar
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPedidos(); // Llama a fetchPedidos al cargar la pantalla
+    fetchPedidos();
   }, [idCliente]);
 
   if (loading) {
@@ -73,8 +74,15 @@ const OrderPage = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Estado de Pedidos</Text>
       
-      {/* Botón para actualizar manualmente */}
       <Button title="Actualizar pedidos" onPress={fetchPedidos} color="#007bff" />
+
+      {/* Botón estilizado para "Volver" */}
+      <Pressable
+        style={styles.backButton}
+        onPress={() => router.push('../cliente')}
+      >
+        <Text style={styles.backButtonText}>Volver</Text>
+      </Pressable>
 
       <FlatList
         data={pedidos}
@@ -131,6 +139,20 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 18,
     marginTop: 20,
+  },
+  backButton: {
+    marginTop: 20,
+    backgroundColor: '#007bff',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  backButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

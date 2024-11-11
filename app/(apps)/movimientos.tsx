@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'; 
-import { View, Text, FlatList, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Pressable, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Pressable, StyleSheet, Button } from 'react-native';
 import { useSelector } from 'react-redux';
 import { router } from 'expo-router';
 
@@ -24,42 +24,43 @@ export default function ProductSummaryPage() {
     // Obtener ID del proveedor desde el store
     const providerId = useSelector((state: RootState) => state.user.id);
 
-    useEffect(() => {
-        const fetchProductosResumen = async () => {
-            try {
-                const response = await fetch(`http://localhost:4000/resumen/ingresos-y-gastos/${providerId}`);
-                
-                if (!response.ok) {
-                    throw new Error('Error al obtener el resumen de productos');
-                }
-
-                const data = await response.json();
-                setProductos(data);
-
-                // Calcular totales (ventas, costos, ganancia)
-                const totals = data.reduce((acc: any, producto: any) => {
-                    const ganancia = producto.ingresos - producto.costos;  // Calculamos ganancia como ingresos - costos
-
-                    acc.totalCantidadVendida += producto.cantidadVendida;
-                    acc.totalVentas += producto.ingresos;
-                    acc.totalCostos += producto.costos;
-                    acc.totalGanancia += ganancia; // Aquí usamos la ganancia calculada
-                    return acc;
-                }, {
-                    totalVentas: 0,
-                    totalCostos: 0,
-                    totalGanancia: 0,
-                    totalCantidadVendida: 0,
-                });
-                setTotals(totals);
-            } catch (error) {
-                console.error("Error fetching product summary:", error);
-            } finally {
-                setLoading(false);
+    const fetchProductosResumen = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`http://localhost:4000/resumen/ingresos-y-gastos/${providerId}`);
+            
+            if (!response.ok) {
+                throw new Error('Error al obtener el resumen de productos');
             }
-        };
 
-        fetchProductosResumen();
+            const data = await response.json();
+            setProductos(data);
+
+            // Calcular totales (ventas, costos, ganancia)
+            const totals = data.reduce((acc: any, producto: any) => {
+                const ganancia = producto.ingresos - producto.costos;
+
+                acc.totalCantidadVendida += producto.cantidadVendida;
+                acc.totalVentas += producto.ingresos;
+                acc.totalCostos += producto.costos;
+                acc.totalGanancia += ganancia;
+                return acc;
+            }, {
+                totalVentas: 0,
+                totalCostos: 0,
+                totalGanancia: 0,
+                totalCantidadVendida: 0,
+            });
+            setTotals(totals);
+        } catch (error) {
+            console.error("Error fetching product summary:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchProductosResumen(); // Llama a la función al cargar la pantalla
     }, [providerId]);
 
     return (
@@ -83,7 +84,7 @@ export default function ProductSummaryPage() {
                                     <Text style={styles.productText}>Cantidad Vendida: {item.cantidadVendida}</Text>
                                     <Text style={styles.productText}>Ingresos: ${item.ingresos.toFixed(2)}</Text>
                                     <Text style={styles.productText}>Costos: ${item.costos.toFixed(2)}</Text>
-                                    <Text style={styles.productText}>Ganancia/Pérdida: ${item.ingresos - item.costos > 0 ? (item.ingresos - item.costos).toFixed(2) : (item.ingresos - item.costos).toFixed(2)}</Text>
+                                    <Text style={styles.productText}>Ganancia/Pérdida: ${(item.ingresos - item.costos).toFixed(2)}</Text>
                                 </View>
                             )}
                         />
@@ -98,6 +99,14 @@ export default function ProductSummaryPage() {
                     </>
                 )}
 
+                {/* Botón para actualizar manualmente */}
+                <Button
+                    title="Actualizar Movimientos"
+                    onPress={fetchProductosResumen}
+                    color="#28a745"
+                />
+
+                {/* Botón para volver */}
                 <Pressable
                     style={styles.backButton}
                     onPress={() => router.push('../main_providers')}

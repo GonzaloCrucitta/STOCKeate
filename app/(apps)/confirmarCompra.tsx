@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, ScrollView, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { vaciarCarrito } from './redux/store'; // Asegúrate de que la ruta es correcta
 import styles from './styles';
 
 const ConfirmarCompra: React.FC = () => {
@@ -10,6 +11,7 @@ const ConfirmarCompra: React.FC = () => {
   const [cvv, setCvv] = useState('');
   const [mensajeConfirmacion, setMensajeConfirmacion] = useState('');
   const router = useRouter();
+  const dispatch = useDispatch();
 
   // Obtener id_cliente y carrito de Redux
   const id_cliente = useSelector((state: any) => state.user.id);
@@ -43,6 +45,9 @@ const ConfirmarCompra: React.FC = () => {
       const data = await response.json();
       if (response.ok) {
         setMensajeConfirmacion('¡Su pedido ha sido enviado!');
+        
+        // Vaciar el carrito después de confirmar la compra
+        dispatch(vaciarCarrito());
       } else {
         Alert.alert('Error', data.error || 'Error al procesar el pedido');
       }
@@ -53,7 +58,7 @@ const ConfirmarCompra: React.FC = () => {
   };
 
   const handleVolver = () => {
-    router.back();
+    router.push('/cliente');
   };
 
   return (
@@ -94,7 +99,7 @@ const ConfirmarCompra: React.FC = () => {
       )}
 
       <View style={{ marginTop: 20 }}>
-        <Button title="Volver a la compra" onPress={handleVolver} />
+      <Button title="Volver a la compra" onPress={handleVolver} />
       </View>
     </ScrollView>
   );

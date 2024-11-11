@@ -44,7 +44,7 @@ const ComprarPage: React.FC = () => {
   };
 
   const handleVolver = () => {
-    router.back();
+    router.push('/cliente');
   };
 
   return (
