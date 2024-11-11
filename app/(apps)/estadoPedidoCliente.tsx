@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, StyleSheet, Button } from 'react-native';
 import { useSelector } from 'react-redux';
 
 interface RootState {
@@ -11,22 +11,22 @@ interface RootState {
 }
 
 const OrderStatus = ({ status }: { status: string }) => {
-  const stages = ["Pedido Pendiente", "Rechazado", "Aceptado"];
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "aceptado":
+        return "green";
+      case "rechazado":
+        return "red";
+      default:
+        return "orange"; // Color para "pendiente" o cualquier otro estado no reconocido
+    }
+  };
 
   return (
     <View style={styles.orderStatusContainer}>
-      {stages.map((stage, index) => (
-        <View key={index} style={styles.stageContainer}>
-          <Text
-            style={[
-              styles.stageText,
-              { color: index <= stages.indexOf(status) ? 'green' : 'gray' }
-            ]}
-          >
-            {stage}
-          </Text>
-        </View>
-      ))}
+      <Text style={[styles.stageText, { color: getStatusColor(status) }]}>
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </Text>
     </View>
   );
 };
@@ -39,24 +39,26 @@ const OrderPage = () => {
   // Obtener el ID del cliente desde el store
   const idCliente = useSelector((state: RootState) => state.user.id);
 
-  useEffect(() => {
-    const fetchPedidos = async () => {
-      try {
-        const response = await fetch(`http://localhost:4000/crearpedidos/estado-pedido-cliente/${idCliente}`);
-        if (!response.ok) {
-          throw new Error('Error al obtener los pedidos');
-        }
-        const data = await response.json();
-        setPedidos(data);
-      } catch (error) {
-        setError(error instanceof Error ? error.message : 'Error desconocido');
-        console.error("Error fetching orders:", error);
-      } finally {
-        setLoading(false);
+  const fetchPedidos = async () => {
+    setLoading(true); // Muestra el indicador de carga mientras se actualizan los pedidos
+    try {
+      const response = await fetch(`http://localhost:4000/crearpedidos/estado-pedido-cliente/${idCliente}`);
+      if (!response.ok) {
+        throw new Error('Error al obtener los pedidos');
       }
-    };
+      const data = await response.json();
+      setPedidos(data);
+      setError(null); // Limpia el error en caso de éxito
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Error desconocido');
+      console.error("Error fetching orders:", error);
+    } finally {
+      setLoading(false); // Oculta el indicador de carga al finalizar
+    }
+  };
 
-    fetchPedidos();
+  useEffect(() => {
+    fetchPedidos(); // Llama a fetchPedidos al cargar la pantalla
   }, [idCliente]);
 
   if (loading) {
@@ -70,6 +72,10 @@ const OrderPage = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Estado de Pedidos</Text>
+      
+      {/* Botón para actualizar manualmente */}
+      <Button title="Actualizar pedidos" onPress={fetchPedidos} color="#007bff" />
+
       <FlatList
         data={pedidos}
         keyExtractor={(item) => item.id_pedido.toString()}
@@ -78,7 +84,7 @@ const OrderPage = () => {
             <Text style={styles.productText}>Producto: {item.detalles?.[0]?.producto?.nombre_producto || 'Desconocido'}</Text>
             <Text style={styles.productText}>Cantidad Pedida: {item.detalles?.[0]?.cantidad || '0'}</Text>
             <Text style={styles.productText}>Fecha de Pedido: {new Date(item.fecha_pedido).toLocaleDateString()}</Text>
-            <OrderStatus status={item.detalles?.[0]?.estado_proveedor || 'Pedido Pendiente'} />
+            <OrderStatus status={item.detalles?.[0]?.estado_proveedor || 'pendiente'} />
           </View>
         )}
       />
@@ -114,16 +120,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   orderStatusContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  stageContainer: {
-    padding: 5,
-    backgroundColor: '#e9ecef',
-    borderRadius: 5,
+    marginTop: 10,
   },
   stageText: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   errorText: {
