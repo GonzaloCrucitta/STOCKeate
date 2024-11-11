@@ -97,7 +97,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="articulo"
           options={{
-            title: 'stock',
+            title: 'articulo',
             href: null,
             tabBarStyle: { display: 'none' },
             headerRight: () => (
@@ -111,7 +111,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="saliente"
           options={{
-            title: 'stock',
+            title: 'saliente',
             href: null,
             tabBarStyle: { display: 'none' },
             headerRight: () => (
@@ -125,7 +125,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="entrante"
           options={{
-            title: 'stock',
+            title: 'entrante',
             href: null,
             tabBarStyle: { display: 'none' },
             headerRight: () => (
@@ -150,7 +150,32 @@ export default function TabLayout() {
           />
         <Tabs.Screen
           name="pedidos_pendientes"
-          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+          //options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+          options={{
+            title: 'Pedidos Pendientes',
+            href: null,
+            tabBarStyle: { display: 'none' },
+            headerRight: () => (
+              <Pressable onPress={() => router.push('../main_providers')} 
+                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
+                <FontAwesome size={28} name="reply" />
+              </Pressable>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="movimientos"
+          options={{
+            title: 'Movimientos',
+            href: null,
+            tabBarStyle: { display: 'none' },
+            headerRight: () => (
+              <Pressable onPress={() => router.push('../main_providers')} 
+                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
+                <FontAwesome size={28} name="reply" />
+              </Pressable>
+            ),
+          }}
         />
         <Tabs.Screen
           name="redux/store"
