@@ -32,15 +32,13 @@ const Saliente = () => {
     user: {
       email: string;
       name: string;
-      id: number;  // Aquí debes usar 'number' en lugar de 'int' en TypeScript
+      id: number;  
       role: string;
     };
   }
 
   const id= useSelector((state: RootState) => state.user.id);
 
-
-  //const productosSeleccionados = data.filter(item => item.cantidadVender > 0);
 
 
 
@@ -63,7 +61,7 @@ const Saliente = () => {
               placeholder="Cantidad a vender"
               value={item.cantidad_vender.toString()}
               onChangeText={(value) => {
-                const cantidad = parseInt(value) || 0; // Asegúrate de que `cantidad` sea un número
+                const cantidad = parseInt(value) || 0; 
                 setArticulos(prevArticulos =>
                   prevArticulos.map(producto =>
                     producto.id_producto === item.id_producto
