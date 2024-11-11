@@ -11,7 +11,7 @@ const ComprarPage: React.FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  // Cargar los productos al montar el componente
+  // Cargar los productos al montar el componente y actualizar cada minuto
   useEffect(() => {
     const obtenerProductos = async () => {
       try {
@@ -28,7 +28,13 @@ const ComprarPage: React.FC = () => {
       }
     };
 
-    obtenerProductos();
+    obtenerProductos(); // Llamar la función inicialmente
+
+    // Configurar actualización cada minuto (60,000 ms)
+    const intervalId = setInterval(obtenerProductos, 60000);
+
+    // Limpiar el intervalo al desmontar el componente
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleSeleccionarArticulo = (id_producto: number, nombre: string, precio: number) => {
