@@ -14,7 +14,7 @@ const ArticuloProveedor = () => {
   const [codigoBarras, setCodigoBarras] = useState('1234567890');
   const [tags, setTags] = useState(['electrónica', 'hogar']);
   const [cantidad, setCantidad] = useState(10);
-  const [precio, setPrecio] = useState(10);
+  const [precio, setPrecio] = useState('10.0');
   const [descripcion, setDescripcion] = useState('Descripción del producto');
   const [imagen, setImagen] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false); // Estado de carga de animación
@@ -31,6 +31,13 @@ const ArticuloProveedor = () => {
 
   const id = useSelector((state: RootState) => state.user.id); // ID del proveedor
 
+  const handlePrecioChange = (value:string) => {
+    // Asegurarse de que el valor solo contenga números y el punto decimal
+    const isValidInput = /^(\d*\.?\d*)$/.test(value);
+    if (isValidInput) {
+      setPrecio(value);
+    }
+  };
   // Función para seleccionar la imagen
   const agregarImagen = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -45,36 +52,45 @@ const ArticuloProveedor = () => {
     }
   };
 
+  const subirImagen = async (uri: string | null) => {
+    if (!uri) return;
+
+    try {
+        // Obtén el Blob desde la URI de la imagen
+        const response = await fetch(uri);
+        const blob = await response.blob();
+
+        // Configura el FormData y añade el Blob con un nombre y tipo
+        const formData = new FormData();
+        formData.append('archivo', blob, 'imagen.jpg'); // Añade el nombre del archivo aquí
+
+        // Realiza la solicitud
+        const uploadResponse = await fetch('http://localhost:4000/foto/upload', {
+            method: 'POST',
+            body: formData,
+            // No especifiques Content-Type manualmente
+        });
+
+        const result = await uploadResponse.json();
+        if (uploadResponse.ok) {
+            console.log('Imagen subida exitosamente:', result);
+            return result.rutaArchivo;
+        } else {
+            console.error('Error al subir la imagen:', result);
+        }
+
+    } catch (error) {
+        console.error('Error en la solicitud POST:', error);
+    }
+  };
+
   // Función para crear el producto
   const crearArticulo = async () => {
     setIsLoading(true);
-
-    // Si hay una imagen, la subimos al servidor
-    let imagenUrl = '';
-    if (imagen) {
-      const formData = new FormData();
-      formData.append('file', imagen, 'imagen.jpg'); // El tercer parámetro es el nombre del archivo en el servidor
-
-      // Subimos la imagen al servidor
-      try {
-        const imagenResponse = await fetch('http://localhost:4000/upload', {
-          method: 'POST',
-          body: formData,
-        });
-
-        const imagenData = await imagenResponse.json();
-        imagenUrl = imagenData.rutaArchivo; // Obtenemos la ruta de la imagen
-
-        if (!imagenResponse.ok) {
-          throw new Error('No se pudo subir la imagen');
-        }
-      } catch (error) {
-        console.error('Error al subir la imagen:', error);
-        setIsLoading(false);
-        return; // Salimos si no se pudo subir la imagen
-      }
+    var imagenUrl = await subirImagen(imagen);
+    if (!imagen){
+      imagenUrl='articulo_por_defecto.png'
     }
-
     // Ahora creamos el producto con la ruta de la imagen
     const newProducto = {
       nombre_producto: nombre,
@@ -82,9 +98,10 @@ const ArticuloProveedor = () => {
       descripcion: descripcion,
       cantidad_stock: cantidad,
       id_proveedor: id,
+      precio: Number(precio)*1.2,
       tags: tags[0], // Solo agregamos el primer tag, puedes modificar esto según tus necesidades
       foto: imagenUrl, // Ruta de la imagen que subimos
-      precio: precio,
+      preciocompra: Number(precio),
     };
 
     // Enviamos los datos del producto al servidor
@@ -111,7 +128,6 @@ const ArticuloProveedor = () => {
       setIsLoading(false); // Detenemos la carga si hubo un error
     }
   };
-
   // Función para agregar un nuevo tag
   const agregarTag = (nuevoTag: string) => {
     setTags([...tags, nuevoTag]);
@@ -193,16 +209,9 @@ const ArticuloProveedor = () => {
       <Text style={styles.stock}>Precio:</Text>
       <TextInput
         style={styles.input}
-        keyboardType="numeric"
+        keyboardType="decimal-pad"
         value={precio.toString()}
-        
-        onSubmitEditing={(event) => {
-          const nuevoPrecio = parseFloat(event.nativeEvent.text);
-          if (!isNaN(nuevoPrecio)) {
-              setPrecio(nuevoPrecio);
-          }
-        }}
-      
+        onChangeText={handlePrecioChange}
       />
 
       {/* Descripción */}
@@ -227,7 +236,7 @@ const ArticuloProveedor = () => {
       </Pressable>
       
 
-      <Pressable style={styles.pressableButton} onPress={() => crearArticulo(newProducto)} disabled={isLoading}>
+      <Pressable style={styles.pressableButton} onPress={() => crearArticulo()} disabled={isLoading}>
                 <Text style={styles.buttonText}>Confirmar</Text>
         </Pressable>
     </ScrollView>
