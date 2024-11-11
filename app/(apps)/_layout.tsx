@@ -90,15 +90,45 @@ export default function TabLayout() {
           />
         <Tabs.Screen
           name="articulo"
-          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+          options={{
+            title: 'stock',
+            href: null,
+            tabBarStyle: { display: 'none' },
+            headerRight: () => (
+              <Pressable onPress={() => router.push('../main_providers')} 
+                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
+                <FontAwesome size={28} name="reply" />
+              </Pressable>
+            ),
+          }}
           />
         <Tabs.Screen
           name="saliente"
-          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+          options={{
+            title: 'stock',
+            href: null,
+            tabBarStyle: { display: 'none' },
+            headerRight: () => (
+              <Pressable onPress={() => router.push('../main_providers')} 
+                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
+                <FontAwesome size={28} name="reply" />
+              </Pressable>
+            ),
+          }}
           />
         <Tabs.Screen
           name="entrante"
-          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+          options={{
+            title: 'stock',
+            href: null,
+            tabBarStyle: { display: 'none' },
+            headerRight: () => (
+              <Pressable onPress={() => router.push('../main_providers')} 
+                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
+                <FontAwesome size={28} name="reply" />
+              </Pressable>
+            ),
+          }}
           />
         <Tabs.Screen
           name="formularioPago"
@@ -130,24 +160,6 @@ export default function TabLayout() {
             
           }}
         />
-        <Tabs.Screen
-          //????
-          name="logout"
-          options={{
-            title: 'Cerrar Sesión',
-            tabBarStyle: { display: 'none' }, 
-            headerShown: false, 
-            
-            tabBarButton: () => (
-              <Pressable onPress={() => {
-                // Aquí iría la lógica para cerrar sesión, por ejemplo limpiar el estado de Redux o eliminar un token
-                router.push('/'); // Redirigir al usuario a la página de inicio
-              }}>
-                <Text>Cerrar sesión</Text> 
-              </Pressable>
-            ),
-          }}
-          />
       </Tabs>
     </Provider>
   );
