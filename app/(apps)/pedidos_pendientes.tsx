@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, FlatList, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Pressable, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { router } from 'expo-router';
@@ -18,26 +18,28 @@ export default function PendingOrdersPage() {
     // Obtener ID del proveedor desde el store
     const providerId = useSelector((state: RootState) => state.user.id);
 
-    useEffect(() => {
-        const fetchPendingOrders = async () => {
-            try {
-                const response = await fetch(`http://localhost:4000/crearpedidos/pedidos-pendientes/${providerId}`);
-                
-                if (!response.ok) {
-                    throw new Error('Error en la solicitud de pedidos pendientes');
-                }
-
-                const data = await response.json();
-                setOrders(data);
-            } catch (error) {
-                console.error("Error fetching pending orders:", error);
-            } finally {
-                setLoading(false);
+    // Definir fetchPendingOrders para poder reutilizarla
+    const fetchPendingOrders = useCallback(async () => {
+        setLoading(true);  // Mostrar el indicador de carga mientras se obtienen los pedidos
+        try {
+            const response = await fetch(`http://localhost:4000/crearpedidos/pedidos-pendientes/${providerId}`);
+            
+            if (!response.ok) {
+                throw new Error('Error en la solicitud de pedidos pendientes');
             }
-        };
-        
-        fetchPendingOrders();
+
+            const data = await response.json();
+            setOrders(data);
+        } catch (error) {
+            console.error("Error fetching pending orders:", error);
+        } finally {
+            setLoading(false);  // Ocultar el indicador de carga una vez que se obtienen los pedidos
+        }
     }, [providerId]);
+
+    useEffect(() => {
+        fetchPendingOrders();
+    }, [fetchPendingOrders]);
 
     const handleChangeOrderStatus = async (idDetallePedido: number, newStatus: string) => {
         try {
@@ -53,7 +55,6 @@ export default function PendingOrdersPage() {
                 throw new Error('Error al actualizar el estado del pedido');
             }
 
-            const updatedOrder = await response.json();
             // Actualizar el estado del pedido localmente
             setOrders(prevOrders => 
                 prevOrders.map(order => 
@@ -97,7 +98,6 @@ export default function PendingOrdersPage() {
                                         Estado: {item.estado_proveedor}
                                     </Text>
 
-                                    {/* Botones de Aceptar y Rechazar */}
                                     {item.estado_proveedor === 'pendiente' && (
                                         <View style={styles.buttonsContainer}>
                                             <Pressable
@@ -120,6 +120,14 @@ export default function PendingOrdersPage() {
                     </View>
                 )}
 
+                {/* Botón "Volver a obtener pedidos" */}
+                <Pressable
+                    style={styles.reloadButton}
+                    onPress={fetchPendingOrders}
+                >
+                    <Text style={styles.buttonText}>Actualizar Pedidos</Text>
+                </Pressable>
+
                 {/* Botón "Volver" */}
                 <Pressable
                     style={styles.backButton_Pedidos_Pendientes}
@@ -132,7 +140,6 @@ export default function PendingOrdersPage() {
     );
 }
 
-// Estilos adicionales para los botones
 const styles = StyleSheet.create({
     container_pedidos_pendientes: {
         flex: 1,
@@ -183,9 +190,12 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
     },
-    buttonText: {
-        color: 'white',
-        fontSize: 16,
+    reloadButton: {
+        marginTop: 20,
+        backgroundColor: '#28a745',
+        padding: 10,
+        borderRadius: 5,
+        alignItems: 'center',
     },
     backButton_Pedidos_Pendientes: {
         marginTop: 20,
@@ -193,5 +203,9 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
     },
 });
