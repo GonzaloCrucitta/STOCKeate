@@ -27,11 +27,7 @@ const componentes = () => {
   return (
     <View>
 
-      <Pressable style={styles.pressableButton} 
-        onPress={() => router.push('../main_providers')}
-        >
-        <Text style={styles.buttonText}>volver</Text>
-      </Pressable>
+      
       <Pressable style={styles.pressableButton} 
         onPress={() => router.push('../articulo')}
         >

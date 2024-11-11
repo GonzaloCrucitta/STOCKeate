@@ -290,13 +290,7 @@ const Saliente = () => {
         <Text style={styles.buttonText}>Vender</Text>
       </Pressable>
 
-      {/* Botón para volver */}
-      <Pressable
-        style={styles.backButton}
-        onPress={() => router.push('../main_providers')}
-      >
-        <Text style={styles.buttonText}>Volver</Text>
-      </Pressable>
+      
     </View>
   );
 }
