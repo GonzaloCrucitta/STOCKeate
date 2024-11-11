@@ -53,11 +53,7 @@ const ArticuloProveedor = () => {
     let imagenUrl = '';
     if (imagen) {
       const formData = new FormData();
-      formData.append('archivo', {
-        uri: imagen,
-        type: 'image/jpeg', // O el tipo correcto de la imagen
-        name: 'image.jpg',
-      });
+      formData.append('file', imagen, 'imagen.jpg'); // El tercer parámetro es el nombre del archivo en el servidor
 
       // Subimos la imagen al servidor
       try {
