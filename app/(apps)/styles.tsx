@@ -559,6 +559,27 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
+
+
+  //estadoPedidoCliente
+
+  orderStatusContainerPedidoCliente: {
+    padding: 20,
+    backgroundColor: '#fff',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  stageContainerPedidoCliente: {
+    marginVertical: 10,
+    alignItems: 'center',
+  },
+  stageTextPedidoCliente: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+
+
+
 });
 
 
