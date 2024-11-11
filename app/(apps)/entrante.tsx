@@ -5,10 +5,11 @@ import { router } from 'expo-router';
 import { useSelector } from 'react-redux';
 
 const Saliente = () => {
-  const [articulos, setArticulos] = useState<{ id_producto: number, nombre_producto: string, precio: number, cantidad_stock: number, cantidad_vender:0 }[]>([]);
+  const [articulos, setArticulos] = useState<{ id_producto: number, nombre_producto: string, precio: number, cantidad_stock: number, cantidad_vender:number }[]>([]);
   function productosSeleccionados(){
     return articulos.filter((item)=>{item.cantidad_vender>0?item:null})
   }
+  //cargar los productos al entrar a la pagina
   useEffect(() => {
     const obtenerProductos = async () => {
       try {
@@ -60,8 +61,17 @@ const Saliente = () => {
               style={styles.input}
               keyboardType="numeric"
               placeholder="Cantidad a vender"
-              value={item.cantidad_vender ? item.cantidad_vender : '0'}
-              
+              value={item.cantidad_vender.toString()}
+              onChangeText={(value) => {
+                const cantidad = parseInt(value) || 0; // Asegúrate de que `cantidad` sea un número
+                setArticulos(prevArticulos =>
+                  prevArticulos.map(producto =>
+                    producto.id_producto === item.id_producto
+                      ? { ...producto, cantidad_vender: cantidad }
+                      : producto
+                  )
+                );
+              }}
             />
           </View>
         )}
