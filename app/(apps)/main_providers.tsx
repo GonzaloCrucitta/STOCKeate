@@ -42,7 +42,7 @@ export default function ProvidersMainApp() {
       <Pressable style={styles.pressableButton} onPress={() => router.push('../stock')}>
         <Text style={styles.buttonText}>Stock</Text>
       </Pressable>
-      <Pressable style={styles.pressableButton} onPress={() => toggleModal('movements')}>
+      <Pressable style={styles.pressableButton} onPress={() => router.push('../movimientos')}>
         <Text style={styles.buttonText}>Movimientos</Text>
       </Pressable>
       <Pressable style={styles.pressableButton} onPress={() => router.push('../entrante')}>
