@@ -130,13 +130,6 @@ export default function PendingOrdersPage() {
                     <Text style={styles.buttonText}>Actualizar Pedidos</Text>
                 </Pressable>
 
-                {/* Botón "Volver" */}
-                <Pressable
-                    style={styles.backButton_Pedidos_Pendientes}
-                    onPress={() => router.push('../main_providers')}
-                >
-                    <Text style={styles.buttonText}>Volver</Text>
-                </Pressable>
             </ScrollView>
         </KeyboardAvoidingView>
     );

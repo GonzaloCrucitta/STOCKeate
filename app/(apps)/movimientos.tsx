@@ -106,13 +106,7 @@ export default function ProductSummaryPage() {
                     color="#28a745"
                 />
 
-                {/* Botón para volver */}
-                <Pressable
-                    style={styles.backButton}
-                    onPress={() => router.push('../main_providers')}
-                >
-                    <Text style={styles.buttonText}>Volver</Text>
-                </Pressable>
+                
             </ScrollView>
         </KeyboardAvoidingView>
     );
