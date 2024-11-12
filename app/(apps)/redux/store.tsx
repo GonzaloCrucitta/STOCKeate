@@ -48,6 +48,14 @@ const carritoSlice = createSlice({
         state.items.push({ ...action.payload, cantidad: 1 });
       }
     },
+    agregarProductos: (state, action: PayloadAction<{ id_producto: number; nombre: string; precio: number; cantidad: number }>) => {
+      const productoExistente = state.items.find(item => item.id_producto === action.payload.id_producto);
+      if (productoExistente) {
+        productoExistente.cantidad = action.payload.cantidad;
+      } else {
+        state.items.push({ ...action.payload});
+      }
+    },
     eliminarProducto: (state, action: PayloadAction<number>) => {
       const index = state.items.findIndex(item => item.id_producto === action.payload);
       if (index !== -1) {
@@ -70,6 +78,6 @@ const store = configureStore({
 
 // Exportar las acciones
 export const { setEmail, setName, setId, setRole, vaciar } = userSlice.actions;
-export const { agregarProducto, eliminarProducto, vaciarCarrito } = carritoSlice.actions;
+export const { agregarProducto, agregarProductos, eliminarProducto, vaciarCarrito } = carritoSlice.actions;
 
 export default store;

@@ -1,12 +1,32 @@
 import React from 'react';
-import { Provider } from 'react-redux'; // Importar el Provider de Redux
+import { Provider, useSelector } from 'react-redux'; // Importar el Provider de Redux
 import { Tabs } from 'expo-router'; // Importar el componente Tabs de expo-router
-import store from './redux/store'; // Importar el store de Redux
+import store, { vaciarCarrito } from './redux/store'; // Importar el store de Redux
 import FontAwesome from '@expo/vector-icons/FontAwesome'; 
 import { Pressable, Image, Text } from 'react-native';
 import { router } from 'expo-router'; // Para la navegación
 
 export default function TabLayout() {
+  interface RootState {
+    user: {
+      email: string;
+      name: string;
+      id: number;  
+      role: string;
+    };
+  }
+
+  const id= useSelector((state: RootState) => state.user.id);
+  const nombre= useSelector((state: RootState) => state.user.name);
+  const role= useSelector((state: RootState) => state.user.role);
+  function botonVolver(){
+    if (role==="Proveedor"){
+      router.push("./main_providers")
+    }
+    else{
+      router.push("./cliente")
+    }
+  }
   return (
     <Provider store={store}>
 
@@ -21,7 +41,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="main_providers"
           options={{
-            title: 'Proveedor',
+            title: 'Proveedor: '+nombre+', id: '+id,
             tabBarStyle: { display: 'none' },
             tabBarIcon: ({ color }) => <FontAwesome size={28} name="industry" color={color} />,
             headerRight: () => (
@@ -37,7 +57,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="cliente"
           options={{
-            title: 'Cliente',
+            title: 'Cliente: '+nombre +', id: '+id,
             tabBarStyle: { display: 'none' },
             tabBarIcon: ({ color }) => <FontAwesome size={28} name='user-circle' color={color} />,
             headerRight: () => (
@@ -57,7 +77,7 @@ export default function TabLayout() {
             href: null,
             tabBarStyle: { display: 'none' },
             headerRight: () => (
-              <Pressable onPress={() => router.push('../main_providers')} 
+              <Pressable onPress={() => botonVolver()} 
                 style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
                 <FontAwesome size={28} name="reply" />
               </Pressable>
@@ -134,6 +154,26 @@ export default function TabLayout() {
                 <FontAwesome size={28} name="reply" />
               </Pressable>
             ),
+            headerLeft: () => (
+              <Pressable onPress={() => vaciarCarrito()} 
+                style={{ width: 30, height: 30, borderRadius: 15, marginLeft: 10 }}>
+                <FontAwesome size={28} name='repeat' />
+              </Pressable>
+            ),
+          }}
+          />
+        <Tabs.Screen
+          name="estadoPedidoCliente"
+          options={{
+            title: 'Estado de pedidos',
+            href: null,
+            tabBarStyle: { display: 'none' },
+            headerRight: () => (
+              <Pressable onPress={() => router.push('../cliente')} 
+                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
+                <FontAwesome size={28} name="reply" />
+              </Pressable>
+            ),
           }}
           />
         <Tabs.Screen
@@ -146,8 +186,32 @@ export default function TabLayout() {
           />
         <Tabs.Screen
           name="resumenSaliente"
-          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
-          />
+          options={{
+            title: 'Articulos a vender',
+            href: null,
+            tabBarStyle: { display: 'none' },
+            headerRight: () => (
+              <Pressable onPress={() => router.push('../main_providers')} 
+                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
+                <FontAwesome size={28} name="reply" />
+              </Pressable>
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="resumenEntrante"
+          options={{
+            title: 'Articulos a comprar',
+            href: null,
+            tabBarStyle: { display: 'none' },
+            headerRight: () => (
+              <Pressable onPress={() => router.push('../main_providers')} 
+                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
+                <FontAwesome size={28} name="reply" />
+              </Pressable>
+            ),
+          }}
+        />
         <Tabs.Screen
           name="pedidos_pendientes"
           //options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}

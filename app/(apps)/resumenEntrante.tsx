@@ -3,37 +3,40 @@ import { FlatList, Text, View, Pressable, TextInput } from 'react-native';
 import styles from './styles';
 import { router } from 'expo-router';
 import { useSelector } from 'react-redux';
+import { vaciarCarrito } from './redux/store';
 
-const Saliente = () => {
-  const [data, setData] = useState([
-    { id:1, CodigoBarras: '1', titulo: 'mate', stock: 10, cantidadVender: 2, preciocompra: 100 },
-    { id:2, CodigoBarras: '4', titulo: 'palmito', stock: 2, cantidadVender: 1, preciocompra: 200 },
-    { id:3, CodigoBarras: '5', titulo: 'yerba', stock: 20, cantidadVender: 5, preciocompra: 120 },
-    { id:4, CodigoBarras: '8', titulo: 'picadillo', stock: 22, cantidadVender: 1, preciocompra: 60 },
-    { id:5, CodigoBarras: '9', titulo: 'pate', stock: 3, cantidadVender: 2, preciocompra: 110 },
-  ]);
-  
-  interface RootState {
-    user: {
-      email: string;
-      name: string;
-      id: number;  
-      role: string;
-    };
+const Entrante = () => {
+
+  interface CarritoItem {
+    id_producto: number;
+    nombre: string;
+    cantidad: number;
+    precio: number;
   }
+  interface CarritoState {
+    items: CarritoItem[];
+  }  
+  interface UserState {
+    email: string;
+    name: string;
+    id: number;  
+    role: string;
+  }
+  interface RootState {
+    user: UserState;
+    carrito: CarritoState;
+  }
+  const carritoItems = useSelector((state: RootState) => state.carrito.items);
   const id= useSelector((state: RootState) => state.user.id);
-
-  
-
-  async function ConfirmarCompra(){
-    var i = 0;
-    while (i<data.length){
-      var Producto = {
-        cantidad_stock: data[i].cantidadVender,
-        precio: data[i].preciocompra
+  async function ConfirmarCompra() {
+    for (const item of carritoItems) {
+      let Producto = {
+        cantidad_stock: item.cantidad,
+        precio: item.precio
       };
+      //Obtener la cantidad de articulos antes de hacerle un put
       try {
-        const response = await   fetch("http://localhost:4000/productos/"+data[i].id, {
+        const response = await   fetch("http://localhost:4000/productos/"+item.id_producto, {
           method: 'GET',
           headers: {
           'Content-Type': 'application/json',
@@ -46,61 +49,59 @@ const Saliente = () => {
         
         const Productoenbd = await response.json();
         console.log('se obtiene el get', Productoenbd);
-        Producto.cantidad_stock=Producto.cantidad_stock+Productoenbd.cantidad_stock;
+        Producto.cantidad_stock+=Productoenbd.cantidad_stock; //cantidad despues de la compra
       } catch (error) {
           console.error('Error al obtener el producto:', error);
-          console.error('producto:',data[i]);
+          console.error('producto:',Producto);
       }
       
       console.log("se intenta hacer PUT con: "+JSON.stringify(Producto))
       
        try {
-        const response = await   fetch("http://localhost:4000/productos/"+data[i].id, {
+        const putResponse = await   fetch("http://localhost:4000/productos/"+item.id_producto, {
           method: 'PUT',
           headers: {
           'Content-Type': 'application/json',
           },
           body: JSON.stringify(Producto), 
         })
-        if (!response.ok) {
+        if (!putResponse.ok) {
           throw new Error('Failed to upload product');
         }
-        
-        const newProducto = await response.json();
-        console.log('Producto creado', newProducto);
+        console.log('Producto actualizado', await putResponse.json());
       } catch (error) {
           console.error('Error al crear el producto:', error);
-          console.error('producto:',data[i]);
+          console.error('producto:',item);
       } 
-      i=i+1;
     }
+    vaciarCarrito();
+    router.push("./main_providers");
   }
-  const productosSeleccionados = data.filter(item => item.cantidadVender > 0);
-  const total = productosSeleccionados.reduce((acc,item)=>{
-    return acc + (item.preciocompra * item.cantidadVender);
+
+  const total = carritoItems.reduce((acc,item)=>{
+    return acc + (item.precio * item.cantidad);
     }, 0);
   const ListHeader = () => (
     <View style={styles.row}>
       <Text style={styles.headerText}>Artículo</Text>
       <Text style={styles.headerText}>Cantidad</Text>
-      <Text style={styles.headerText}>Precio de compra</Text>
+      <Text style={styles.headerText}>Precio</Text>
     </View>
   );
   return (
     <View style={styles.container}>
       <FlatList
         showsVerticalScrollIndicator={false}
-        data={data}
+        data={carritoItems}
         ListHeaderComponent={ListHeader} // Agregando el encabezado a la FlatList
         renderItem={({ item }) => (
             <View style={styles.itemContainer}>
-              <Text style={styles.text}>{item.titulo}</Text>
-              <Text style={styles.stock}>{item.cantidadVender}</Text>
-              <Text style={[styles.text, { textAlign: 'right' }]}>   ${item.preciocompra * item.cantidadVender} </Text>
+              <Text style={styles.text}>{item.nombre}</Text>
+              <Text style={styles.stock}>{item.cantidad}</Text>
+              <Text style={[styles.text, { textAlign: 'right' }]}>   ${item.precio * item.cantidad} </Text>
               {/* Entrada para la cantidad a vender */}
             </View>
         )}
-        keyExtractor={(item) => item.CodigoBarras}
         style={styles.flatList}
       />
       <Text style={styles.text}>total: ${total}</Text>
@@ -124,4 +125,4 @@ const Saliente = () => {
   );
 }
 
-export default Saliente;
+export default Entrante;

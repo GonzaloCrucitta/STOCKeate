@@ -1,21 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, Text, View, Pressable, TextInput, Modal, TouchableOpacity, Alert } from 'react-native';
+import { agregarProductos, vaciarCarrito} from './redux/store'; // Ruta del archivo store
 import styles from './styles';
 import { router } from 'expo-router';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Saliente = () => {
-  const [articulos, setArticulos] = useState<{ id_producto: number, nombre_producto: string, precio: number, cantidad_stock: number, cantidad_vender:number }[]>([]);
-  function productosSeleccionados(){
-    return articulos.filter((item)=>{item.cantidad_vender>0?item:null})
-  }
+  const [articulos, setArticulos] = useState<{ id_producto: number, nombre_producto: string, precio: number, cantidad_stock: number, cantidad_compra:number }[]>([]);
+  const dispatch = useDispatch();
+  const productosSeleccionados = () => articulos.filter((item) => item.cantidad_compra > 0);
+  
   //cargar los productos al entrar a la pagina
-  useEffect(() => {
-    const obtenerProductos = async () => {
+  /* useEffect(() => {
+    obtenerProductos();
+  }, []); */
+  useFocusEffect(
+    useCallback(() => {
+      obtenerProductos(); // Recargar los productos cuando la pantalla reciba el foco
+    }, [])
+  );
+  const obtenerProductos = async () => {
       try {
         const response = await fetch('http://localhost:4000/productos/provedor/'+id);
         if (response.ok) {
           const productos = await response.json();
+          console.log("Todos los productos obtenidos: ",productos);
           setArticulos(productos);
         } else {
           Alert.alert('Error', 'No se pudieron obtener los productos.');
@@ -26,8 +36,7 @@ const Saliente = () => {
       }
     };
 
-    obtenerProductos();
-  }, []);
+  //redux
   interface RootState {
     user: {
       email: string;
@@ -39,8 +48,40 @@ const Saliente = () => {
 
   const id= useSelector((state: RootState) => state.user.id);
 
+  const handleSeleccionarArticulo = (id_producto: number, nombre: string, precio: number, cantidad:number) => {
+    dispatch(agregarProductos({ id_producto, nombre, precio, cantidad }));
+  };
 
+  function volver(){
+    vaciarCarrito();
+    router.push('./main_providers')
 
+  }
+  const actualizarStock = async () => {
+    await obtenerProductos(); // Refresca la lista de productos después de la compra
+    dispatch(vaciarCarrito()); // Vacía el carrito para evitar duplicados
+  };
+  const Comprar = async () => {
+    var productos = productosSeleccionados();
+    console.log("Productos: ",productos);
+    var i=0;
+    while (i<productos.length){
+      handleSeleccionarArticulo(productos[i].id_producto,productos[i].nombre_producto,productos[i].precio, productos[i].cantidad_compra);
+      console.log('Se agrego al carrito: ',productos[i]);
+      i= i+=1;
+    }
+    if (productos.length>0){
+      router.push({
+        pathname: '../resumenEntrante',
+        params: { 
+          productosSeleccionados: JSON.stringify(productosSeleccionados()),
+        }
+      })
+    }
+    else{
+      alert('No se seleccionaron productos')
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -59,13 +100,13 @@ const Saliente = () => {
               style={styles.input}
               keyboardType="numeric"
               placeholder="Cantidad a vender"
-              value={item.cantidad_vender.toString()}
+              value={(item.cantidad_compra || 0).toString()}
               onChangeText={(value) => {
                 const cantidad = parseInt(value) || 0; 
                 setArticulos(prevArticulos =>
                   prevArticulos.map(producto =>
                     producto.id_producto === item.id_producto
-                      ? { ...producto, cantidad_vender: cantidad }
+                      ? { ...producto, cantidad_compra: cantidad }
                       : producto
                   )
                 );
@@ -73,21 +114,14 @@ const Saliente = () => {
             />
           </View>
         )}
-        keyExtractor={(item) => item.id_producto.toString()}
+        
         style={styles.flatList}
       />
 
       {/* Botón para ir a la página de resumen */}
       <Pressable
         style={styles.sellButton}
-        onPress={() => {
-          router.push({
-            pathname: '../resumenSaliente',
-            params: { 
-              productosSeleccionados: JSON.stringify(productosSeleccionados()),
-            }
-          });
-        }}
+        onPress={()=>Comprar()}
       >
         <Text style={styles.buttonText}>Comprar</Text>
       </Pressable>
@@ -95,7 +129,7 @@ const Saliente = () => {
       {/* Botón para volver */}
       <Pressable
         style={styles.backButton}
-        onPress={() => router.push('./')}
+        onPress={() => volver()}
       >
         <Text style={styles.buttonText}>Volver</Text>
       </Pressable>
