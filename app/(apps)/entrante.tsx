@@ -57,10 +57,6 @@ const Saliente = () => {
     router.push('./main_providers')
 
   }
-  const actualizarStock = async () => {
-    await obtenerProductos(); // Refresca la lista de productos después de la compra
-    dispatch(vaciarCarrito()); // Vacía el carrito para evitar duplicados
-  };
   const Comprar = async () => {
     var productos = productosSeleccionados();
     console.log("Productos: ",productos);

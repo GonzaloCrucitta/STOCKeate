@@ -154,12 +154,6 @@ export default function TabLayout() {
                 <FontAwesome size={28} name="reply" />
               </Pressable>
             ),
-            headerLeft: () => (
-              <Pressable onPress={() => vaciarCarrito()} 
-                style={{ width: 30, height: 30, borderRadius: 15, marginLeft: 10 }}>
-                <FontAwesome size={28} name='repeat' />
-              </Pressable>
-            ),
           }}
           />
         <Tabs.Screen
