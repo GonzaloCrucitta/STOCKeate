@@ -179,7 +179,7 @@ async function putFoto(uri_foto: string) {//subir foto a bd
 
       {/* Información del perfil */}
       <Text style={styles.profileName}>{nombre}</Text>
-      <Text style={styles.profileEmail}>email: {imageUri}</Text>
+      <Text style={styles.profileEmail}>email: {email}</Text>
       <Text style={styles.profileEmail}>id: {role}</Text>
 
       {/* Botón de cerrar sesión */}
