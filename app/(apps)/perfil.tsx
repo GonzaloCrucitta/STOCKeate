@@ -183,11 +183,11 @@ async function putFoto(uri_foto: string) {//subir foto a bd
       
     </Pressable>
 
-    <Text style={styles.profileName}>{nombre}</Text>
-    <Text style={styles.profileEmail}>Email: {email}</Text>
-    <Text style={styles.profileEmail}>Rol: {role}</Text>
-    <Text style={styles.profileEmail}>ID: {id}</Text>
-  
+      {/* Información del perfil */}
+      <Text style={styles.profileName}>{nombre}</Text>
+      <Text style={styles.profileEmail}>email: {email}</Text>
+      <Text style={styles.profileEmail}>id: {role}</Text>
+
       {/* Botón de cerrar sesión */}
       <Pressable style={styles.pressableButton} onPress={() => salir()}>
         <Text style={styles.buttonText}>Cerrar Sesión</Text>
