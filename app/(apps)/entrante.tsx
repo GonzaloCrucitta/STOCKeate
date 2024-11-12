@@ -12,9 +12,7 @@ const Saliente = () => {
   const productosSeleccionados = () => articulos.filter((item) => item.cantidad_compra > 0);
   
   //cargar los productos al entrar a la pagina
-  /* useEffect(() => {
-    obtenerProductos();
-  }, []); */
+
   useFocusEffect(
     useCallback(() => {
       obtenerProductos(); // Recargar los productos cuando la pantalla reciba el foco
@@ -53,8 +51,8 @@ const Saliente = () => {
   };
   const Comprar = async () => {
     var productos = productosSeleccionados();
-    vaciarCarrito();
-    console.log("Productos: ",productos);
+    dispatch(vaciarCarrito());
+    //console.log("Productos: ",productos);
     var i=0;
     while (i<productos.length){
       handleSeleccionarArticulo(productos[i].id_producto,productos[i].nombre_producto,productos[i].precio, productos[i].cantidad_compra);

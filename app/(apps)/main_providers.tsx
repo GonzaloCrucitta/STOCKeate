@@ -48,9 +48,6 @@ export default function ProvidersMainApp() {
       <Pressable style={styles.pressableButton} onPress={() => router.push('../entrante')}>
         <Text style={styles.buttonText}>Re Stock</Text>
       </Pressable>
-      <Pressable style={styles.pressableButton} onPress={() => router.push('../saliente')}>
-        <Text style={styles.buttonText}>Venta</Text>
-      </Pressable>
       <Pressable style={styles.pressableButton} onPress={() => router.push('../pedidos_pendientes')}>
         <Text style={styles.buttonText}>Pedidos Pendientes</Text>
       </Pressable>

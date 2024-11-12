@@ -120,7 +120,7 @@ const ArticuloProveedor = () => {
 
       const createdProducto = await response.json();
       console.log('Producto creado', createdProducto);
-
+      setIsLoading(false);
       router.push('./stock'); // Redirigimos a la página de stock
 
     } catch (error) {

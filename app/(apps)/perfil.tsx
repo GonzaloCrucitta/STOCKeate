@@ -23,7 +23,7 @@ export default function PerfilPage() {
   const dispatch = useDispatch();
   const defaultUri = '../../components/perfil.png'; // URI de imagen por defecto
   const [imageUri, setImageUri] = useState('');
-
+//A veces useFocusEffect puede comportarse de forma inconsistente en Expo Go. Una alternativa es utilizar useIsFocused, que es un hook para saber si la pantalla está enfocada, y desencadenar el getUri cada vez que cambia el foco.
   useEffect(() => {getUri()}, []);
   useFocusEffect(
     useCallback(() => {

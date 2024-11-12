@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { FlatList, Text, Image, View, Pressable, Alert } from 'react-native';
 import styles from './styles';
 import { router, useFocusEffect } from 'expo-router';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const Componentes = () => {
   const [articulos, setArticulos] = useState<{ foto: string, id_producto: number, nombre_producto: string, precio: number, cantidad_stock: number, cantidad_compra: number }[]>([]);
@@ -50,12 +50,12 @@ const Componentes = () => {
     }
   };
 
-  const Item = ({ image, descripcion, stock }: { image: any, descripcion: string, stock: number }) => {
+  const Item = ({ image, nombre, stock }: { image: any, nombre: string, stock: number }) => {
     return (
       <Pressable style={styles.linkButton} onPress={() => router.push('../articulo')}>
         <View style={styles.itemContainer}>
           <Image source={{ uri: image }} style={styles.image} />
-          <Text style={styles.text}>{descripcion}</Text>
+          <Text style={styles.text}>{nombre}</Text>
           <Text style={styles.stock}>{stock} en stock</Text>
         </View>
       </Pressable>
@@ -64,9 +64,6 @@ const Componentes = () => {
 
   return (
     <View>
-      <Pressable style={styles.pressableButton} onPress={() => router.push('../articulo')}>
-        <Text style={styles.buttonText}>Nuevo Articulo</Text>
-      </Pressable>
       <FlatList
         showsHorizontalScrollIndicator={false}
         data={articulos}

@@ -7,6 +7,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width:'100%',
   },
+  container_resumen: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: '#ffffff',
+  },
   container_articulo: {
     padding: 20
   },
@@ -100,6 +105,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
     width:'100%',
   },
+  itemContainer_resumen: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+  },
     title: {
     fontSize: 32,
   },
@@ -107,6 +118,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 10,
+  },
+  stock_resumen: {
+    flex: 1,
+    fontSize: 12,
+    textAlign: 'center',
   },
   stock_image: {
     width:260,
@@ -425,10 +441,17 @@ const styles = StyleSheet.create({
     flex:1,
     textAlign:'center',
   },
+  headerText_resumen: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   row: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
@@ -576,6 +599,14 @@ const styles = StyleSheet.create({
   stageTextPedidoCliente: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  priceInput: {
+    width: 60,
+    padding: 5,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    textAlign: 'center',
   },
 
 
