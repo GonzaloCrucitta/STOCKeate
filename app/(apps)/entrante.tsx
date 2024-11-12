@@ -51,14 +51,9 @@ const Saliente = () => {
   const handleSeleccionarArticulo = (id_producto: number, nombre: string, precio: number, cantidad:number) => {
     dispatch(agregarProductos({ id_producto, nombre, precio, cantidad }));
   };
-
-  function volver(){
-    vaciarCarrito();
-    router.push('./main_providers')
-
-  }
   const Comprar = async () => {
     var productos = productosSeleccionados();
+    vaciarCarrito();
     console.log("Productos: ",productos);
     var i=0;
     while (i<productos.length){
@@ -120,14 +115,6 @@ const Saliente = () => {
         onPress={()=>Comprar()}
       >
         <Text style={styles.buttonText}>Comprar</Text>
-      </Pressable>
-
-      {/* Botón para volver */}
-      <Pressable
-        style={styles.backButton}
-        onPress={() => volver()}
-      >
-        <Text style={styles.buttonText}>Volver</Text>
       </Pressable>
     </View>
   );
