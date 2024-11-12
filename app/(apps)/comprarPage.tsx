@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, ScrollView, FlatList, TouchableOpacity, Button, Alert } from 'react-native';
+import { Text, View, ScrollView, FlatList, TouchableOpacity, Button, Alert, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { agregarProducto, eliminarProducto } from './redux/store'; // Ruta del archivo store
 import styles from './styles';
 
 const ComprarPage: React.FC = () => {
-  const [articulos, setArticulos] = useState<{ id_producto: number, nombre_producto: string, precio: number }[]>([]);
+  const [articulos, setArticulos] = useState<{ id_producto: number, nombre_producto: string, precio: number ,foto: string }[]>([]);
   const carrito = useSelector((state: any) => state.carrito.items);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -64,7 +64,8 @@ const ComprarPage: React.FC = () => {
             onPress={() => handleSeleccionarArticulo(item.id_producto, item.nombre_producto, item.precio)}
             style={styles.botonProductoComprarPage}
           >
-            <Text>{item.nombre_producto} - ${item.precio.toFixed(2)}</Text>
+            <Text>{item.nombre_producto} - ${item.precio.toFixed(2)}</Text><Image source={{uri:'http://localhost:4000/foto/download/'+item.foto}}
+            style={{ width: 80, height: 80, marginTop: 5 }}/>
           </TouchableOpacity>
         )}
       />
