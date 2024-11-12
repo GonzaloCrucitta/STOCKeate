@@ -37,10 +37,9 @@ const componentes = () => {
     try {
       const response = await fetch('http://localhost:4000/productos/provedor/'+id);
       if (response.ok) {
-        const productosSinfoto = await response.json();
-        obtenerfoto(productosSinfoto)
-        console.log("Todos los productos obtenidos: ",productosSinfoto);
-        
+        const producto = await response.json();
+        console.log("Todos los productos obtenidos: ",producto);
+        setArticulos(producto);
       } else {
         Alert.alert('Error', 'No se pudieron obtener los productos.');
       }
@@ -50,13 +49,13 @@ const componentes = () => {
     }
   };
   
-  const Item = ({ image, descripcion, stock }: { image: any, descripcion: string, stock: number }) => {
+  const Item = ({ image, nombre, stock }: { image: any, nombre: string, stock: number }) => {
     return (
           <Pressable style={styles.linkButton}
            onPress={() => router.push('../articulo')}>
             <View style={styles.itemContainer}>
-              <Image source={image} style={styles.image} />
-              <Text style={styles.text}>{descripcion}</Text>
+              <Image source={"http://localhost:4000/foto/download/"+image} style={styles.image} />
+              <Text style={styles.text}>{nombre}</Text>
               <Text style={styles.stock}>{stock} en stock</Text>
             </View>
           </Pressable>
@@ -68,18 +67,18 @@ const componentes = () => {
       id: number;
     };
   }
-  
   async function obtenerfoto(productosSinfoto: any) {
     console.log("se trata de hacer un fetch a "+productosSinfoto.foto)
     
-      const response = await fetch('http://localhost:4000/foto/download/'+productosSinfoto.foto.split('\\').pop())
+      const response = await fetch('http://localhost:4000/foto/download/'+productosSinfoto.foto)
       if (response.ok) {
         const producto = await response.json();
         console.log("foto : ",producto.foto);
-        setArticulos(producto);
+        return producto;
       } else {
         Alert.alert('Error', 'No se pudieron obtener la foto.');
       }
+
   }
   
   const id= useSelector((state: RootState) => state.user.id);
@@ -100,7 +99,7 @@ const componentes = () => {
         renderItem={({ item }) =>
           <Item
             image={item.foto}
-            descripcion={item.nombre_producto}
+            nombre={item.nombre_producto}
             stock={item.cantidad_stock}
             />}
         //keyExtractor={(item) => item.CodigoBarras}
