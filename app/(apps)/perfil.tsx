@@ -23,9 +23,11 @@ export default function PerfilPage() {
   const dispatch = useDispatch();
   const defaultUri = '../../components/perfil.png'; // URI de imagen por defecto
   const [imageUri, setImageUri] = useState('');
+
   useEffect(() => {getUri()}, []);
   useFocusEffect(
     useCallback(() => {
+      console.log('PerfilPage: Ejecutando getUri al volver al foco');
       getUri(); // Recargar los productos cuando la pantalla reciba el foco
     }, [])
   );
@@ -79,49 +81,49 @@ const subirImagen = async (uri: string | null) => {
 
 };
 
-  async function getUri() {//obtener foto en bd
-    setImageUri(defaultUri)
-    try {
-      if (role ==="Proveedor"){
-        const response = await fetch("http://localhost:4000/provedores/" + id, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+async function getUri() { // obtener foto en bd
+  try {
+    let uri_foto = null;
+    
+    if (role === "Proveedor") {
+      const response = await fetch("http://localhost:4000/provedores/" + id, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
         const usuario = await response.json();
-        var uri_foto = usuario.foto;
-      if(await uri_foto){
-        setImageUri('http://localhost:4000/foto/download/' + uri_foto);
-      }
-      if (!response.ok) {
+        uri_foto = usuario.foto;
+      } else {
         throw new Error('No hay respuesta del servidor al pedir foto');
       }
-      }
-      else{
-        const response = await fetch("http://localhost:4000/cliente/buscar/id/" + id, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+    } else {
+      const response = await fetch("http://localhost:4000/cliente/buscar/id/" + id, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
         const usuario = await response.json();
-        var uri_foto = usuario.foto;
-        if(await uri_foto){
-          setImageUri('http://localhost:4000/foto/download/' + uri_foto);
-        }
-        if (!response.ok) {
-          throw new Error('No hay respuesta del servidor al pedir foto');
-        }
+        uri_foto = usuario.foto;
+      } else {
+        throw new Error('No hay respuesta del servidor al pedir foto');
       }
-    } catch (error) {
-      console.error('Error al obtener foto:', error);
-      
     }
-    console.log('uri del usuario:' + await uri_foto); //archivo-20241112_133051.jpg
-    //const serverUri = 'http://localhost:4000/foto/download/' + uri_foto;
-     
+
+    // Asigna la imagen obtenida del servidor o la imagen por defecto
+    setImageUri(uri_foto ? `http://localhost:4000/foto/download/${uri_foto}` : defaultUri);
+    
+  } catch (error) {
+    console.error('Error al obtener foto:', error);
+    setImageUri(defaultUri); // Establece la imagen por defecto solo si hay un error
   }
+}
+
 async function putFoto(uri_foto: string) {//subir foto a bd
     console.log('Se carga: ',JSON.stringify({ foto: uri_foto }));
     console.log("uri: ",imageUri);
@@ -155,6 +157,10 @@ async function putFoto(uri_foto: string) {//subir foto a bd
     } catch (error) {
       console.error('Error al subir foto:', error);
     }
+    finally{
+      //router.push("./perfil");
+      router.dismiss()
+    }
   }
 
 
@@ -162,26 +168,26 @@ async function putFoto(uri_foto: string) {//subir foto a bd
     // Vaciar tanto la información del usuario como el carrito
     dispatch(vaciar());
     dispatch(vaciarCarrito());
-    console.log("Rol: " + role);
+    console.log("se cerro la sesion");
     router.push('/');
   }
 
   return (
     <View style={styles.container}>
-      {/* Imagen del perfil */}
-      <Pressable onPress={()=>agregarImagen()}>
-
+    <Pressable onPress={() => agregarImagen()}>
+      
         <Image
-          source={{ uri: imageUri || defaultUri }} // Reemplaza con la ruta de tu imagen
+          source={{ uri: imageUri }}
           style={styles.profileImage}
-          />
-        </Pressable>
+        />
+      
+    </Pressable>
 
-      {/* Información del perfil */}
-      <Text style={styles.profileName}>{nombre}</Text>
-      <Text style={styles.profileEmail}>email: {imageUri}</Text>
-      <Text style={styles.profileEmail}>id: {role}</Text>
-
+    <Text style={styles.profileName}>{nombre}</Text>
+    <Text style={styles.profileEmail}>Email: {email}</Text>
+    <Text style={styles.profileEmail}>Rol: {role}</Text>
+    <Text style={styles.profileEmail}>ID: {id}</Text>
+  
       {/* Botón de cerrar sesión */}
       <Pressable style={styles.pressableButton} onPress={() => salir()}>
         <Text style={styles.buttonText}>Cerrar Sesión</Text>
@@ -189,5 +195,6 @@ async function putFoto(uri_foto: string) {//subir foto a bd
     </View>
   );
 }
+
 
 
