@@ -20,7 +20,9 @@ export default function PendingOrdersPage() {
 
     // Definir fetchPendingOrders para poder reutilizarla
     const fetchPendingOrders = useCallback(async () => {
-        setLoading(true);  // Mostrar el indicador de carga mientras se obtienen los pedidos
+        const sleep = (ms: number | undefined) => new Promise(r => setTimeout(r, ms));
+        setLoading(true);
+        await sleep(1300)
         try {
             const response = await fetch(`http://localhost:4000/crearpedidos/pedidos-pendientes/${providerId}`);
             

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator, StyleSheet, Button, Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 import { router } from 'expo-router';
+import { time } from 'console';
 
 interface RootState {
   user: {
@@ -41,7 +42,9 @@ const OrderPage = () => {
   const idCliente = useSelector((state: RootState) => state.user.id);
 
   const fetchPedidos = async () => {
+    const sleep = (ms: number | undefined) => new Promise(r => setTimeout(r, ms));
     setLoading(true);
+    await sleep(1300)
     try {
       const response = await fetch(`http://localhost:4000/crearpedidos/estado-pedido-cliente/${idCliente}`);
       if (!response.ok) {
