@@ -35,9 +35,8 @@ const Entrante = () => {
       ...prev,
       [idProducto]: precio,
     }));
-    
      // Recalcula el total en función de los precios actualizados
-  const nuevoTotal = carritoItems.reduce((acc, item) => {
+    const nuevoTotal = carritoItems.reduce((acc, item) => {
     const precioUnitario = preciosEditados[item.id_producto] || item.precio;
     return acc + (precioUnitario * item.cantidad);
   }, 0);
@@ -45,9 +44,6 @@ const Entrante = () => {
   };
   const dispatch = useDispatch();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const handleConfirmarCompra = () => {
-    setIsModalVisible(true);
-  };
   const confirmarCompraEnModal = () => {
     setIsModalVisible(false);
     ConfirmarCompra();
@@ -138,15 +134,40 @@ const Entrante = () => {
         )}
         style={styles.flatList}
       />
-      <Text style={styles.text}>total: ${total}</Text>
+      {/* <Text style={styles.text}>total: ${total}</Text> */}
 
       {/* Botón para ir a la página de resumen */}
       <Pressable
         style={styles.sellButton}
-        onPress={()=>ConfirmarCompra() }
+        onPress={()=>setIsModalVisible(true) }
       >
         <Text style={styles.buttonText}>Confirmar</Text>
       </Pressable>
+      {/* Modal de confirmación */}
+    <Modal
+      visible={isModalVisible}
+      transparent={true}
+      animationType="slide"
+      onRequestClose={() => setIsModalVisible(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalText}>Total: {preciototal}</Text>
+          <Pressable
+            style={styles.confirmButton}
+            onPress={confirmarCompraEnModal}
+          >
+            <Text style={styles.buttonText}>Confirmar Compra</Text>
+          </Pressable>
+          <Pressable
+            style={styles.confirmButton}
+            onPress={() => setIsModalVisible(false)}
+          >
+            <Text style={styles.buttonText}>Cancelar</Text>
+          </Pressable>
+        </View>
+      </View>
+    </Modal>
     </View>
   );
 }
