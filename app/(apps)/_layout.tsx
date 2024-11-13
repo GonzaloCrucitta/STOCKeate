@@ -31,13 +31,13 @@ export default function TabLayout() {
     <Provider store={store}>
 
       <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
-        <Tabs.Screen
+      <Tabs.Screen
           name="index"
           options={{
             title: 'Home',
-            tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
+            tabBarStyle: { display: 'none' }
           }}
-          />
+        />
         <Tabs.Screen
           name="main_providers"
           options={{
