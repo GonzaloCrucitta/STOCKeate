@@ -14,6 +14,7 @@ const ArticuloProveedor = () => {
   const [codigoBarras, setCodigoBarras] = useState('1234567890');
   const [tags, setTags] = useState(['electrónica', 'hogar']);
   const [cantidad, setCantidad] = useState(10);
+  const [preciocompra, setPreciocompra] = useState('7.0');
   const [precio, setPrecio] = useState('10.0');
   const [descripcion, setDescripcion] = useState('Descripción del producto');
   const [imagen, setImagen] = useState<string | null>(null);
@@ -36,6 +37,14 @@ const ArticuloProveedor = () => {
     const isValidInput = /^(\d*\.?\d*)$/.test(value);
     if (isValidInput) {
       setPrecio(value);
+    }
+  };
+
+  const handlePreciocompraChange = (value:string) => {
+    // Asegurarse de que el valor solo contenga números y el punto decimal
+    const isValidInput = /^(\d*\.?\d*)$/.test(value);
+    if (isValidInput) {
+      setPreciocompra(value);
     }
   };
   // Función para seleccionar la imagen
@@ -101,7 +110,7 @@ const ArticuloProveedor = () => {
       precio: Number(precio)*1.2,
       tags: tags[0], // Solo agregamos el primer tag, puedes modificar esto según tus necesidades
       foto: imagenUrl.split('\\').pop(), // Ruta de la imagen que subimos
-      preciocompra: Number(precio),
+      preciocompra: Number(preciocompra),
     };
 
     // Enviamos los datos del producto al servidor
@@ -122,7 +131,6 @@ const ArticuloProveedor = () => {
       console.log('Producto creado', createdProducto);
       setIsLoading(false);
       router.push('./stock'); // Redirigimos a la página de stock
-
     } catch (error) {
       console.error('Error al crear el producto:', error);
       setIsLoading(false); // Detenemos la carga si hubo un error
@@ -203,6 +211,16 @@ const ArticuloProveedor = () => {
         value={cantidad.toString()}
         onChangeText={(value) => setCantidad(parseInt(value))}
       />
+
+<Text style={styles.stock}>preciocompra:</Text>
+      <TextInput
+        style={styles.input}
+        keyboardType="decimal-pad"
+        value={preciocompra.toString()}
+        onChangeText={handlePreciocompraChange}
+      />
+      
+
       
 
       {/* Precio */}

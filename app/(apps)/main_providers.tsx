@@ -38,7 +38,6 @@ export default function ProvidersMainApp() {
 
   return (
     <View style={styles.container}>
-      <Text>mail: {email}   Nombre: {nombre} id: {id}</Text>
       <Pressable style={styles.pressableButton} onPress={() => router.push('../stock')}>
         <Text style={styles.buttonText}>Stock</Text>
       </Pressable>
