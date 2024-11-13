@@ -23,6 +23,9 @@ const userSlice = createSlice({
     setRole: (state, action: PayloadAction<string>) => {
       state.role = action.payload;
     },
+    setUriFoto: (state, action: PayloadAction<string>) => {
+      state.urifoto = action.payload;
+    },
     vaciar: (state)=>{
       state.name ='';
       state.id ='';
@@ -77,7 +80,7 @@ const store = configureStore({
 });
 
 // Exportar las acciones
-export const { setEmail, setName, setId, setRole, vaciar } = userSlice.actions;
+export const { setEmail, setName, setId, setRole, setUriFoto,vaciar } = userSlice.actions;
 export const { agregarProducto, agregarProductos, eliminarProducto, vaciarCarrito } = carritoSlice.actions;
 
 export default store;
