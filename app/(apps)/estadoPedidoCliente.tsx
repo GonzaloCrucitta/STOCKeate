@@ -79,13 +79,7 @@ const OrderPage = () => {
       
       <Button title="Actualizar pedidos" onPress={fetchPedidos} color="#007bff" />
 
-      {/* Botón estilizado para "Volver" */}
-      <Pressable
-        style={styles.backButton}
-        onPress={() => router.push('../cliente')}
-      >
-        <Text style={styles.backButtonText}>Volver</Text>
-      </Pressable>
+      
 
       <FlatList
         data={pedidos}

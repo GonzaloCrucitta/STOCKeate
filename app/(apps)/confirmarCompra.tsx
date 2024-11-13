@@ -98,9 +98,7 @@ const ConfirmarCompra: React.FC = () => {
         </View>
       )}
 
-      <View style={{ marginTop: 20 }}>
-      <Button title="Volver a la compra" onPress={handleVolver} />
-      </View>
+      
     </ScrollView>
   );
 };
