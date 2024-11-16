@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, FlatList, KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Pressable, StyleSheet } from 'react-native';
 import { useSelector } from 'react-redux';
 import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 interface RootState {
     user: {
@@ -14,6 +15,7 @@ interface RootState {
 export default function PendingOrdersPage() {
     const [orders, setOrders] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
     // Obtener ID del proveedor desde el store
     const providerId = useSelector((state: RootState) => state.user.id);
@@ -22,9 +24,9 @@ export default function PendingOrdersPage() {
     const fetchPendingOrders = useCallback(async () => {
         const sleep = (ms: number | undefined) => new Promise(r => setTimeout(r, ms));
         setLoading(true);
-        await sleep(1300)
+        await sleep(1300);
         try {
-            const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+"/crearpedidos/pedidos-pendientes/"+providerId);
+            const response = await fetch(`${process.env.EXPO_PUBLIC_URL_SERVIDOR}/crearpedidos/pedidos-pendientes/${providerId}`);
             
             if (!response.ok) {
                 throw new Error('Error en la solicitud de pedidos pendientes');
@@ -45,7 +47,11 @@ export default function PendingOrdersPage() {
 
     const handleChangeOrderStatus = async (idDetallePedido: number, newStatus: string) => {
         try {
-            const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+`/crearpedidos/actualizar-estado-detalle/${idDetallePedido}`, {
+            const url = newStatus === 'aceptado'
+                ? `${process.env.EXPO_PUBLIC_URL_SERVIDOR}/crearpedidos/aceptar/${idDetallePedido}`
+                : `${process.env.EXPO_PUBLIC_URL_SERVIDOR}/crearpedidos/actualizar-estado-detalle/${idDetallePedido}`;
+
+            const response = await fetch(url, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -54,10 +60,11 @@ export default function PendingOrdersPage() {
             });
 
             if (!response.ok) {
-                throw new Error('Error al actualizar el estado del pedido');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Error al actualizar el estado del pedido');
             }
 
-            // Actualizar el estado del pedido localmente
+            // Actualizar el estado del pedido localmente si se acepta o rechaza correctamente
             setOrders(prevOrders => 
                 prevOrders.map(order => 
                     order.id_detalle_pedido === idDetallePedido 
@@ -67,6 +74,7 @@ export default function PendingOrdersPage() {
             );
         } catch (error) {
             console.error("Error updating order status:", error);
+            alert(error.message); // Mostrar el mensaje de error si ocurre un problema
         }
     };
 
@@ -188,13 +196,6 @@ const styles = StyleSheet.create({
     reloadButton: {
         marginTop: 20,
         backgroundColor: '#28a745',
-        padding: 10,
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    backButton_Pedidos_Pendientes: {
-        marginTop: 20,
-        backgroundColor: '#007bff',
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',
