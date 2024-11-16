@@ -17,7 +17,7 @@ const Componentes = () => {
 
   const obtenerProductos = async () => {
     try {
-      const response = await fetch('http://localhost:4000/productos/provedor/' + id);
+      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/productos/provedor/' + id);
       if (response.ok) {
         const productos = await response.json();
         const productosConFotos = await Promise.all(
@@ -39,7 +39,7 @@ const Componentes = () => {
 
   const obtenerFoto = async (fotoPath: string) => {
     try {
-      const response = await fetch('http://localhost:4000/foto/download/' + fotoPath.split('\\').pop());
+      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/foto/download/' + fotoPath.split('\\').pop());
       if (response.ok) {
         return response.url; // Devuelve la URL de la imagen directamente
       }

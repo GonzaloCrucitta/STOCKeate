@@ -56,7 +56,7 @@ const Entrante = () => {
       };
       //Obtener la cantidad de articulos antes de hacerle un put
       try {
-        const response = await   fetch("http://localhost:4000/productos/"+item.id_producto, {
+        const response = await   fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+"/productos/"+item.id_producto, {
           method: 'GET',
           headers: {
           'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ const Entrante = () => {
       console.log("se intenta hacer PUT con: "+JSON.stringify(Producto))
       
        try {
-        const putResponse = await   fetch("http://localhost:4000/productos/"+item.id_producto, {
+        const putResponse = await   fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+"/productos/"+item.id_producto, {
           method: 'PUT',
           headers: {
           'Content-Type': 'application/json',
@@ -152,7 +152,7 @@ const Entrante = () => {
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalText}>Total: {preciototal}</Text>
+          {/* <Text style={styles.modalText}>Total: {preciototal}</Text> */}
           <Pressable
             style={styles.confirmButton}
             onPress={confirmarCompraEnModal}

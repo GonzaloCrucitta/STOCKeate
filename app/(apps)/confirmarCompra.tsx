@@ -31,7 +31,7 @@ const ConfirmarCompra: React.FC = () => {
         cantidad: producto.cantidad,
       }));
 
-      const response = await fetch('http://localhost:4000/crearpedidos/crear', {
+      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/crearpedidos/crear', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

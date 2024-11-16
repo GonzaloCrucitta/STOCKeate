@@ -15,7 +15,7 @@ function AppComponent() {
   const handleLogin = async () => {
     try {
       // Intentar verificar el usuario como "Proveedor"
-      let response = await fetch(`http://localhost:4000/provedores/email/${email}`);
+      let response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+`/provedores/email/${email}`);
       if (response.status === 200) {
         const proveedor = await response.json();
         if (proveedor.contrasenia === password) {
@@ -36,7 +36,7 @@ function AppComponent() {
       }
 
       // Si no es un proveedor, intentar verificar como "Cliente"
-      response = await fetch(`http://localhost:4000/cliente/buscar/email/${email}`);
+      response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+`/cliente/buscar/email/${email}`);
       if (response.status === 200) {
         const cliente = await response.json();
         if (cliente.contrasena === password) {

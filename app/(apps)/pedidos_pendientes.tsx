@@ -24,7 +24,7 @@ export default function PendingOrdersPage() {
         setLoading(true);
         await sleep(1300)
         try {
-            const response = await fetch(`http://localhost:4000/crearpedidos/pedidos-pendientes/${providerId}`);
+            const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+"/crearpedidos/pedidos-pendientes/"+providerId);
             
             if (!response.ok) {
                 throw new Error('Error en la solicitud de pedidos pendientes');
@@ -45,7 +45,7 @@ export default function PendingOrdersPage() {
 
     const handleChangeOrderStatus = async (idDetallePedido: number, newStatus: string) => {
         try {
-            const response = await fetch(`http://localhost:4000/crearpedidos/actualizar-estado-detalle/${idDetallePedido}`, {
+            const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+`/crearpedidos/actualizar-estado-detalle/${idDetallePedido}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

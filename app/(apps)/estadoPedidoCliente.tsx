@@ -46,7 +46,7 @@ const OrderPage = () => {
     setLoading(true);
     await sleep(1300)
     try {
-      const response = await fetch(`http://localhost:4000/crearpedidos/estado-pedido-cliente/${idCliente}`);
+      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+`/crearpedidos/estado-pedido-cliente/${idCliente}`);
       if (!response.ok) {
         throw new Error('Error al obtener los pedidos');
       }

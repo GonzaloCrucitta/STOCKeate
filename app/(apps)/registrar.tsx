@@ -92,19 +92,20 @@ export default function App() {
     contrasenia: password,
     nombre_empresa: company, 
     dni: dniNumber,
-    foto: 'default'
+    foto: 'articulo_por_defecto.png'
   };
   
   const newCliente = {
     usuario: name,
     contrasena: password,
     email: email,
-    nombre: name  
+    nombre: name,
+    foto:'articulo_por_defecto.png',  
   };
 
   async function crearProveedor(proveedor) {
     try {
-      const response = await fetch("http://localhost:4000/provedores", {
+      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+"/provedores", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +128,7 @@ export default function App() {
 
   async function crearCliente(cliente) {
     try {
-      const response = await fetch("http://localhost:4000/cliente/agregar", {
+      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+"/cliente/agregar", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

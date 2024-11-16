@@ -20,7 +20,7 @@ const Saliente = () => {
   );
   const obtenerProductos = async () => {
       try {
-        const response = await fetch('http://localhost:4000/productos/provedor/'+id);
+        const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/productos/provedor/'+id);
         if (response.ok) {
           const productos = await response.json();
           console.log("Todos los productos obtenidos: ",productos);

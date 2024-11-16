@@ -26,7 +26,7 @@ const ClientePage = () => {
     <View style={styles.container}>
       <Text style={styles.nombreCliente}>Cliente:{nombre}
       </Text>
-
+ 
       <Button title="Ir a la Compra" onPress={handleComprar} />
       <Button title="Ver Estado del Pedido" onPress={handleVerEstadoPedido} />
     </View>

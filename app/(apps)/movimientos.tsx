@@ -27,7 +27,7 @@ export default function ProductSummaryPage() {
     const fetchProductosResumen = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:4000/resumen/ingresos-y-gastos/${providerId}`);
+            const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+`/resumen/ingresos-y-gastos/${providerId}`);
             
             if (!response.ok) {
                 throw new Error('Error al obtener el resumen de productos');

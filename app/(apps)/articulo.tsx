@@ -74,7 +74,7 @@ const ArticuloProveedor = () => {
         formData.append('archivo', blob, 'imagen.jpg'); // Añade el nombre del archivo aquí
 
         // Realiza la solicitud
-        const uploadResponse = await fetch('http://localhost:4000/foto/upload', {
+        const uploadResponse = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/foto/upload', {
             method: 'POST',
             body: formData,
             // No especifiques Content-Type manualmente
@@ -115,7 +115,7 @@ const ArticuloProveedor = () => {
 
     // Enviamos los datos del producto al servidor
     try {
-      const response = await fetch('http://localhost:4000/productos', {
+      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/productos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

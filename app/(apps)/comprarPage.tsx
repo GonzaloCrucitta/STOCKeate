@@ -15,7 +15,7 @@ const ComprarPage: React.FC = () => {
   useEffect(() => {
     const obtenerProductos = async () => {
       try {
-        const response = await fetch('http://localhost:4000/productos');
+        const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/productos');
         if (response.ok) {
           const productos = await response.json();
           setArticulos(productos);
@@ -64,7 +64,7 @@ const ComprarPage: React.FC = () => {
             onPress={() => handleSeleccionarArticulo(item.id_producto, item.nombre_producto, item.precio)}
             style={styles.botonProductoComprarPage}
           >
-            <Text>{item.nombre_producto} - ${item.precio.toFixed(2)}</Text><Image source={{uri:'http://localhost:4000/foto/download/'+item.foto}}
+            <Text>{item.nombre_producto} - ${item.precio.toFixed(2)}</Text><Image source={{uri:process.env.EXPO_PUBLIC_URL_SERVIDOR+'/foto/download/'+item.foto}}
             style={{ width: 80, height: 80, marginTop: 5 }}/>
           </TouchableOpacity>
         )}

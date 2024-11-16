@@ -61,7 +61,7 @@ const subirImagen = async (uri: string | null) => {
       formData.append('archivo', blob, 'imagen.jpg'); // Añade el nombre del archivo aquí
 
       // Realiza la solicitud
-      const uploadResponse = await fetch('http://localhost:4000/foto/upload', {
+      const uploadResponse = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/foto/upload', {
           method: 'POST',
           body: formData,
           // No especifiques Content-Type manualmente
@@ -86,7 +86,7 @@ async function getUri() { // obtener foto en bd
     let uri_foto = null;
     
     if (role === "Proveedor") {
-      const response = await fetch("http://localhost:4000/provedores/" + id, {
+      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+"/provedores/" + id, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ async function getUri() { // obtener foto en bd
         throw new Error('No hay respuesta del servidor al pedir foto');
       }
     } else {
-      const response = await fetch("http://localhost:4000/cliente/buscar/id/" + id, {
+      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+"/cliente/buscar/id/" + id, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ async function getUri() { // obtener foto en bd
     }
 
     // Asigna la imagen obtenida del servidor o la imagen por defecto
-    setImageUri(uri_foto ? `http://localhost:4000/foto/download/${uri_foto}` : defaultUri);
+    setImageUri(uri_foto ? process.env.EXPO_PUBLIC_URL_SERVIDOR+`/foto/download/${uri_foto}` : defaultUri);
     
   } catch (error) {
     console.error('Error al obtener foto:', error);
@@ -130,7 +130,7 @@ async function putFoto(uri_foto: string) {//subir foto a bd
     try {
       if (role =="Proveedor"){
 
-        const response = await fetch("http://localhost:4000/provedores/" + id, {
+        const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+"/provedores/" + id, {
           method: 'PUT',
           headers: {
           'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ async function putFoto(uri_foto: string) {//subir foto a bd
         }
       }
       else{
-        const response = await fetch("http://localhost:4000/cliente/actualizar/" + id, {
+        const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+"/cliente/actualizar/" + id, {
           method: 'PUT',
           headers: {
           'Content-Type': 'application/json',
