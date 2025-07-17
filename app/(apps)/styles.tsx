@@ -1,45 +1,69 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f6f8fa',
     alignItems: 'center',
     justifyContent: 'center',
-    width:'100%',
+    width: '100%',
+    paddingHorizontal: 24,
   },
   container_resumen: {
     flex: 1,
-    padding: 10,
-    backgroundColor: '#ffffff',
+    padding: 16,
+    backgroundColor: '#fff',
+    borderRadius: 18,
+    margin: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.07,
+    shadowRadius: 12,
+    elevation: 4,
   },
   container_articulo: {
-    padding: 20
+    padding: 24,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    margin: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
   buttonContainer: {
     alignItems: 'center',
   },
   pressableButton: {
-    backgroundColor: "#2196F3",
-    padding: 15,
-    borderRadius: 5,
-    paddingHorizontal: 40,
-    marginBottom: 10,
-
-    width:'40%',
-    alignSelf:'center',
-    alignItems:'center',
+    backgroundColor: '#2563eb',
+    paddingVertical: 16,
+    paddingHorizontal: 48,
+    borderRadius: 16,
+    marginTop: 24,
+    width: '80%',
+    alignSelf: 'center',
+    alignItems: 'center',
+    shadowColor: '#2563eb',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    elevation: 6,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
   linkButton: {
     padding: 10,
   },
   linkText: {
-    color: '#2196F3',
+    color: '#2563eb',
     fontSize: 16,
+    fontWeight: '600',
   },
   loginFields: {
     width: '80%',
@@ -47,19 +71,23 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
+    borderColor: '#e5e7eb',
+    padding: 14,
+    borderRadius: 10,
+    marginBottom: 14,
     width: '100%',
+    backgroundColor: '#f9fafb',
+    fontSize: 16,
   },
   input2: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#e5e7eb',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     marginBottom: 10,
     width: '30%',
+    backgroundColor: '#f9fafb',
+    fontSize: 15,
   },
   roleSelectionContainer: {
     alignItems: 'center',
@@ -69,41 +97,57 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#1e293b',
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 50, 
+    marginBottom: 40,
   },
   logoImage: {
-    width: 100, 
+    width: 100,
     height: 100,
     resizeMode: 'contain',
-    marginBottom: 10, 
+    marginBottom: 10,
   },
   logoText: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
+    color: '#2563eb',
+    letterSpacing: 1,
   },
 
   //usados en la pagina de stock
-
   container_s: {
-      flex: 1,
+    flex: 1,
+    backgroundColor: '#f6f8fa',
   },
   item: {
-    backgroundColor: '#6ec0e0',
+    backgroundColor: '#fff',
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
+    borderRadius: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.10,
+    shadowRadius: 8,
+    elevation: 3,
   },
   itemContainer: {
-    flexDirection: 'row', // Alinea elementos horizontalmente
-    alignItems: 'center', // Alinea verticalmente en el centro
-    justifyContent: 'space-between', // Espacio entre elementos
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    width:'100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 14,
+    borderBottomWidth: 0,
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    marginBottom: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.07,
+    shadowRadius: 6,
+    elevation: 2,
   },
   itemContainer_resumen: {
     flexDirection: 'row',
@@ -111,94 +155,101 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 8,
   },
-    title: {
+  title: {
     fontSize: 32,
+    fontWeight: 'bold',
+    color: '#1e293b',
+    marginBottom: 18,
+    textAlign: 'center',
+    letterSpacing: 1,
   },
   stock: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: 'bold',
     marginLeft: 10,
+    color: '#2563eb',
   },
   stock_resumen: {
     flex: 1,
     fontSize: 12,
     textAlign: 'center',
+    color: '#64748b',
   },
   stock_image: {
-    width:260,
-    height:300,
-    borderWidth:2,
-    borderColor:'#e0e0e0',
-    resizeMode:'contain',
-    margin:8
+    width: 260,
+    height: 300,
+    borderWidth: 2,
+    borderColor: '#e0e0e0',
+    resizeMode: 'contain',
+    margin: 8,
+    borderRadius: 16,
+    backgroundColor: '#f9fafb',
   },
   tag: {
-    backgroundColor: '#e0e0e0',
-    padding: 5,
-    marginRight: 5,
-    borderRadius: 10,
+    backgroundColor: '#e0e7ef',
+    padding: 6,
+    marginRight: 6,
+    borderRadius: 12,
+    fontWeight: '600',
+    color: '#2563eb',
   },
-  
+
   // Usados en la pagina de registrar
   flatList: {
-    backgroundColor: 'white',
+    backgroundColor: '#f6f8fa',
     marginTop: 20,
   },
   image: {
     width: 50,
     height: 50,
     marginRight: 10,
+    borderRadius: 8,
+    backgroundColor: '#e0e7ef',
   },
   image_articulo: {
     width: 100,
     height: 100,
     marginRight: 10,
+    borderRadius: 12,
+    backgroundColor: '#e0e7ef',
   },
   text: {
     flex: 1,
-    color: 'black',
+    color: '#334155',
     fontSize: 16,
   },
   errorText: {
-    color: 'red', // Color del texto de error
-    marginBottom: 10, // Espacio entre el texto de error y el siguiente campo
+    color: '#ef4444',
+    marginBottom: 10,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 
   //pagina pedidos pendientes
-
   rowContainer: {
     flexDirection: 'column',
     width: '100%',
-    paddingHorizontal: 20, // Margen lateral
+    paddingHorizontal: 20,
     marginBottom: 20,
   },
-
-  // Estilo para la sección de "Agregar Pedido"
   inputSection: {
-    flex: 1,  // Ocupará la mitad del espacio disponible
-    width: '100%', // Espacio entre las dos secciones
+    flex: 1,
+    width: '100%',
   },
-
-  // Estilo para la lista de "Pedidos Pendientes"
   pendingOrdersSection: {
-    flex: 1,  // Ocupará la otra mitad del espacio
-    marginTop:10,
-    width: '100%'
+    flex: 1,
+    marginTop: 10,
+    width: '100%',
   },
-
-  // Título de la lista "Pedidos Pendientes"
   pendingOrdersTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+    color: '#1e293b',
   },
-
-  
-
-
   inputContainer: {
-    flexDirection: 'row', // Para alinear el TextInput y el botón en línea
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 10,
@@ -208,35 +259,39 @@ const styles = StyleSheet.create({
   orderItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 15,
-    alignItems: 'center',//
-    marginVertical: 5,
+    padding: 18,
+    alignItems: 'center',
+    marginVertical: 6,
     marginHorizontal: 10,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#ccc',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    borderWidth: 0,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
   },
   orderText: {
-    fontSize: 14,
-    color: '#333',
+    fontSize: 15,
+    color: '#334155',
     flex: 1,
   },
   completedText: {
-    textDecorationLine: 'line-through', // Marca el texto como completado
-    color: '#aaa',
+    textDecorationLine: 'line-through',
+    color: '#94a3b8',
   },
   orderActions: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   completeButton: {
-    color: '#4CAF50', // Verde para el botón de completar
+    color: '#22c55e',
     marginRight: 10,
     fontWeight: 'bold',
   },
   deleteButton: {
-    color: '#F44336', // Rojo para el botón de eliminar
+    color: '#ef4444',
     fontWeight: 'bold',
   },
   container_pedidos_pendientes: {
@@ -244,65 +299,83 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingHorizontal: 20,
     paddingVertical: 50,
-    justifyContent: 'flex-start',  // Alinea los elementos hacia el inicio
+    justifyContent: 'flex-start',
+    borderRadius: 18,
+    margin: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.07,
+    shadowRadius: 12,
+    elevation: 4,
   },
-
-  // Nueva caja de entrada más pequeña para pedidos pendientes
   input_pedidos_pendientes: {
     borderWidth: 1,
     borderColor: '#ccc',
-    padding: 8,  // Reducimos el padding
+    padding: 8,
     borderRadius: 5,
     marginBottom: 10,
-    width: '70%',  // Caja de texto más pequeña
-    alignSelf: 'center',  // Centra horizontalmente
+    width: '70%',
+    alignSelf: 'center',
+    backgroundColor: '#f9fafb',
   },
-
-  // Botón de agregar pedido más pequeño
   button_agregar_pedido: {
-    backgroundColor: "#2196F3",
-    padding: 10,  // Reducimos el padding
-    borderRadius: 5,
+    backgroundColor: "#2563eb",
+    padding: 10,
+    borderRadius: 8,
     marginVertical: 10,
     width: '40%',
-    alignSelf: 'center',  // Centrado horizontalmente
+    alignSelf: 'center',
     alignItems: 'center',
+    shadowColor: '#2563eb',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 2,
   },
-
-  // Caja de texto de cada pedido pendiente más pequeña
   orderItem_pedidos_pendientes: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,  // Reducimos el padding
+    padding: 10,
     marginVertical: 5,
     marginHorizontal: 10,
     backgroundColor: '#f9f9f9',
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#ccc',
+    borderRadius: 8,
+    borderWidth: 0,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 1,
   },
   backButton_Pedidos_Pendientes: {
-    backgroundColor: '#6c757d',
+    backgroundColor: '#64748b',
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 30,  // Separación superior para alejarlo de la lista
-    marginBottom:20,
+    marginTop: 30,
+    marginBottom: 20,
   },
 
   //usados en Saliente y resumenSaliente
-
   container_Sal: {
     flex: 1,
     padding: 16,
     backgroundColor: '#fff',
+    borderRadius: 18,
+    margin: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.07,
+    shadowRadius: 12,
+    elevation: 4,
   },
   heading: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',
+    color: '#1e293b',
   },
   itemContainer_Sal: {
     flexDirection: 'row',
@@ -313,18 +386,19 @@ const styles = StyleSheet.create({
   },
   text_Sal: {
     fontSize: 16,
-    color: '#333',
+    color: '#334155',
   },
   price: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#2563eb',
   },
   total: {
     fontSize: 18,
     fontWeight: 'bold',
     marginVertical: 16,
     textAlign: 'center',
+    color: '#1e293b',
   },
   input_Sal: {
     width: '100%',
@@ -333,40 +407,57 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 8,
     marginBottom: 16,
+    backgroundColor: '#f9fafb',
   },
   sellButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2563eb',
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 16,
+    shadowColor: '#2563eb',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 2,
   },
   backButton: {
-    backgroundColor: '#6c757d', // Color gris para el botón de volver
+    backgroundColor: '#64748b',
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
-  //Usados en perfil.tsx
 
+  //Usados en perfil.tsx
   profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 20,
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    marginBottom: 18,
+    borderColor: '#2563eb',
+    borderWidth: 3,
+    backgroundColor: '#e0e7ef',
+    shadowColor: '#2563eb',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
+    elevation: 8,
   },
   profileName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#1e293b',
+    marginBottom: 8,
+    letterSpacing: 0.5,
+    textAlign: 'center',
   },
   profileEmail: {
-    fontSize: 16,
-    color: 'gray',
-    marginBottom: 20,
+    fontSize: 17,
+    color: '#64748b',
+    marginBottom: 8,
+    textAlign: 'center',
   },
 
   //usados en resumenSaliente
@@ -374,23 +465,31 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 8,
+    color: '#1e293b',
   },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(30, 41, 59, 0.3)',
   },
   modalContent: {
-    width: '80%',
+    width: '85%',
     backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
+    padding: 28,
+    borderRadius: 16,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 10,
   },
   modalTitle: {
-    fontSize: 18,
-    marginBottom: 10,
+    fontSize: 20,
+    marginBottom: 14,
+    fontWeight: 'bold',
+    color: '#1e293b',
   },
   modalItem: {
     paddingVertical: 10,
@@ -401,17 +500,18 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 16,
     textAlign: 'center',
+    color: '#334155',
   },
   closeButton: {
-    marginTop: 20,
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 5,
+    marginTop: 24,
+    backgroundColor: '#2563eb',
+    padding: 12,
+    borderRadius: 8,
     width: '100%',
     alignItems: 'center',
   },
   clientButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2563eb',
     padding: 10,
     borderRadius: 8,
     justifyContent: 'center',
@@ -419,15 +519,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   confirmButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#22c55e',
     marginTop: 20,
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     width: '100%',
     alignItems: 'center',
   },
   addButton: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2563eb',
     padding: 12,
     borderRadius: 8,
     justifyContent: 'center',
@@ -436,161 +536,191 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 18,
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     fontWeight: 'bold',
-    flex:1,
-    textAlign:'center',
+    flex: 1,
+    textAlign: 'center',
+    color: '#1e293b',
   },
   headerText_resumen: {
     flex: 1,
     fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
+    color: '#64748b',
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    paddingVertical: 10,
+    borderBottomWidth: 0,
+    marginBottom: 6,
   },
   productItem: {
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    padding: 12,
+    backgroundColor: '#f1f5f9',
+    borderRadius: 8,
     fontSize: 16,
-    color: '#333',
+    color: '#334155',
+    marginBottom: 6,
   },
   searchButton: {
     position: 'absolute',
     right: 10,
     top: 20,
     padding: 8,
-    backgroundColor: '#ddd',
-    borderRadius: 5,
+    backgroundColor: '#e0e7ef',
+    borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   filteredListContainer: {
-    maxHeight: 150, // Limita la altura total de la lista
+    maxHeight: 150,
     marginVertical: 10,
     backgroundColor: '#f9f9f9',
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 5,
+    borderRadius: 8,
   },
 
   //Página Cliente
-
   containerCliente: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
   },
   nombreCliente: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#1e293b',
   },
   botonCompra: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#2563eb',
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 10,
     marginVertical: 10,
+    alignItems: 'center',
+    width: 200,
   },
   botonLogout: {
-    backgroundColor: '#6c757d',
+    backgroundColor: '#64748b',
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 10,
     marginVertical: 10,
+    alignItems: 'center',
+    width: 200,
   },
   botonTexto: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 17,
+    fontWeight: 'bold',
   },
 
   //comprarPage
-
   containerComprarPage: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#f6f8fa',
   },
   nombreClienteComprarPage: {
     fontSize: 18,
     marginBottom: 20,
+    color: '#1e293b',
   },
   botonesComprarPage: {
-    backgroundColor: 'blue',
+    backgroundColor: '#2563eb',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    borderRadius: 5,
+    borderRadius: 8,
     marginBottom: 15,
+    alignItems: 'center',
   },
   textoBotonComprarPage: {
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
+    fontWeight: 'bold',
   },
   carritoContainerComprarPage: {
     marginTop: 20,
   },
   carritoItemComprarPage: {
-    padding: 10,
-    backgroundColor: '#e0e0e0',
-    marginBottom: 5,
+    padding: 12,
+    backgroundColor: '#e0e7ef',
+    marginBottom: 7,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderRadius: 8,
   },
   textoCarritoComprarPage: {
-    fontSize: 14, 
+    fontSize: 15,
+    color: '#334155',
   },
   botonEliminarComprarPage: {
-    backgroundColor: 'red',
-    padding: 5,
-    borderRadius: 5,
+    backgroundColor: '#ef4444',
+    padding: 7,
+    borderRadius: 7,
   },
   textoBotonEliminarComprarPage: {
     color: 'white',
-    fontSize: 12,
+    fontSize: 13,
   },
   botonProductoComprarPage: {
     padding: 10,
     backgroundColor: 'lightgray',
     marginBottom: 5,
+    borderRadius: 8,
   },
 
   //formularioPago
-
-
   containerFormularioPago: {
     padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    margin: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
   titleFormularioPago: {
     fontSize: 20,
     marginBottom: 20,
+    color: '#1e293b',
+    fontWeight: 'bold',
   },
   buttonFormularioPago: {
-    backgroundColor: 'green',
-    padding: 10,
+    backgroundColor: '#22c55e',
+    padding: 12,
     alignItems: 'center',
+    borderRadius: 8,
+    marginTop: 10,
   },
   buttonTextFormularioPago: {
     color: 'white',
     fontSize: 16,
+    fontWeight: 'bold',
   },
 
-
   //estadoPedidoCliente
-
   orderStatusContainerPedidoCliente: {
     padding: 20,
     backgroundColor: '#fff',
     flexDirection: 'column',
     alignItems: 'center',
+    borderRadius: 16,
+    margin: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
   },
   stageContainerPedidoCliente: {
     marginVertical: 10,
@@ -599,6 +729,7 @@ const styles = StyleSheet.create({
   stageTextPedidoCliente: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#1e293b',
   },
   priceInput: {
     width: 60,
@@ -607,18 +738,96 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 5,
     textAlign: 'center',
+    backgroundColor: '#f9fafb',
   },
 
+  gradientBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
+clienteCard: {
+  backgroundColor: '#fff',
+  borderRadius: 28,
+  paddingVertical: 40,
+  paddingHorizontal: 28,
+  width: '90%',
+  alignItems: 'center',
+  shadowColor: '#2563eb',
+  shadowOffset: { width: 0, height: 10 },
+  shadowOpacity: 0.13,
+  shadowRadius: 30,
+  elevation: 10,
+  marginBottom: 30,
+},
 
+clienteTitle: {
+  fontSize: 34,
+  fontWeight: 'bold',
+  color: '#2563eb',
+  marginBottom: 8,
+  letterSpacing: 1,
+  textAlign: 'center',
+  fontFamily: 'System',
+},
+
+clienteNombre: {
+  fontSize: 22,
+  color: '#1e293b',
+  marginBottom: 32,
+  textAlign: 'center',
+  fontWeight: '600',
+  fontFamily: 'System',
+},
+
+clienteBotonesContainer: {
+  width: '100%',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: 18,
+},
+
+clienteBotonAzul: {
+  backgroundColor: '#2563eb',
+  paddingVertical: 18,
+  paddingHorizontal: 0,
+  borderRadius: 18,
+  marginBottom: 18,
+  width: '100%',
+  alignItems: 'center',
+  justifyContent: 'center',
+  shadowColor: '#2563eb',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.18,
+  shadowRadius: 10,
+  elevation: 6,
+},
+
+clienteBotonVerde: {
+  backgroundColor: '#22c55e',
+  paddingVertical: 18,
+  paddingHorizontal: 0,
+  borderRadius: 18,
+  width: '100%',
+  alignItems: 'center',
+  justifyContent: 'center',
+  shadowColor: '#22c55e',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.15,
+  shadowRadius: 10,
+  elevation: 5,
+},
+
+clienteBotonTexto: {
+  color: '#fff',
+  fontSize: 19,
+  fontWeight: 'bold',
+  letterSpacing: 0.5,
+  textTransform: 'uppercase',
+  textAlign: 'center',
+  fontFamily: 'System',
+},
 });
-
-
-
-
-
-
-
-
 
 export default styles;
