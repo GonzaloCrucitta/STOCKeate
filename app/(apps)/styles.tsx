@@ -828,6 +828,57 @@ clienteBotonTexto: {
   textAlign: 'center',
   fontFamily: 'System',
 },
+
+mainContainer: {
+  flex: 1,
+  backgroundColor: '#f4f6fb',
+  alignItems: 'center',
+  justifyContent: 'center',
+  paddingHorizontal: 20,
+  paddingTop: 40,
+},
+
+mainTitle: {
+  fontSize: 28,
+  fontWeight: 'bold',
+  color: '#2563eb',
+  marginBottom: 36,
+  letterSpacing: 1,
+  textAlign: 'center',
+},
+
+menuGrid: {
+  width: '100%',
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  justifyContent: 'space-between',
+  gap: 18,
+},
+
+menuCard: {
+  backgroundColor: '#fff',
+  borderRadius: 18,
+  paddingVertical: 32,
+  paddingHorizontal: 24,
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '47%',
+  marginBottom: 18,
+  shadowColor: '#2563eb',
+  shadowOffset: { width: 0, height: 6 },
+  shadowOpacity: 0.10,
+  shadowRadius: 16,
+  elevation: 6,
+},
+
+menuCardText: {
+  marginTop: 14,
+  fontSize: 18,
+  fontWeight: '600',
+  color: '#1e293b',
+  letterSpacing: 0.5,
+  textAlign: 'center',
+},
 });
 
 export default styles;

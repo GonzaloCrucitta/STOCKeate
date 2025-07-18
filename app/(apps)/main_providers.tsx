@@ -1,55 +1,43 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Pressable, Modal } from 'react-native';
+import React from 'react';
+import { Text, View, Pressable } from 'react-native';
 import styles from './styles';
 import { useRouter } from 'expo-router';
 import { useSelector } from 'react-redux';
+import { MaterialCommunityIcons } from '@expo/vector-icons'; // Asegúrate de tener este paquete instalado
 
 interface RootState {
-    user: {
-      email: string;
-      name: string;
-      id: number;  // Aquí debes usar 'number' en lugar de 'int' en TypeScript
-    };
-  }
-  
+  user: {
+    email: string;
+    name: string;
+    id: number;
+  };
+}
 
 export default function ProvidersMainApp() {
-  const email = useSelector((state: RootState) => state.user.email);
   const nombre = useSelector((state: RootState) => state.user.name);
-  const id= useSelector((state: RootState) => state.user.id);
-
-  const [modalVisible, setModalVisible] = useState<{ [key: string]: boolean }>({
-    stock: true,
-    movements: false,
-    newEntry: false,
-    newExit: false,
-    reports: false,
-    pendingOrders: false,
-  });
-
-  const toggleModal = (section: string) => {
-    setModalVisible((prevState) => ({
-      ...prevState,
-      [section]: !prevState[section],
-    }));
-  };
-
   const router = useRouter();
 
   return (
-    <View style={styles.container}>
-      <Pressable style={styles.pressableButton} onPress={() => router.push('../stock')}>
-        <Text style={styles.buttonText}>Stock</Text>
-      </Pressable>
-      <Pressable style={styles.pressableButton} onPress={() => router.push('../movimientos')}>
-        <Text style={styles.buttonText}>Movimientos</Text>
-      </Pressable>
-      <Pressable style={styles.pressableButton} onPress={() => router.push('../entrante')}>
-        <Text style={styles.buttonText}>Re Stock</Text>
-      </Pressable>
-      <Pressable style={styles.pressableButton} onPress={() => router.push('../pedidos_pendientes')}>
-        <Text style={styles.buttonText}>Pedidos Pendientes</Text>
-      </Pressable>
+    <View style={styles.mainContainer}>
+      <Text style={styles.mainTitle}>¡Bienvenido, {nombre}!</Text>
+      <View style={styles.menuGrid}>
+        <Pressable style={styles.menuCard} onPress={() => router.push('../stock')}>
+          <MaterialCommunityIcons name="warehouse" size={36} color="#2563eb" />
+          <Text style={styles.menuCardText}>Stock</Text>
+        </Pressable>
+        <Pressable style={styles.menuCard} onPress={() => router.push('../movimientos')}>
+          <MaterialCommunityIcons name="swap-horizontal" size={36} color="#2563eb" />
+          <Text style={styles.menuCardText}>Movimientos</Text>
+        </Pressable>
+        <Pressable style={styles.menuCard} onPress={() => router.push('../entrante')}>
+          <MaterialCommunityIcons name="plus-box" size={36} color="#2563eb" />
+          <Text style={styles.menuCardText}>Re Stock</Text>
+        </Pressable>
+        <Pressable style={styles.menuCard} onPress={() => router.push('../pedidos_pendientes')}>
+          <MaterialCommunityIcons name="clipboard-list-outline" size={36} color="#2563eb" />
+          <Text style={styles.menuCardText}>Pedidos Pendientes</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
