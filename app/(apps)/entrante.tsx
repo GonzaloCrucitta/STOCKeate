@@ -86,21 +86,21 @@ const Saliente = () => {
             
             {/* Entrada para la cantidad a vender */}
             <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              placeholder="Cantidad a vender"
-              value={(item.cantidad_compra || 0).toString()}
-              onChangeText={(value) => {
-                const cantidad = parseInt(value) || 0; 
-                setArticulos(prevArticulos =>
-                  prevArticulos.map(producto =>
-                    producto.id_producto === item.id_producto
-                      ? { ...producto, cantidad_compra: cantidad }
-                      : producto
-                  )
-                );
-              }}
-            />
+                style={[styles.input, { width: 90, textAlign: 'center', marginLeft: 12 }]}
+                keyboardType="numeric"
+                placeholder="Cantidad"
+                value={(item.cantidad_compra || 0).toString()}
+                onChangeText={(value) => {
+                  const cantidad = parseInt(value) || 0; 
+                  setArticulos(prevArticulos =>
+                    prevArticulos.map(producto =>
+                      producto.id_producto === item.id_producto
+                        ? { ...producto, cantidad_compra: cantidad }
+                        : producto
+                    )
+                  );
+                }}
+              />
           </View>
         )}
         
