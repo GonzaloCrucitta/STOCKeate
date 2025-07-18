@@ -140,31 +140,7 @@ export default function TabLayout() {
                 <FontAwesome size={28} name="reply" />
               </Pressable>
             ),
-            headerLeft: () => {
-              const router = useRouter();
-              const { id_Articulo } = useLocalSearchParams();
-              const borrarArticulo = async () => {
-                console.log('URL:', process.env.EXPO_PUBLIC_URL_SERVIDOR + '/productos/' + id_Articulo);
-                try {
-                  const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/productos/' + id_Articulo, {
-                    method: 'DELETE',
-                  });
-                  if (response.ok) {
-                    await router.push('../stock');
-                  } else {
-                    alert('No se pudo borrar el producto');
-                  }
-                } catch (error) {
-                  alert('Error al borrar el producto');
-                }
-              };
-              return (
-                <Pressable onPress={borrarArticulo}
-                  style={{ width: 30, height: 30, borderRadius: 15, marginLeft: 15 }}>
-                  <FontAwesome size={28} name='trash' />
-                </Pressable>
-              );
-            },
+            
           }}
           />
         <Tabs.Screen
