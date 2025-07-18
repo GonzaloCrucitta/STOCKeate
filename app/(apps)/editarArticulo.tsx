@@ -67,8 +67,43 @@ const EditarArticulo = () => {
     setTags(nuevosTags);
   };
 
+  // Función para subir la imagen al servidor
+  const subirImagen = async (uri: string | null) => {
+    if (!uri) return 'articulo_por_defecto.png';
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const formData = new FormData();
+      formData.append('archivo', blob, 'imagen.jpg');
+      const uploadResponse = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/foto/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const result = await uploadResponse.json();
+      if (uploadResponse.ok) {
+        return result.rutaArchivo.split('\\').pop();
+      } else {
+        return 'articulo_por_defecto.png';
+      }
+    } catch (error) {
+      return 'articulo_por_defecto.png';
+    }
+  };
+
   // Función para actualizar el artículo
   const actualizarArticulo = async () => {
+    let imagenUrl = imagen;
+    const servidorUrl = process.env.EXPO_PUBLIC_URL_SERVIDOR ?? '';
+    if (imagen && !imagen.includes(servidorUrl)) {
+      // Solo sube si es una imagen nueva (no la que ya está en el servidor)
+      imagenUrl = await subirImagen(imagen);
+    } else if (!imagen) {
+      imagenUrl = 'articulo_por_defecto.png';
+    } else {
+      // Si la imagen ya está en el servidor, extrae el nombre
+      imagenUrl = imagen.split('/').pop() ?? 'articulo_por_defecto.png';
+    }
+
     const updatedProducto = {
       nombre_producto: nombre,
       codigo_barras: codigoBarras,
@@ -76,7 +111,7 @@ const EditarArticulo = () => {
       cantidad_stock: cantidad,
       precio: Number(precio),
       tags: tags.join(','),
-      foto: imagen ? imagen.split('/').pop() : 'articulo_por_defecto.png',
+      foto: imagenUrl,
       preciocompra: Number(preciocompra),
     };
     await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/productos/' + id_Articulo, {
@@ -149,7 +184,7 @@ const EditarArticulo = () => {
         keyboardType="numeric"
         placeholder="Ingrese la cantidad en stock"
         value={cantidad.toString()}
-        onChangeText={(value) => setCantidad(parseInt(value))}
+        onChangeText={(value) => setCantidad(parseInt(value) || 0)}
       />
 
       {/* Precio de compra */}
@@ -195,6 +230,22 @@ const EditarArticulo = () => {
 
       <Pressable style={styles.pressableButton} onPress={actualizarArticulo}>
         <Text style={styles.buttonText}>Guardar cambios</Text>
+      </Pressable>
+
+      <Pressable
+        style={styles.pressableButton}
+        onPress={async () => {
+          const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/productos/' + id_Articulo, {
+            method: 'DELETE',
+          });
+          if (response.ok) {
+            router.push('/stock');
+          } else {
+            alert('No se pudo borrar el producto');
+          }
+        }}
+      >
+        <Text style={styles.buttonText}>Borrar artículo</Text>
       </Pressable>
     </ScrollView>
   );
