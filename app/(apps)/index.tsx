@@ -3,6 +3,7 @@ import { Text, View, Pressable, Image, TextInput, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Provider, useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from 'expo-router';
 import store, { setId, setName, setEmail, setRole, setUriFoto, setContrasenia } from './redux/store';
 import styles from './styles';
 
@@ -11,30 +12,42 @@ function AppComponent() {
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [email, setEmailLocal] = useState('');
   const [password, setPassword] = useState('');
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
   const router = useRouter(); 
   const dispatch = useDispatch();
 
-  // Restaurar sesión al iniciar la app
-  useEffect(() => {
-    const checkSession = async () => {
-      const session = await AsyncStorage.getItem('session');
-      if (session) {
-        const data = JSON.parse(session);
-        dispatch(setEmail(data.email));
-        dispatch(setUriFoto(data.urifoto));
-        dispatch(setName(data.name));
-        dispatch(setId(data.id));
-        dispatch(setRole(data.role));
-        dispatch(setContrasenia(data.contrasenia));
-        if (data.role === "Proveedor") {
-          router.replace('/main_providers');
-        } else if (data.role === "Cliente") {
-          router.replace('/cliente');
+  // Restaurar sesión al iniciar la app o al volver a esta pantalla
+  useFocusEffect(
+    React.useCallback(() => {
+      let isActive = true;
+      const checkSession = async () => {
+        setIsCheckingSession(true);
+        const session = await AsyncStorage.getItem('session');
+        if (session && isActive) {
+          const data = JSON.parse(session);
+          dispatch(setEmail(data.email));
+          dispatch(setUriFoto(data.urifoto));
+          dispatch(setName(data.name));
+          dispatch(setId(data.id));
+          dispatch(setRole(data.role));
+          dispatch(setContrasenia(data.contrasenia));
+          if (data.role === "Proveedor") {
+            router.replace('/main_providers');
+          } else if (data.role === "Cliente") {
+            router.replace('/cliente');
+          }
+        } else if (isActive) {
+          setIsCheckingSession(false);
+          setShowLoginFields(false);
+          setSelectedRole(null);
+          setEmailLocal('');
+          setPassword('');
         }
-      }
-    };
-    checkSession();
-  }, []);
+      };
+      checkSession();
+      return () => { isActive = false; };
+    }, [])
+  );
 
   const handleLogin = async () => {
     try {
@@ -117,7 +130,16 @@ function AppComponent() {
     setSelectedRole(null);
     setEmailLocal('');
     setPassword('');
+    // El useEffect se encargará de redirigir si hay sesión
   };
+
+  if (isCheckingSession) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Cargando...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { vaciar, vaciarCarrito } from './redux/store';
 import styles from './styles';
 import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function PerfilPage() {
     interface RootState {
@@ -164,12 +165,13 @@ async function putFoto(uri_foto: string) {//subir foto a bd
   }
 
 
-  function salir() {
+  async function salir() {
     // Vaciar tanto la información del usuario como el carrito
     dispatch(vaciar());
     dispatch(vaciarCarrito());
+    await AsyncStorage.removeItem('session'); // <-- Borra la sesión persistente
     console.log("se cerro la sesion");
-    router.push('/');
+    router.replace('/'); // <-- Usar replace para evitar volver atrás
   }
 
   return (
