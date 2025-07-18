@@ -52,29 +52,28 @@ const subirImagen = async (uri: string | null) => {
   if (!uri) return;
 
   try {
-    // Obtén el nombre y el tipo del archivo
     const filename = uri.split('/').pop() || 'imagen.jpg';
     const match = /\.(\w+)$/.exec(filename);
     const type = match ? `image/${match[1]}` : `image`;
 
-    // FormData para React Native
     const formData = new FormData();
     formData.append('archivo', {
       uri,
       name: filename,
       type,
-    });
+    } as any);
 
     const uploadResponse = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/foto/upload', {
       method: 'POST',
       body: formData,
+      // No agregues headers aquí
     });
 
     const result = await uploadResponse.json();
     if (uploadResponse.ok) {
       console.log('Imagen subida exitosamente:', result.rutaArchivo);
       await putFoto(result.rutaArchivo.split(/[\\/]/).pop());
-      await getUri(); // <-- Refresca la imagen después de actualizar en el backend
+      await getUri();
     } else {
       console.error('Error al subir la imagen:', result);
     }
@@ -173,7 +172,7 @@ async function putFoto(uri_foto: string) {
     <Pressable onPress={() => agregarImagen()}>
       
         <Image
-          source={{ uri: imageUri }}
+          source={imageUri ? { uri: imageUri } : require('../../components/perfil.png')}
           style={styles.profileImage}
         />
       
