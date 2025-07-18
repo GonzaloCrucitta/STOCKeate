@@ -52,34 +52,35 @@ const subirImagen = async (uri: string | null) => {
   if (!uri) return;
 
   try {
-      // Obtén el Blob desde la URI de la imagen
-      const response = await fetch(uri);
-      const blob = await response.blob();
-      console.log(response.blob);
+    // Obtén el nombre y el tipo del archivo
+    const filename = uri.split('/').pop() || 'imagen.jpg';
+    const match = /\.(\w+)$/.exec(filename);
+    const type = match ? `image/${match[1]}` : `image`;
 
-      // Configura el FormData y añade el Blob con un nombre y tipo
-      const formData = new FormData();
-      formData.append('archivo', blob, 'imagen.jpg'); // Añade el nombre del archivo aquí
+    // FormData para React Native
+    const formData = new FormData();
+    formData.append('archivo', {
+      uri,
+      name: filename,
+      type,
+    });
 
-      // Realiza la solicitud
-      const uploadResponse = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/foto/upload', {
-          method: 'POST',
-          body: formData,
-          // No especifiques Content-Type manualmente
-      });
+    const uploadResponse = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/foto/upload', {
+      method: 'POST',
+      body: formData,
+    });
 
-      const result = await uploadResponse.json();
-      if (uploadResponse.ok) {
-          console.log('Imagen subida exitosamente:', result.url);
-          putFoto(result.rutaArchivo.split('\\').pop())
-      } else {
-          console.error('Error al subir la imagen:', result);
-      }
-
+    const result = await uploadResponse.json();
+    if (uploadResponse.ok) {
+      console.log('Imagen subida exitosamente:', result.rutaArchivo);
+      await putFoto(result.rutaArchivo.split(/[\\/]/).pop());
+      await getUri(); // <-- Refresca la imagen después de actualizar en el backend
+    } else {
+      console.error('Error al subir la imagen:', result);
+    }
   } catch (error) {
-      console.error('Error en la solicitud POST:', error);
+    console.error('Error en la solicitud POST:', error);
   }
-
 };
 
 async function getUri() { // obtener foto en bd
@@ -125,44 +126,37 @@ async function getUri() { // obtener foto en bd
   }
 }
 
-async function putFoto(uri_foto: string) {//subir foto a bd
-    console.log('Se carga: ',JSON.stringify({ foto: uri_foto }));
-    console.log("uri: ",imageUri);
-    try {
-      if (role =="Proveedor"){
+async function putFoto(uri_foto: string) {
+  try {
+    // Obtén los datos actuales del usuario (puedes guardarlos en el estado o traerlos antes)
+    const usuario = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + "/provedores/" + id).then(res => res.json());
 
-        const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+"/provedores/" + id, {
-          method: 'PUT',
-          headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ foto: uri_foto }),
-      });
-      if (!response.ok) {
-        throw new Error('No hay respuesta del servidor de provedor al subir foto');
-        }
-      }
-      else{
-        const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+"/cliente/actualizar/" + id, {
-          method: 'PUT',
-          headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ foto: uri_foto }),
-      });
-      if (!response.ok) {
-        throw new Error('No hay respuesta del servidor de cliente al subir foto');
-        }
-      }
-      console.log("Se Actualizo la foto");
-    } catch (error) {
-      console.error('Error al subir foto:', error);
+    const body = {
+      nombre: usuario.nombre,
+      email: usuario.email,
+      telefono: usuario.telefono,
+      direccion: usuario.direccion,
+      nombre_empresa: usuario.nombre_empresa,
+      dni: usuario.dni,
+      foto: uri_foto,
+    };
+
+    const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + "/provedores/" + id, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      throw new Error('No hay respuesta del servidor de provedor al subir foto');
     }
-    finally{
-      //router.push("./perfil");
-      router.dismiss()
-    }
+    console.log("Se Actualizo la foto");
+  } catch (error) {
+    console.error('Error al subir foto:', error);
   }
+}
 
 
   async function salir() {
