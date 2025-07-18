@@ -1,12 +1,9 @@
-import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { View, Text, TextInput, FlatList, Button, Image, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, Text, TextInput, FlatList, Image, ScrollView, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
 import styles from './styles';
-import { useTheme } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
-
 
 const ArticuloProveedor = () => {
   // Estados para manejar los datos del artículo
@@ -18,8 +15,8 @@ const ArticuloProveedor = () => {
   const [precio, setPrecio] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [imagen, setImagen] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false); // Estado de carga de animación
-  
+  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
 
   interface RootState {
@@ -30,23 +27,22 @@ const ArticuloProveedor = () => {
     };
   }
 
-  const id = useSelector((state: RootState) => state.user.id); // ID del proveedor
+  const id = useSelector((state: RootState) => state.user.id);
 
-  const handlePrecioChange = (value:string) => {
-    // Asegurarse de que el valor solo contenga números y el punto decimal
+  const handlePrecioChange = (value: string) => {
     const isValidInput = /^(\d*\.?\d*)$/.test(value);
     if (isValidInput) {
       setPrecio(value);
     }
   };
 
-  const handlePreciocompraChange = (value:string) => {
-    // Asegurarse de que el valor solo contenga números y el punto decimal
+  const handlePreciocompraChange = (value: string) => {
     const isValidInput = /^(\d*\.?\d*)$/.test(value);
     if (isValidInput) {
       setPreciocompra(value);
     }
   };
+
   // Función para seleccionar la imagen
   const agregarImagen = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -90,6 +86,7 @@ const ArticuloProveedor = () => {
       }
     } catch (error) {
       console.error('Error en la solicitud POST:', error);
+      console.error('Error en la solicitud POST:', error);
     }
   };
 
@@ -97,26 +94,23 @@ const ArticuloProveedor = () => {
   const crearArticulo = async () => {
     setIsLoading(true);
     var imagenUrl = await subirImagen(imagen);
-    if (!imagen){
-      imagenUrl='articulo_por_defecto.png'
+    if (!imagen) {
+      imagenUrl = 'articulo_por_defecto.png';
     }
-    // Ahora creamos el producto con la ruta de la imagen
     const newProducto = {
       nombre_producto: nombre,
       codigo_barras: codigoBarras,
       descripcion: descripcion,
       cantidad_stock: cantidad,
       id_proveedor: id,
-      precio: Number(precio)*1.2,
-      tags: tags.join(','), // <-- convierte el array a string separado por comas
+      precio: Number(precio) * 1.2,
+      tags: tags.join(','),
       foto: imagenUrl.split('\\').pop(),
       preciocompra: Number(preciocompra),
     };
 
-    // Enviamos los datos del producto al servidor
     try {
-      
-      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/productos', {
+      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/productos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,7 +125,6 @@ const ArticuloProveedor = () => {
       const createdProducto = await response.json();
       console.log('Producto creado', createdProducto);
       setIsLoading(false);
-      // Reiniciar los campos
       setNombre('');
       setCodigoBarras('');
       setTags([]);
@@ -142,19 +135,20 @@ const ArticuloProveedor = () => {
       setImagen(null);
       setShowTags(false);
       setTag('');
-      router.push('./stock'); // Redirigimos a la página de stock
+      router.push('/stock'); // <-- CAMBIO AQUÍ
     } catch (error) {
       console.error('Error al crear el producto:', error);
-      
-      setIsLoading(false); // Detenemos la carga si hubo un error
+      setIsLoading(false);
     }
   };
-  // Función para agregar un nuevo tag
-  const agregarTag = (nuevoTag: string) => {
-    setTags([...tags, nuevoTag]);
-    setTag(''); 
-    setShowTags(!showTags);
 
+  // Tags
+  const agregarTag = (nuevoTag: string) => {
+    if (nuevoTag.trim() !== '') {
+      setTags([...tags, nuevoTag]);
+      setTag('');
+      setShowTags(false);
+    }
   };
   const [showTags, setShowTags] = useState(false);
   const [tag, setTag] = useState('');
@@ -162,123 +156,142 @@ const ArticuloProveedor = () => {
   const eliminarTag = (index: number) => {
     const nuevosTags = tags.filter((_, i) => i !== index);
     setTags(nuevosTags);
-  }
+  };
 
   return (
-    <ScrollView style={styles.container_articulo}>
-      {/* Nombre del producto */}
-      <Text style={styles.stock}>Nombre del producto:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Ingrese el nombre del producto"
-        value={nombre}
-        onChangeText={setNombre}
-      />
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: '#f6f8fa' }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <ScrollView
+        style={styles.container_articulo}
+        contentContainerStyle={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingBottom: 40,
+          minWidth: 0,
+          maxWidth: 500,
+          alignSelf: 'center',
+        }}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text style={[styles.mainTitle, { fontSize: 22, marginBottom: 18 }]}>Nuevo Artículo</Text>
 
-      {/* Código de barras */}
-      <Text style={styles.stock}>Código de barras:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Ingrese el código de barras"
-        value={codigoBarras}
-        onChangeText={setCodigoBarras}
-      />
+        {/* Nombre del producto */}
+        <Text style={styles.stock}>Nombre del producto:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Ingrese el nombre del producto"
+          value={nombre}
+          onChangeText={setNombre}
+        />
 
-      {/* Tags */}
-      <Text style={styles.stock}>Tags:</Text>
-      <FlatList
-        horizontal
-        data={tags}
-        renderItem={({ item,index }) => (
-          <Pressable onLongPress={() => eliminarTag(index)}>
-          <Text style={styles.tag}>{item}</Text>
-        </Pressable> 
+        {/* Código de barras */}
+        <Text style={styles.stock}>Código de barras:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Ingrese el código de barras"
+          value={codigoBarras}
+          onChangeText={setCodigoBarras}
+        />
+
+        {/* Tags */}
+        <Text style={styles.stock}>Tags:</Text>
+        <FlatList
+          horizontal
+          data={tags}
+          renderItem={({ item, index }) => (
+            <Pressable key={index} onLongPress={() => eliminarTag(index)}>
+              <Text style={styles.tag}>{item}</Text>
+            </Pressable>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+          contentContainerStyle={{ marginBottom: 8 }}
+        />
+
+        {/* Opción para agregar un nuevo tag */}
+        {!showTags && (
+          <Pressable style={styles.pressableButton} onPress={() => setShowTags(true)}>
+            <Text style={styles.buttonText}>Agregar Tag</Text>
+          </Pressable>
         )}
-        keyExtractor={(item, index) => index.toString()}
-      />
 
-      {/* Opción para agregar un nuevo tag */}
-      {!showTags &&
-      <Pressable style={styles.pressableButton} 
-        onPress={() => setShowTags(!showTags)}>
-                <Text style={styles.buttonText}>Agregar Tag</Text>
-      </Pressable>}
-
-      {showTags && (
+        {showTags && (
           <View style={styles.loginFields}>
             <TextInput
               style={styles.input}
-              placeholder="ingrese tag"
+              placeholder="Ingrese tag"
               value={tag}
               onChangeText={setTag}
             />
-            <Pressable style={styles.pressableButton} 
-              onPress={() => agregarTag(tag) }>
+            <Pressable style={styles.pressableButton} onPress={() => agregarTag(tag)}>
               <Text style={styles.buttonText}>Confirmar</Text>
             </Pressable>
           </View>
         )}
 
-      {/* Cantidad */}
-      <Text style={styles.stock}>Cantidad en stock:</Text>
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        placeholder="Ingrese la cantidad en stock"
-        value={cantidad.toString()}
-        onChangeText={(value) => setCantidad(parseInt(value))}
-      />
+        {/* Cantidad */}
+        <Text style={styles.stock}>Cantidad en stock:</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          placeholder="Ingrese la cantidad en stock"
+          value={cantidad.toString()}
+          onChangeText={(value) => setCantidad(Number(value) || 0)}
+        />
 
-      <Text style={styles.stock}>Precio de compra:</Text>
-      <TextInput
-        style={styles.input}
-        keyboardType="decimal-pad"
-        placeholder="Ingrese el precio de compra"
-        value={preciocompra.toString()}
-        onChangeText={handlePreciocompraChange}
-      />
-      
+        {/* Precio de compra */}
+        <Text style={styles.stock}>Precio de compra:</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="decimal-pad"
+          placeholder="Ingrese el precio de compra"
+          value={preciocompra.toString()}
+          onChangeText={handlePreciocompraChange}
+        />
 
-      
+        {/* Precio de venta */}
+        <Text style={styles.stock}>Precio de venta:</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="decimal-pad"
+          placeholder="Ingrese el precio de venta"
+          value={precio.toString()}
+          onChangeText={handlePrecioChange}
+        />
 
-      {/* Precio */}
-      <Text style={styles.stock}>Precio de venta:</Text>
-      <TextInput
-        style={styles.input}
-        keyboardType="decimal-pad"
-        placeholder="Ingrese el precio de venta"
-        value={precio.toString()}
-        onChangeText={handlePrecioChange}
-      />
+        {/* Descripción */}
+        <Text style={styles.stock}>Descripción del producto:</Text>
+        <TextInput
+          style={[styles.input, { minHeight: 60 }]}
+          multiline
+          placeholder="Ingrese la descripción del producto"
+          value={descripcion}
+          onChangeText={setDescripcion}
+        />
 
-      {/* Descripción */}
-      <Text style={styles.stock}>Descripción del producto:</Text>
-      <TextInput
-        style={styles.input}
-        multiline
-        placeholder="Ingrese la descripción del producto"
-        value={descripcion}
-        onChangeText={setDescripcion}
-      />
+        {/* Imágen del producto */}
+        <Text style={styles.stock}>Imagen del producto (mantener para borrar):</Text>
+        {imagen && (
+          <Pressable onLongPress={() => setImagen(null)}>
+            <Image source={{ uri: imagen }} style={styles.image_articulo} />
+          </Pressable>
+        )}
 
-      {/* Imágen del producto */}
-      <Text style={styles.stock}>Imágen del producto (Mantene para borrar):</Text>
-      {imagen && (
-        <Pressable onLongPress={() => setImagen(null)}>
-          <Image source={{ uri: imagen }} style={styles.image_articulo} />
+        <Pressable style={styles.pressableButton} onPress={agregarImagen}>
+          <Text style={styles.buttonText}>Seleccionar imagen</Text>
         </Pressable>
-      )}
-        
-      <Pressable style={styles.pressableButton} onPress={() => agregarImagen()}>
-                <Text style={styles.buttonText}>Seleccionar imagen</Text>
-      </Pressable>
-      
 
-      <Pressable style={styles.pressableButton} onPress={() => crearArticulo()} disabled={isLoading}>
-                <Text style={styles.buttonText}>Confirmar</Text>
+        <Pressable
+          style={[styles.pressableButton, isLoading && { opacity: 0.7 }]}
+          onPress={crearArticulo}
+          disabled={isLoading}
+        >
+          <Text style={styles.buttonText}>{isLoading ? 'Guardando...' : 'Confirmar'}</Text>
         </Pressable>
-    </ScrollView>
-  );
-}
+      </ScrollView>
+    </KeyboardAvoidingView>
+      );
+    };
 
 export default ArticuloProveedor;
