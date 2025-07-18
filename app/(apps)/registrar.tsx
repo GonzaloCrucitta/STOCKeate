@@ -252,6 +252,17 @@ export default function App() {
               onPress={() => {
                 setShowLoginFields(false);
                 setShowRoleSelection(true);
+                setShowRegister(true);
+                setUsername('');
+                setPassword('');
+                setEmail('');
+                setName('');
+                setCompany('');
+                setDniNumber('');
+                setTelefono('');
+                setDireccion('');
+                setRole(null);
+                setErrors({});
               }}
             >
               <Text style={styles.buttonText}>Atrás</Text>
