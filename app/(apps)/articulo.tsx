@@ -65,31 +65,31 @@ const ArticuloProveedor = () => {
     if (!uri) return;
 
     try {
-        // Obtén el Blob desde la URI de la imagen
-        const response = await fetch(uri);
-        const blob = await response.blob();
+      const filename = uri.split('/').pop() || 'imagen.jpg';
+      const match = /\.(\w+)$/.exec(filename);
+      const type = match ? `image/${match[1]}` : `image`;
 
-        // Configura el FormData y añade el Blob con un nombre y tipo
-        const formData = new FormData();
-        formData.append('archivo', blob, 'imagen.jpg'); // Añade el nombre del archivo aquí
+      const formData = new FormData();
+      formData.append('archivo', {
+        uri,
+        name: filename,
+        type,
+      } as any);
 
-        // Realiza la solicitud
-        const uploadResponse = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/foto/upload', {
-            method: 'POST',
-            body: formData,
-            // No especifiques Content-Type manualmente
-        });
+      const uploadResponse = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/foto/upload', {
+        method: 'POST',
+        body: formData,
+      });
 
-        const result = await uploadResponse.json();
-        if (uploadResponse.ok) {
-            console.log('Imagen subida exitosamente:', result);
-            return result.rutaArchivo;
-        } else {
-            console.error('Error al subir la imagen:', result);
-        }
-
+      const result = await uploadResponse.json();
+      if (uploadResponse.ok) {
+        console.log('Imagen subida exitosamente:', result);
+        return result.rutaArchivo;
+      } else {
+        console.error('Error al subir la imagen:', result);
+      }
     } catch (error) {
-        console.error('Error en la solicitud POST:', error);
+      console.error('Error en la solicitud POST:', error);
     }
   };
 
@@ -115,6 +115,7 @@ const ArticuloProveedor = () => {
 
     // Enviamos los datos del producto al servidor
     try {
+      
       const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/productos', {
         method: 'POST',
         headers: {
@@ -144,6 +145,7 @@ const ArticuloProveedor = () => {
       router.push('./stock'); // Redirigimos a la página de stock
     } catch (error) {
       console.error('Error al crear el producto:', error);
+      
       setIsLoading(false); // Detenemos la carga si hubo un error
     }
   };

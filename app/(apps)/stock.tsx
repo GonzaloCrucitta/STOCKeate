@@ -27,7 +27,7 @@ const Componentes = () => {
           })
         );
         setArticulos(productosConFotos);
-        console.log("Todos los productos obtenidos con fotos: ", productosConFotos);
+        //console.log("Todos los productos obtenidos con fotos: ", productosConFotos);
       } else {
         Alert.alert('Error', 'No se pudieron obtener los productos.');
       }
