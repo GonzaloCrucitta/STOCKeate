@@ -50,9 +50,9 @@ const Componentes = () => {
     }
   };
 
-  const Item = ({ image, nombre, stock }: { image: any, nombre: string, stock: number }) => {
+  const Item = ({ image, nombre, stock, id_Articulo}: { image: any, nombre: string, stock: number, id_Articulo: number }) => {
     return (
-      <Pressable style={styles.linkButton} onPress={() => router.push('../articulo')}>
+      <Pressable style={styles.linkButton} onPress={() => router.push({ pathname: '/editarArticulo', params: { id_Articulo } })}>
         <View style={styles.itemContainer}>
           <Image source={{ uri: image }} style={styles.image} />
           <Text style={styles.text}>{nombre}</Text>
@@ -72,6 +72,7 @@ const Componentes = () => {
             image={item.foto}
             nombre={item.nombre_producto}
             stock={item.cantidad_stock}
+            id_Articulo={item.id_producto}
           />
         )}
         keyExtractor={(item) => item.id_producto.toString()}

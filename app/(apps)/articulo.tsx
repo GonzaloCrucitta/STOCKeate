@@ -10,13 +10,13 @@ import * as ImagePicker from 'expo-image-picker';
 
 const ArticuloProveedor = () => {
   // Estados para manejar los datos del artículo
-  const [nombre, setNombre] = useState('Nombre del producto');
-  const [codigoBarras, setCodigoBarras] = useState('1234567890');
-  const [tags, setTags] = useState(['electrónica', 'hogar']);
-  const [cantidad, setCantidad] = useState(10);
-  const [preciocompra, setPreciocompra] = useState('7.0');
-  const [precio, setPrecio] = useState('10.0');
-  const [descripcion, setDescripcion] = useState('Descripción del producto');
+  const [nombre, setNombre] = useState('');
+  const [codigoBarras, setCodigoBarras] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
+  const [cantidad, setCantidad] = useState(0);
+  const [preciocompra, setPreciocompra] = useState('');
+  const [precio, setPrecio] = useState('');
+  const [descripcion, setDescripcion] = useState('');
   const [imagen, setImagen] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false); // Estado de carga de animación
   
@@ -108,8 +108,8 @@ const ArticuloProveedor = () => {
       cantidad_stock: cantidad,
       id_proveedor: id,
       precio: Number(precio)*1.2,
-      tags: tags[0], // Solo agregamos el primer tag, puedes modificar esto según tus necesidades
-      foto: imagenUrl.split('\\').pop(), // Ruta de la imagen que subimos
+      tags: tags.join(','), // <-- convierte el array a string separado por comas
+      foto: imagenUrl.split('\\').pop(),
       preciocompra: Number(preciocompra),
     };
 
@@ -130,6 +130,17 @@ const ArticuloProveedor = () => {
       const createdProducto = await response.json();
       console.log('Producto creado', createdProducto);
       setIsLoading(false);
+      // Reiniciar los campos
+      setNombre('');
+      setCodigoBarras('');
+      setTags([]);
+      setCantidad(0);
+      setPreciocompra('');
+      setPrecio('');
+      setDescripcion('');
+      setImagen(null);
+      setShowTags(false);
+      setTag('');
       router.push('./stock'); // Redirigimos a la página de stock
     } catch (error) {
       console.error('Error al crear el producto:', error);
@@ -139,6 +150,7 @@ const ArticuloProveedor = () => {
   // Función para agregar un nuevo tag
   const agregarTag = (nuevoTag: string) => {
     setTags([...tags, nuevoTag]);
+    setTag(''); 
     setShowTags(!showTags);
 
   };
@@ -156,6 +168,7 @@ const ArticuloProveedor = () => {
       <Text style={styles.stock}>Nombre del producto:</Text>
       <TextInput
         style={styles.input}
+        placeholder="Ingrese el nombre del producto"
         value={nombre}
         onChangeText={setNombre}
       />
@@ -164,6 +177,7 @@ const ArticuloProveedor = () => {
       <Text style={styles.stock}>Código de barras:</Text>
       <TextInput
         style={styles.input}
+        placeholder="Ingrese el código de barras"
         value={codigoBarras}
         onChangeText={setCodigoBarras}
       />
@@ -208,14 +222,16 @@ const ArticuloProveedor = () => {
       <TextInput
         style={styles.input}
         keyboardType="numeric"
+        placeholder="Ingrese la cantidad en stock"
         value={cantidad.toString()}
         onChangeText={(value) => setCantidad(parseInt(value))}
       />
 
-<Text style={styles.stock}>preciocompra:</Text>
+      <Text style={styles.stock}>Precio de compra:</Text>
       <TextInput
         style={styles.input}
         keyboardType="decimal-pad"
+        placeholder="Ingrese el precio de compra"
         value={preciocompra.toString()}
         onChangeText={handlePreciocompraChange}
       />
@@ -224,10 +240,11 @@ const ArticuloProveedor = () => {
       
 
       {/* Precio */}
-      <Text style={styles.stock}>Precio:</Text>
+      <Text style={styles.stock}>Precio de venta:</Text>
       <TextInput
         style={styles.input}
         keyboardType="decimal-pad"
+        placeholder="Ingrese el precio de venta"
         value={precio.toString()}
         onChangeText={handlePrecioChange}
       />
@@ -237,6 +254,7 @@ const ArticuloProveedor = () => {
       <TextInput
         style={styles.input}
         multiline
+        placeholder="Ingrese la descripción del producto"
         value={descripcion}
         onChangeText={setDescripcion}
       />

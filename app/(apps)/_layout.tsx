@@ -4,7 +4,7 @@ import { Tabs } from 'expo-router'; // Importar el componente Tabs de expo-route
 import store, { vaciarCarrito } from './redux/store'; // Importar el store de Redux
 import FontAwesome from '@expo/vector-icons/FontAwesome'; 
 import { Pressable, Image, Text } from 'react-native';
-import { router } from 'expo-router'; // Para la navegación
+import { router, useLocalSearchParams, useRouter } from 'expo-router'; // Para la navegación
 
 export default function TabLayout() {
   interface RootState {
@@ -121,7 +121,7 @@ export default function TabLayout() {
             href: null,
             tabBarStyle: { display: 'none' },
             headerRight: () => (
-              <Pressable onPress={() => router.push('../main_providers')} 
+              <Pressable onPress={() => router.push('../stock')} 
                 style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
                 <FontAwesome size={28} name="reply" />
               </Pressable>
@@ -129,17 +129,42 @@ export default function TabLayout() {
           }}
           />
         <Tabs.Screen
-          name="saliente"
+          name="editarArticulo"
           options={{
-            title: 'saliente',
+            title: 'editar articulo',
             href: null,
             tabBarStyle: { display: 'none' },
             headerRight: () => (
-              <Pressable onPress={() => router.push('../main_providers')} 
+              <Pressable onPress={() => router.push('../stock')} 
                 style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
                 <FontAwesome size={28} name="reply" />
               </Pressable>
             ),
+            headerLeft: () => {
+              const router = useRouter();
+              const { id_Articulo } = useLocalSearchParams();
+              const borrarArticulo = async () => {
+                console.log('URL:', process.env.EXPO_PUBLIC_URL_SERVIDOR + '/productos/' + id_Articulo);
+                try {
+                  const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/productos/' + id_Articulo, {
+                    method: 'DELETE',
+                  });
+                  if (response.ok) {
+                    await router.push('../stock');
+                  } else {
+                    alert('No se pudo borrar el producto');
+                  }
+                } catch (error) {
+                  alert('Error al borrar el producto');
+                }
+              };
+              return (
+                <Pressable onPress={borrarArticulo}
+                  style={{ width: 30, height: 30, borderRadius: 15, marginLeft: 15 }}>
+                  <FontAwesome size={28} name='trash' />
+                </Pressable>
+              );
+            },
           }}
           />
         <Tabs.Screen
@@ -200,20 +225,6 @@ export default function TabLayout() {
             ),
           }}
           />
-        <Tabs.Screen
-          name="resumenSaliente"
-          options={{
-            title: 'Articulos a vender',
-            href: null,
-            tabBarStyle: { display: 'none' },
-            headerRight: () => (
-              <Pressable onPress={() => router.push('../main_providers')} 
-                style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}>
-                <FontAwesome size={28} name="reply" />
-              </Pressable>
-            ),
-          }}
-        />
         <Tabs.Screen
           name="resumenEntrante"
           options={{
