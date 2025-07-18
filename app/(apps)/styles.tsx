@@ -58,7 +58,10 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   linkButton: {
-    padding: 10,
+    padding: 0,
+    marginBottom: 0,
+    borderRadius: 18,
+    overflow: 'hidden',
   },
   linkText: {
     color: '#2563eb',
@@ -137,17 +140,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 14,
+    padding: 18,
     borderBottomWidth: 0,
     width: '100%',
     backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.07,
-    shadowRadius: 6,
-    elevation: 2,
+    borderRadius: 16,
+    marginBottom: 10,
+    shadowColor: '#2563eb',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.10,
+    shadowRadius: 10,
+    elevation: 4,
+    minWidth: 0, // <-- Cambia de 280 a 0 para móvil
+    maxWidth: 700, // <-- Igual que flatList
+    alignSelf: 'center',
   },
   itemContainer_resumen: {
     flexDirection: 'row',
@@ -164,10 +170,11 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   stock: {
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: 'bold',
-    marginLeft: 10,
     color: '#2563eb',
+    minWidth: 80,
+    textAlign: 'right',
   },
   stock_resumen: {
     flex: 1,
@@ -198,13 +205,20 @@ const styles = StyleSheet.create({
   flatList: {
     backgroundColor: '#f6f8fa',
     marginTop: 20,
+    width: '100%',
+    maxWidth: 700,
+    alignSelf: 'center',
+    paddingHorizontal: 0,
+    flexGrow: 1, // <-- Añade esto para asegurar que ocupe el espacio
   },
   image: {
-    width: 50,
-    height: 50,
-    marginRight: 10,
-    borderRadius: 8,
+    width: 60,
+    height: 60,
+    marginRight: 16,
+    borderRadius: 12,
     backgroundColor: '#e0e7ef',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
   },
   image_articulo: {
     width: 100,
@@ -216,7 +230,9 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     color: '#334155',
-    fontSize: 16,
+    fontSize: 17,
+    fontWeight: '500',
+    marginRight: 10,
   },
   errorText: {
     color: '#ef4444',

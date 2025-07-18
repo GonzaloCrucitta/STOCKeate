@@ -63,23 +63,37 @@ const Componentes = () => {
   };
 
   return (
-    <View>
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        data={articulos}
-        renderItem={({ item }) => (
-          <Item
-            image={item.foto}
-            nombre={item.nombre_producto}
-            stock={item.cantidad_stock}
-            id_Articulo={item.id_producto}
-          />
-        )}
-        keyExtractor={(item) => item.id_producto.toString()}
-        style={styles.flatList}
-      />
-    </View>
-  );
+  <View style={{ flex: 1, backgroundColor: '#f6f8fa', paddingTop: 24 }}>
+    <FlatList
+      showsHorizontalScrollIndicator={false}
+      data={articulos}
+      renderItem={({ item }) => (
+        <Pressable
+          style={({ pressed }) => [
+            styles.linkButton,
+            pressed && { opacity: 0.85, backgroundColor: '#e0e7ef' }
+          ]}
+          android_ripple={{ color: '#e0e7ef' }}
+          onPress={() => router.push({ pathname: '/editarArticulo', params: { id_Articulo: item.id_producto } })}
+        >
+          <View style={styles.itemContainer}>
+            <Image source={typeof item.foto === 'string' ? { uri: item.foto } : item.foto} style={styles.image} />
+            <Text style={styles.text}>{item.nombre_producto}</Text>
+            <Text style={styles.stock}>{item.cantidad_stock} en stock</Text>
+          </View>
+        </Pressable>
+      )}
+      keyExtractor={(item) => item.id_producto.toString()}
+      style={styles.flatList}
+      contentContainerStyle={{ paddingBottom: 40 }}
+      ListEmptyComponent={
+        <Text style={{ textAlign: 'center', color: '#64748b', marginTop: 40 }}>
+          No hay productos para mostrar.
+        </Text>
+      }
+    />
+  </View>
+);
 };
 
 export default Componentes;
