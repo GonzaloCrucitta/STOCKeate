@@ -184,7 +184,7 @@ const EditarArticulo = () => {
         keyboardType="numeric"
         placeholder="Ingrese la cantidad en stock"
         value={cantidad.toString()}
-        onChangeText={(value) => setCantidad(parseInt(value))}
+        onChangeText={(value) => setCantidad(parseInt(value) || 0)}
       />
 
       {/* Precio de compra */}
