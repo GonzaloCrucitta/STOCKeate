@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, Pressable, Image, TextInput, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Provider, useDispatch } from 'react-redux';
-import store, { setId, setName, setEmail, setRole, setUriFoto } from './redux/store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import store, { setId, setName, setEmail, setRole, setUriFoto, setContrasenia } from './redux/store';
 import styles from './styles';
 
 function AppComponent() {
@@ -12,6 +13,28 @@ function AppComponent() {
   const [password, setPassword] = useState('');
   const router = useRouter(); 
   const dispatch = useDispatch();
+
+  // Restaurar sesión al iniciar la app
+  useEffect(() => {
+    const checkSession = async () => {
+      const session = await AsyncStorage.getItem('session');
+      if (session) {
+        const data = JSON.parse(session);
+        dispatch(setEmail(data.email));
+        dispatch(setUriFoto(data.urifoto));
+        dispatch(setName(data.name));
+        dispatch(setId(data.id));
+        dispatch(setRole(data.role));
+        dispatch(setContrasenia(data.contrasenia));
+        if (data.role === "Proveedor") {
+          router.replace('/main_providers');
+        } else if (data.role === "Cliente") {
+          router.replace('/cliente');
+        }
+      }
+    };
+    checkSession();
+  }, []);
 
   const handleLogin = async () => {
     try {
@@ -26,7 +49,16 @@ function AppComponent() {
             dispatch(setName(proveedor.nombre));
             dispatch(setId(proveedor.id_proveedor));
             dispatch(setRole("Proveedor"));
-            console.log("Proveedor - nombre: ", proveedor.nombre, " email: ", proveedor.email, " id: ", proveedor.id_proveedor,"uri:",proveedor.foto);
+            dispatch(setContrasenia(proveedor.contrasenia));
+            // Guardar sesión
+            await AsyncStorage.setItem('session', JSON.stringify({
+              role: "Proveedor",
+              email: proveedor.email,
+              name: proveedor.nombre,
+              id: proveedor.id_proveedor,
+              urifoto: proveedor.foto,
+              contrasenia: proveedor.contrasenia,
+            }));
             router.push(`/main_providers`);
             return;
           } else {
@@ -46,7 +78,16 @@ function AppComponent() {
             dispatch(setName(cliente.nombre));
             dispatch(setId(cliente.id_cliente));
             dispatch(setRole("Cliente"));
-            console.log("Cliente - nombre: ", cliente.nombre, " email: ", cliente.email, " id: ", cliente.id_cliente,"uri:",cliente.foto);
+            dispatch(setContrasenia(cliente.contrasena));
+            // Guardar sesión
+            await AsyncStorage.setItem('session', JSON.stringify({
+              role: "Cliente",
+              email: cliente.email,
+              name: cliente.nombre,
+              id: cliente.id_cliente,
+              urifoto: cliente.foto,
+              contrasenia: cliente.contrasena,
+            }));
             router.push(`/cliente`);
             return;
           } else {
@@ -63,7 +104,7 @@ function AppComponent() {
       console.error('Error al verificar el email:', error);
     }
   };
-  
+
   const handleRoleSelect = (role: string) => {
     setSelectedRole(role);
     setShowLoginFields(true);
