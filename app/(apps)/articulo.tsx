@@ -72,7 +72,7 @@ const ArticuloProveedor = () => {
         type,
       } as any);
 
-      const uploadResponse = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/foto/upload', {
+      const uploadResponse = await  fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/foto/upload', {
         method: 'POST',
         body: formData,
       });

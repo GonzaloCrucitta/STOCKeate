@@ -58,21 +58,22 @@ const subirImagen = async (uri: string | null) => {
 
     const formData = new FormData();
     formData.append('archivo', {
-      uri,
+      uri: uri,
       name: filename,
-      type,
+      type: type,
     } as any);
 
     const uploadResponse = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/foto/upload', {
       method: 'POST',
       body: formData,
-      // No agregues headers aquí
     });
 
     const result = await uploadResponse.json();
+    console.log('Respuesta backend:', result);
+
     if (uploadResponse.ok) {
       console.log('Imagen subida exitosamente:', result.rutaArchivo);
-      await putFoto(result.rutaArchivo.split(/[\\/]/).pop());
+      //await putFoto(result.rutaArchivo.split(/[\\/]/).pop());
       await getUri();
     } else {
       console.error('Error al subir la imagen:', result);
