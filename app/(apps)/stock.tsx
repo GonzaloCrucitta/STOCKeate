@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from 'react';
-import { FlatList, Text, Image, View, Pressable, Alert } from 'react-native';
+import { FlatList, Text, Image, View, Pressable, Alert, RefreshControl, ActivityIndicator } from 'react-native';
 import styles from './styles';
 import { router, useFocusEffect } from 'expo-router';
 import { useSelector } from 'react-redux';
 
 const Componentes = () => {
   const [articulos, setArticulos] = useState<{ foto: string, id_producto: number, nombre_producto: string, precio: number, cantidad_stock: number, cantidad_compra: number }[]>([]);
-  
+  const [loading, setLoading] = useState(false); // Estado para controlar el refresco
+  const [refreshing, setRefreshing] = useState(false); // Estado para el pull to refresh
   const id = useSelector((state: any) => state.user.id);
 
   useFocusEffect(
@@ -17,6 +18,7 @@ const Componentes = () => {
 
   const obtenerProductos = async () => {
     try {
+      setLoading(true);
       const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/productos/provedor/' + id);
       if (response.ok) {
         const productos = await response.json();
@@ -35,8 +37,15 @@ const Componentes = () => {
       console.error('Error al obtener los productos:', error);
       Alert.alert('Error', 'Hubo un problema al conectar con el servidor.');
     }
+    finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   };
-
+  const onRefresh = useCallback(() => {
+      setRefreshing(true);
+      obtenerProductos();
+    }, []);
   const obtenerFoto = async (fotoPath: string) => {
     try {
       const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/foto/download/' + fotoPath.split('\\').pop());
@@ -64,6 +73,9 @@ const Componentes = () => {
 
   return (
   <View style={{ flex: 1, backgroundColor: '#f6f8fa', paddingTop: 24 }}>
+    {loading && articulos.length === 0 ? (
+        <ActivityIndicator size="large" color="#0000ff" style={{ flex: 1 }} />
+      ) : (
     <FlatList
       showsHorizontalScrollIndicator={false}
       data={articulos}
@@ -91,9 +103,18 @@ const Componentes = () => {
           No hay productos para mostrar.
         </Text>
       }
-    />
-  </View>
-);
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#0000ff']} // Color del indicador (opcional)
+              tintColor="#0000ff" // Color del indicador para iOS (opcional)
+            />
+          }
+        />
+      )}
+    </View>
+  );
 };
 
 export default Componentes;

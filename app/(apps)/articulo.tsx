@@ -58,12 +58,12 @@ const ArticuloProveedor = () => {
   };
 
   const subirImagen = async (uri: string | null) => {
-    if (!uri) return;
-
+    if (!uri) return 'articulo_por_defecto.png';
     try {
       const filename = uri.split('/').pop() || 'imagen.jpg';
       const match = /\.(\w+)$/.exec(filename);
-      const type = match ? `image/${match[1]}` : `image`;
+      const ext = match ? match[1].toLowerCase() : 'jpg';
+      const type = `image/${ext}`;
 
       const formData = new FormData();
       formData.append('archivo', {
@@ -71,6 +71,7 @@ const ArticuloProveedor = () => {
         name: filename,
         type,
       } as any);
+      console.log('Enviando imagen:', { uri, filename, type });
 
       const uploadResponse = await  fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/foto/upload', {
         method: 'POST',
@@ -78,15 +79,14 @@ const ArticuloProveedor = () => {
       });
 
       const result = await uploadResponse.json();
-      if (uploadResponse.ok) {
-        console.log('Imagen subida exitosamente:', result);
-        return result.rutaArchivo;
+      if (uploadResponse.ok && result.rutaArchivo) {
+        // Devuelve solo el nombre del archivo
+        return result.rutaArchivo.split(/[\\/]/).pop();
       } else {
-        console.error('Error al subir la imagen:', result);
+        return 'articulo_por_defecto.png';
       }
     } catch (error) {
-      console.error('Error en la solicitud POST:', error);
-      console.error('Error en la solicitud POST:', error);
+      return 'articulo_por_defecto.png';
     }
   };
 
@@ -94,9 +94,11 @@ const ArticuloProveedor = () => {
   const crearArticulo = async () => {
     setIsLoading(true);
     var imagenUrl = await subirImagen(imagen);
-    if (!imagen) {
+    if (!imagenUrl) {
       imagenUrl = 'articulo_por_defecto.png';
     }
+    const fotoFinal = typeof imagenUrl === 'string' ? imagenUrl.split('\\').pop() : 'articulo_por_defecto.png';
+
     const newProducto = {
       nombre_producto: nombre,
       codigo_barras: codigoBarras,
@@ -105,7 +107,7 @@ const ArticuloProveedor = () => {
       id_proveedor: id,
       precio: Number(precio) * 1.2,
       tags: tags.join(','),
-      foto: imagenUrl.split('\\').pop(),
+      foto: fotoFinal,
       preciocompra: Number(preciocompra),
     };
 
