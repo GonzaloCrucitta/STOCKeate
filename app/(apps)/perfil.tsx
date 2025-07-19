@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { View, Text, Image, Pressable, Alert, ScrollView } from 'react-native';
-import { router, useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { vaciar, vaciarCarrito } from './redux/store';
 import styles from './styles';
@@ -17,11 +17,11 @@ export default function PerfilPage() {
     };
   }
 
+  const router = useRouter();
   const email = useSelector((state: RootState) => state.user.email);
   const nombre = useSelector((state: RootState) => state.user.name);
   const id = useSelector((state: RootState) => state.user.id);
   const role = useSelector((state: RootState) => state.user.role);
-
   const dispatch = useDispatch();
   const defaultUri = require('../../components/perfil.png');
   const [imageUri, setImageUri] = useState<string | null>(null);
@@ -38,7 +38,6 @@ export default function PerfilPage() {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
-      base64: false,
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
@@ -62,7 +61,6 @@ export default function PerfilPage() {
         type,
       } as any);
 
-      // Paso 1: Subir imagen al servidor
       const uploadResponse = await fetch(
         `${process.env.EXPO_PUBLIC_URL_SERVIDOR}/foto/upload`,
         {
@@ -76,7 +74,6 @@ export default function PerfilPage() {
       if (uploadResponse.ok) {
         const nombreArchivo = result.rutaArchivo.split(/[\\/]/).pop() || '';
 
-        // Paso 2: Actualizar la base de datos (cliente o proveedor)
         const updateUrl =
           role === 'Proveedor'
             ? `/provedores/${id}`
@@ -97,7 +94,6 @@ export default function PerfilPage() {
           throw new Error('No se pudo actualizar la base de datos con la nueva imagen.');
         }
 
-        // Paso 3: Guardar en AsyncStorage y actualizar UI
         await AsyncStorage.removeItem('foto_usuario');
         await AsyncStorage.setItem('foto_usuario', nombreArchivo);
         setImageUri(`${process.env.EXPO_PUBLIC_URL_SERVIDOR}/foto/download/${nombreArchivo}`);
@@ -157,9 +153,40 @@ export default function PerfilPage() {
   async function salir() {
     dispatch(vaciar());
     dispatch(vaciarCarrito());
-    await AsyncStorage.removeItem('session');
-    await AsyncStorage.removeItem('foto_usuario');
+    await AsyncStorage.clear();
     router.replace('/');
+  }
+
+  async function confirmarYBorrarPerfil() {
+    Alert.alert(
+      'Confirmar',
+      '¿Seguro que deseas borrar este perfil?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Borrar',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const response = await fetch(`${process.env.EXPO_PUBLIC_URL_SERVIDOR}/usuarios/${id}`, {
+                method: 'DELETE',
+              });
+              if (response.ok) {
+                await AsyncStorage.clear();
+                dispatch(vaciar());
+                dispatch(vaciarCarrito());
+                router.replace('/');
+              } else {
+                const errorText = await response.text();
+                Alert.alert('Error', errorText || 'No se pudo borrar el perfil');
+              }
+            } catch (error) {
+              Alert.alert('Error', 'Problema de conexión');
+            }
+          },
+        },
+      ]
+    );
   }
 
   return (
@@ -172,11 +199,42 @@ export default function PerfilPage() {
       </Pressable>
 
       <Text style={styles.profileName}>{nombre}</Text>
-      <Text style={styles.profileEmail}>email: {email}</Text>
+      <Text style={styles.profileEmail}>Email: {email}</Text>
+      <Text style={styles.profileEmail}>Rol: {role}</Text>
 
       <Pressable style={styles.pressableButton} onPress={salir}>
         <Text style={styles.buttonText}>Cerrar Sesión</Text>
       </Pressable>
+
+      <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 12 }}>
+        <Pressable
+          style={[styles.pressableButton, {
+            backgroundColor: '#fbbf24',
+            marginRight: 8,
+            paddingVertical: 10,
+            paddingHorizontal: 18,
+            minWidth: 0,
+          }]}
+          onPress={() => router.push({ pathname: '/editarPerfil', params: { id } })}
+        >
+          <Text style={[styles.buttonText, { fontSize: 14, color: '#1e293b', textTransform: 'none' }]}>
+            Editar Perfil
+          </Text>
+        </Pressable>
+
+        <Pressable
+          style={[styles.pressableButton, {
+            backgroundColor: '#ef4444',
+            paddingVertical: 10,
+            paddingHorizontal: 18,
+            minWidth: 0,
+          }]}
+          onPress={confirmarYBorrarPerfil}
+        >
+          <Text style={[styles.buttonText, { fontSize: 14 }]}>Borrar Perfil</Text>
+        </Pressable>
+      </View>
     </ScrollView>
   );
 }
+

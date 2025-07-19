@@ -269,6 +269,14 @@ export default function TabLayout() {
             ),
           }}
         />
+        <Tabs.Screen
+            name="editarPerfil"
+            options={{
+              title: 'Editar Perfil',
+              tabBarStyle: { display: 'none' },
+              headerShown: false,
+            }}
+          />
       </Tabs>
     </Provider>
   );
