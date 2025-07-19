@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, Image, Pressable, Alert, ScrollView } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,17 +26,6 @@ export default function PerfilPage() {
   const defaultUri = require('../../components/perfil.png');
   const [imageUri, setImageUri] = useState<string | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permiso necesario', 'Se requieren permisos para acceder a la galería.');
-      }
-    })();
-
-    getUri();
-  }, []);
-
   useFocusEffect(
     useCallback(() => {
       getUri();
@@ -54,7 +43,7 @@ export default function PerfilPage() {
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
       await subirImagen(result.assets[0].uri);
-      getUri();
+      await getUri();
     }
   };
 
@@ -73,6 +62,7 @@ export default function PerfilPage() {
         type,
       } as any);
 
+      // Paso 1: Subir imagen al servidor
       const uploadResponse = await fetch(
         `${process.env.EXPO_PUBLIC_URL_SERVIDOR}/foto/upload`,
         {
@@ -85,8 +75,33 @@ export default function PerfilPage() {
 
       if (uploadResponse.ok) {
         const nombreArchivo = result.rutaArchivo.split(/[\\/]/).pop() || '';
+
+        // Paso 2: Actualizar la base de datos (cliente o proveedor)
+        const updateUrl =
+          role === 'Proveedor'
+            ? `/provedores/${id}`
+            : `/cliente/actualizar/${id}`;
+
+        const updateResponse = await fetch(
+          `${process.env.EXPO_PUBLIC_URL_SERVIDOR}${updateUrl}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ foto: nombreArchivo }),
+          }
+        );
+
+        if (!updateResponse.ok) {
+          throw new Error('No se pudo actualizar la base de datos con la nueva imagen.');
+        }
+
+        // Paso 3: Guardar en AsyncStorage y actualizar UI
+        await AsyncStorage.removeItem('foto_usuario');
         await AsyncStorage.setItem('foto_usuario', nombreArchivo);
         setImageUri(`${process.env.EXPO_PUBLIC_URL_SERVIDOR}/foto/download/${nombreArchivo}`);
+        Alert.alert('Éxito', 'Imagen actualizada correctamente.');
       } else {
         console.error('❌ Error al subir imagen:', result);
         Alert.alert('Error', 'No se pudo subir la imagen.');
@@ -99,34 +114,43 @@ export default function PerfilPage() {
 
   async function getUri() {
     try {
-      let uri_foto = await AsyncStorage.getItem('foto_usuario');
+      const url =
+        role === 'Proveedor'
+          ? `/provedores/${id}`
+          : `/cliente/buscar/id/${id}`;
 
-      if (!uri_foto) {
-        const url =
-          role === 'Proveedor'
-            ? `/provedores/${id}`
-            : `/cliente/buscar/id/${id}`;
+      const response = await fetch(`${process.env.EXPO_PUBLIC_URL_SERVIDOR}${url}`);
 
-        const response = await fetch(`${process.env.EXPO_PUBLIC_URL_SERVIDOR}${url}`);
+      if (response.ok) {
+        const usuario = await response.json();
+        const uri_foto = usuario.foto;
 
-        if (response.ok) {
-          const usuario = await response.json();
-          uri_foto = usuario.foto;
-
-          if (uri_foto) {
-            await AsyncStorage.setItem('foto_usuario', uri_foto);
-          }
+        if (uri_foto) {
+          await AsyncStorage.setItem('foto_usuario', uri_foto);
+          setImageUri(`${process.env.EXPO_PUBLIC_URL_SERVIDOR}/foto/download/${uri_foto}`);
+        } else {
+          setImageUri(null);
+        }
+      } else {
+        const fallback = await AsyncStorage.getItem('foto_usuario');
+        if (fallback) {
+          setImageUri(`${process.env.EXPO_PUBLIC_URL_SERVIDOR}/foto/download/${fallback}`);
+        } else {
+          setImageUri(null);
         }
       }
-
-      setImageUri(
-        uri_foto
-          ? `${process.env.EXPO_PUBLIC_URL_SERVIDOR}/foto/download/${uri_foto}`
-          : null
-      );
     } catch (error) {
       console.error('⚠️ Error al obtener foto:', error);
-      setImageUri(null);
+      try {
+        const fallback = await AsyncStorage.getItem('foto_usuario');
+        if (fallback) {
+          setImageUri(`${process.env.EXPO_PUBLIC_URL_SERVIDOR}/foto/download/${fallback}`);
+        } else {
+          setImageUri(null);
+        }
+      } catch {
+        setImageUri(null);
+      }
     }
   }
 
@@ -149,7 +173,6 @@ export default function PerfilPage() {
 
       <Text style={styles.profileName}>{nombre}</Text>
       <Text style={styles.profileEmail}>email: {email}</Text>
-      <Text style={styles.profileEmail}>id: {role}</Text>
 
       <Pressable style={styles.pressableButton} onPress={salir}>
         <Text style={styles.buttonText}>Cerrar Sesión</Text>
