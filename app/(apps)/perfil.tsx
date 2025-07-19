@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, Image, Pressable, Alert } from 'react-native';
+import { View, Text, Image, Pressable, Alert, ScrollView } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { vaciar, vaciarCarrito } from './redux/store';
@@ -49,7 +49,7 @@ export default function PerfilPage() {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
-      base64: false, // ✅ ¡esto asegura que se reciba URI y no base64!
+      base64: false,
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
@@ -73,14 +73,11 @@ export default function PerfilPage() {
         type,
       } as any);
 
-      console.log('📤 Subiendo imagen:', { uri, filename, type });
-
       const uploadResponse = await fetch(
         `${process.env.EXPO_PUBLIC_URL_SERVIDOR}/foto/upload`,
         {
           method: 'POST',
           body: formData,
-          // ❌ No pongas headers manuales
         }
       );
 
@@ -142,7 +139,7 @@ export default function PerfilPage() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Pressable onPress={agregarImagen}>
         <Image
           source={imageUri ? { uri: imageUri } : defaultUri}
@@ -157,6 +154,6 @@ export default function PerfilPage() {
       <Pressable style={styles.pressableButton} onPress={salir}>
         <Text style={styles.buttonText}>Cerrar Sesión</Text>
       </Pressable>
-    </View>
+    </ScrollView>
   );
 }
