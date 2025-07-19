@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'; 
-import { View, Text, Image, Pressable } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, Image, Pressable, Alert } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { vaciar, vaciarCarrito } from './redux/store';
@@ -8,189 +8,155 @@ import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function PerfilPage() {
-    interface RootState {
-      user: {
-        email: string;
-        name: string;
-        id: number;
-        role: string;
-      };
-    }
-  
+  interface RootState {
+    user: {
+      email: string;
+      name: string;
+      id: number;
+      role: string;
+    };
+  }
+
   const email = useSelector((state: RootState) => state.user.email);
   const nombre = useSelector((state: RootState) => state.user.name);
   const id = useSelector((state: RootState) => state.user.id);
   const role = useSelector((state: RootState) => state.user.role);
+
   const dispatch = useDispatch();
-  const defaultUri = '../../components/perfil.png'; // URI de imagen por defecto
-  const [imageUri, setImageUri] = useState('');
-//A veces useFocusEffect puede comportarse de forma inconsistente en Expo Go. Una alternativa es utilizar useIsFocused, que es un hook para saber si la pantalla está enfocada, y desencadenar el getUri cada vez que cambia el foco.
-  useEffect(() => {getUri()}, []);
+  const defaultUri = require('../../components/perfil.png');
+  const [imageUri, setImageUri] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permiso necesario', 'Se requieren permisos para acceder a la galería.');
+      }
+    })();
+
+    getUri();
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
-      console.log('PerfilPage: Ejecutando getUri al volver al foco');
-      getUri(); // Recargar los productos cuando la pantalla reciba el foco
+      getUri();
     }, [])
   );
-// Función para seleccionar la imagen
-const agregarImagen = async () => {
-  let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.All,
-    allowsEditing: true,
-    aspect: [4, 3],
-    quality: 1,
-  });
 
-  if (!result.canceled) {
-    //console.log(result.assets)
-    await subirImagen(result.assets[0].uri);
-    getUri();
-  }
-};
-
-const subirImagen = async (uri: string | null) => {
-  if (!uri) return;
-
-  try {
-    const filename = uri.split('/').pop() || 'imagen.jpg';
-    const match = /\.(\w+)$/.exec(filename);
-    const type = match ? `image/${match[1]}` : `image`;
-
-    const formData = new FormData();
-    formData.append('archivo', {
-      uri: uri,
-      name: filename,
-      type: type,
-    } as any);
-
-    const uploadResponse = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/foto/upload', {
-      method: 'POST',
-      body: formData,
+  const agregarImagen = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+      base64: false, // ✅ ¡esto asegura que se reciba URI y no base64!
     });
 
-    const result = await uploadResponse.json();
-    console.log('Respuesta backend:', result);
-
-    if (uploadResponse.ok) {
-      console.log('Imagen subida exitosamente:', result.rutaArchivo);
-      //await putFoto(result.rutaArchivo.split(/[\\/]/).pop());
-      await getUri();
-    } else {
-      console.error('Error al subir la imagen:', result);
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      await subirImagen(result.assets[0].uri);
+      getUri();
     }
-  } catch (error) {
-    console.error('Error en la solicitud POST:', error);
-  }
-};
+  };
 
-async function getUri() { // obtener foto en bd
-  try {
-    let uri_foto = null;
-    
-    if (role === "Proveedor") {
-      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+"/provedores/" + id, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+  const subirImagen = async (uri: string | null) => {
+    if (!uri) return;
 
-      if (response.ok) {
-        const usuario = await response.json();
-        uri_foto = usuario.foto;
+    try {
+      const filename = uri.split('/').pop() || 'imagen.jpg';
+      const match = /\.(\w+)$/.exec(filename);
+      const type = match ? `image/${match[1]}` : `image/jpeg`;
+
+      const formData = new FormData();
+      formData.append('archivo', {
+        uri,
+        name: filename,
+        type,
+      } as any);
+
+      console.log('📤 Subiendo imagen:', { uri, filename, type });
+
+      const uploadResponse = await fetch(
+        `${process.env.EXPO_PUBLIC_URL_SERVIDOR}/foto/upload`,
+        {
+          method: 'POST',
+          body: formData,
+          // ❌ No pongas headers manuales
+        }
+      );
+
+      const result = await uploadResponse.json();
+
+      if (uploadResponse.ok) {
+        const nombreArchivo = result.rutaArchivo.split(/[\\/]/).pop() || '';
+        await AsyncStorage.setItem('foto_usuario', nombreArchivo);
+        setImageUri(`${process.env.EXPO_PUBLIC_URL_SERVIDOR}/foto/download/${nombreArchivo}`);
       } else {
-        throw new Error('No hay respuesta del servidor al pedir foto');
+        console.error('❌ Error al subir imagen:', result);
+        Alert.alert('Error', 'No se pudo subir la imagen.');
       }
-    } else {
-      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+"/cliente/buscar/id/" + id, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+    } catch (error) {
+      console.error('❌ Error inesperado al subir imagen:', error);
+      Alert.alert('Error', 'Hubo un problema al subir la imagen.');
+    }
+  };
 
-      if (response.ok) {
-        const usuario = await response.json();
-        uri_foto = usuario.foto;
-      } else {
-        throw new Error('No hay respuesta del servidor al pedir foto');
+  async function getUri() {
+    try {
+      let uri_foto = await AsyncStorage.getItem('foto_usuario');
+
+      if (!uri_foto) {
+        const url =
+          role === 'Proveedor'
+            ? `/provedores/${id}`
+            : `/cliente/buscar/id/${id}`;
+
+        const response = await fetch(`${process.env.EXPO_PUBLIC_URL_SERVIDOR}${url}`);
+
+        if (response.ok) {
+          const usuario = await response.json();
+          uri_foto = usuario.foto;
+
+          if (uri_foto) {
+            await AsyncStorage.setItem('foto_usuario', uri_foto);
+          }
+        }
       }
+
+      setImageUri(
+        uri_foto
+          ? `${process.env.EXPO_PUBLIC_URL_SERVIDOR}/foto/download/${uri_foto}`
+          : null
+      );
+    } catch (error) {
+      console.error('⚠️ Error al obtener foto:', error);
+      setImageUri(null);
     }
-
-    // Asigna la imagen obtenida del servidor o la imagen por defecto
-    setImageUri(uri_foto ? process.env.EXPO_PUBLIC_URL_SERVIDOR+`/foto/download/${uri_foto}` : defaultUri);
-    
-  } catch (error) {
-    console.error('Error al obtener foto:', error);
-    setImageUri(defaultUri); // Establece la imagen por defecto solo si hay un error
   }
-}
-
-async function putFoto(uri_foto: string) {
-  try {
-    // Obtén los datos actuales del usuario (puedes guardarlos en el estado o traerlos antes)
-    const usuario = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + "/provedores/" + id).then(res => res.json());
-
-    const body = {
-      nombre: usuario.nombre,
-      email: usuario.email,
-      telefono: usuario.telefono,
-      direccion: usuario.direccion,
-      nombre_empresa: usuario.nombre_empresa,
-      dni: usuario.dni,
-      foto: uri_foto,
-    };
-
-    const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + "/provedores/" + id, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-      throw new Error('No hay respuesta del servidor de provedor al subir foto');
-    }
-    console.log("Se Actualizo la foto");
-  } catch (error) {
-    console.error('Error al subir foto:', error);
-  }
-}
-
 
   async function salir() {
-    // Vaciar tanto la información del usuario como el carrito
     dispatch(vaciar());
     dispatch(vaciarCarrito());
-    await AsyncStorage.removeItem('session'); // <-- Borra la sesión persistente
-    console.log("se cerro la sesion");
-    router.replace('/'); // <-- Usar replace para evitar volver atrás
+    await AsyncStorage.removeItem('session');
+    await AsyncStorage.removeItem('foto_usuario');
+    router.replace('/');
   }
 
   return (
     <View style={styles.container}>
-    <Pressable onPress={() => agregarImagen()}>
-      
+      <Pressable onPress={agregarImagen}>
         <Image
-          source={imageUri ? { uri: imageUri } : require('../../components/perfil.png')}
+          source={imageUri ? { uri: imageUri } : defaultUri}
           style={styles.profileImage}
         />
-      
-    </Pressable>
+      </Pressable>
 
-      {/* Información del perfil */}
       <Text style={styles.profileName}>{nombre}</Text>
       <Text style={styles.profileEmail}>email: {email}</Text>
       <Text style={styles.profileEmail}>id: {role}</Text>
 
-      {/* Botón de cerrar sesión */}
-      <Pressable style={styles.pressableButton} onPress={() => salir()}>
+      <Pressable style={styles.pressableButton} onPress={salir}>
         <Text style={styles.buttonText}>Cerrar Sesión</Text>
       </Pressable>
     </View>
   );
 }
-
-
-
