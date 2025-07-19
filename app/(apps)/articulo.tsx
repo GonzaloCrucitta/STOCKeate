@@ -16,6 +16,7 @@ const ArticuloProveedor = () => {
   const [descripcion, setDescripcion] = useState('');
   const [imagen, setImagen] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const productoDefault = '../../components/producto.png';
 
   const router = useRouter();
 
@@ -58,7 +59,7 @@ const ArticuloProveedor = () => {
   };
 
   const subirImagen = async (uri: string | null) => {
-    if (!uri) return 'articulo_por_defecto.png';
+    if (!uri) return productoDefault;
     try {
       const filename = uri.split('/').pop() || 'imagen.jpg';
       const match = /\.(\w+)$/.exec(filename);
@@ -83,10 +84,10 @@ const ArticuloProveedor = () => {
         // Devuelve solo el nombre del archivo
         return result.rutaArchivo.split(/[\\/]/).pop();
       } else {
-        return 'articulo_por_defecto.png';
+        return productoDefault;
       }
     } catch (error) {
-      return 'articulo_por_defecto.png';
+      return productoDefault;
     }
   };
 
@@ -94,10 +95,11 @@ const ArticuloProveedor = () => {
   const crearArticulo = async () => {
     setIsLoading(true);
     var imagenUrl = await subirImagen(imagen);
-    if (!imagenUrl) {
+    
+    /* if (!imagenUrl) {
       imagenUrl = 'articulo_por_defecto.png';
-    }
-    const fotoFinal = typeof imagenUrl === 'string' ? imagenUrl.split('\\').pop() : 'articulo_por_defecto.png';
+    } */
+    const fotoFinal = typeof imagenUrl === 'string' ? imagenUrl.split('\\').pop() : productoDefault;
 
     const newProducto = {
       nombre_producto: nombre,
@@ -274,12 +276,12 @@ const ArticuloProveedor = () => {
 
         {/* Imágen del producto */}
         <Text style={styles.stock}>Imagen del producto (mantener para borrar):</Text>
-        {imagen && (
           <Pressable onLongPress={() => setImagen(null)}>
-            <Image source={{ uri: imagen }} style={styles.image_articulo} />
+            <Image 
+              source={imagen ? { uri: imagen } : require('../../components/producto.png')}
+              style={styles.image_articulo} />
           </Pressable>
-        )}
-
+        
         <Pressable style={styles.pressableButton} onPress={agregarImagen}>
           <Text style={styles.buttonText}>Seleccionar imagen</Text>
         </Pressable>

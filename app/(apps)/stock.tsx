@@ -18,6 +18,7 @@ const Componentes = () => {
 
   const obtenerProductos = async () => {
     try {
+      console.log('Obteniendo productos del proveedor con ID:', id);
       setLoading(true);
       const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+'/productos/provedor/' + id);
       if (response.ok) {
