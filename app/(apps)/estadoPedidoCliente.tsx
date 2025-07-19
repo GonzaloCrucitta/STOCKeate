@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator, StyleSheet, Button, Pressable } from 'react-native';
+import React, { useEffect, useState, useCallback} from 'react';
+import { View, Text, FlatList, Image,ActivityIndicator, StyleSheet, Button, Pressable, RefreshControl } from 'react-native';
 import { useSelector } from 'react-redux';
 import { router } from 'expo-router';
 import { time } from 'console';
-
 interface RootState {
   user: {
     email: string;
@@ -37,10 +36,10 @@ const OrderPage = () => {
   const [pedidos, setPedidos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [refreshing, setRefreshing] = useState(false);
   // Obtener el ID del cliente desde el store
   const idCliente = useSelector((state: RootState) => state.user.id);
-
+  const emptyBoxImage = require('../../components/empty-box.png');
   const fetchPedidos = async () => {
     const sleep = (ms: number | undefined) => new Promise(r => setTimeout(r, ms));
     setLoading(true);
@@ -48,24 +47,37 @@ const OrderPage = () => {
     try {
       const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+`/crearpedidos/estado-pedido-cliente/${idCliente}`);
       if (!response.ok) {
-        throw new Error('Error al obtener los pedidos');
+        if (response.status !== 404) {
+          throw new Error('Error al obtener los pedidos');
+        }
+        setPedidos([]);
+        return;
       }
       const data = await response.json();
-      setPedidos(data);
+      setPedidos(data || []);
       setError(null);
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Error desconocido');
+      if (!(error instanceof Error && error.message.includes('404'))) {
+        setError(error instanceof Error ? error.message : 'Error desconocido');
+      } else {
+        setPedidos([]);
+      }
       console.error("Error fetching orders:", error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchPedidos();
+  }, []);
 
   useEffect(() => {
     fetchPedidos();
   }, [idCliente]);
 
-  if (loading) {
+  if (loading && pedidos.length === 0) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
@@ -75,24 +87,40 @@ const OrderPage = () => {
 
   return (
     <View style={styles.container}>
+      
       <Text style={styles.title}>Estado de Pedidos</Text>
       
-      <Button title="Actualizar pedidos" onPress={fetchPedidos} color="#007bff" />
-
-      
-
-      <FlatList
-        data={pedidos}
-        keyExtractor={(item) => item.id_pedido.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.orderItem}>
-            <Text style={styles.productText}>Producto: {item.detalles?.[0]?.producto?.nombre_producto || 'Desconocido'}</Text>
-            <Text style={styles.productText}>Cantidad Pedida: {item.detalles?.[0]?.cantidad || '0'}</Text>
-            <Text style={styles.productText}>Fecha de Pedido: {new Date(item.fecha_pedido).toLocaleDateString()}</Text>
-            <OrderStatus status={item.detalles?.[0]?.estado_proveedor || 'pendiente'} />
-          </View>
-        )}
-      />
+      {pedidos.length === 0 ? (
+        <View style={styles.emptyState}>
+          <Image 
+            source={emptyBoxImage}
+            style={styles.emptyImage}
+          />
+          <Text style={styles.emptyText}>📭 No tienes pedidos pendientes</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={pedidos}
+          keyExtractor={(item) => item.id_pedido.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.orderItem}>
+              <Text style={styles.productText}>Producto: {item.detalles?.[0]?.producto?.nombre_producto || 'Desconocido'}</Text>
+              <Text style={styles.productText}>Cantidad Pedida: {item.detalles?.[0]?.cantidad || '0'}</Text>
+              <Text style={styles.productText}>Fecha de Pedido: {new Date(item.fecha_pedido).toLocaleDateString()}</Text>
+              <OrderStatus status={item.detalles?.[0]?.estado_proveedor || 'pendiente'} />
+            </View>
+          )}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#0000ff']}
+              tintColor="#0000ff"
+            />
+          }
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
+      )}
     </View>
   );
 };
@@ -150,6 +178,22 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 50,
+  },
+  emptyImage: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+  },
+  emptyText: {
+    fontSize: 18,
+    color: '#64748b',
+    textAlign: 'center',
   },
 });
 
