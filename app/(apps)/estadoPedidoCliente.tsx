@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback} from 'react';
-import { View, Text, FlatList, Image,ActivityIndicator, StyleSheet, Button, Pressable, RefreshControl } from 'react-native';
+import { View, Text, FlatList, ScrollView, Image,ActivityIndicator, StyleSheet, Button, Pressable, RefreshControl } from 'react-native';
 import { useSelector } from 'react-redux';
 import { router } from 'expo-router';
 import { time } from 'console';
@@ -85,11 +85,21 @@ const OrderPage = () => {
     return <Text style={styles.errorText}>{error}</Text>;
   }
 
-  return (
-    <View style={styles.container}>
-      
-      <Text style={styles.title}>Estado de Pedidos</Text>
-      
+return (
+  <View style={styles.container}>
+    <Text style={styles.title}>Estado de Pedidos</Text>
+    
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={['#0000ff']}
+          tintColor="#0000ff"
+        />
+      }
+    >
       {pedidos.length === 0 ? (
         <View style={styles.emptyState}>
           <Image 
@@ -110,21 +120,14 @@ const OrderPage = () => {
               <OrderStatus status={item.detalles?.[0]?.estado_proveedor || 'pendiente'} />
             </View>
           )}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={['#0000ff']}
-              tintColor="#0000ff"
-            />
-          }
+          scrollEnabled={false} // Desactiva el scroll del FlatList para que no interfiera con el ScrollView
           contentContainerStyle={{ paddingBottom: 20 }}
         />
       )}
-    </View>
+    </ScrollView>
+  </View>
   );
-};
-
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
