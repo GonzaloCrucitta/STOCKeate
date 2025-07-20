@@ -1,58 +1,149 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Pressable, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import styles from './styles';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useDispatch, useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import { setId, setName, setEmail, setRole, setUriFoto, setContrasenia } from './redux/store';
 import { FontAwesome } from '@expo/vector-icons';
 
 export default function EditarPerfil() {
-  const { id } = useLocalSearchParams();
-  const [nombre, setNombre] = useState('');
+  interface RootState {
+    user: {
+      email: string;
+      name: string;
+      id: number;
+      role: string;
+    };
+  }
+
+  const email = useSelector((state: RootState) => state.user.email);
+  const nombre = useSelector((state: RootState) => state.user.name);
+  const id = useSelector((state: RootState) => state.user.id);
+  const role = useSelector((state: RootState) => state.user.role);
+  const [nuevoNombre, setNuevoNombre] = useState(nombre);
   const [password, setPassword] = useState('');
+  const [nuevaPassword, setNuevaPassword] = useState('');
   const [cargando, setCargando] = useState(true);
   const router = useRouter();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/usuarios/' + id)
-      .then(async res => {
-        const text = await res.text();
-        try {
-          const data = JSON.parse(text);
-          setNombre(data.nombre || '');
-        } catch (e) {
-          Alert.alert('Error', 'No se pudo cargar el perfil. Respuesta inesperada del servidor.');
+    const cargarPerfil = async () => {
+      try {
+        let endpoint = '';
+        
+        if (role === "Proveedor") {
+          endpoint = `/provedores/${id}`;
+        } else if (role === "Cliente") {
+          endpoint = `/cliente/buscar/id/${id}`; // Cambiado para coincidir con tu backend
+        } else {
+          setCargando(false);
+          return;
         }
+
+        const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + endpoint);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || 'Error al cargar el perfil');
+        }
+
+        const data = await response.json();
+        setNuevoNombre(data.nombre || data.name || '');
         setCargando(false);
-      })
-      .catch(() => {
-        Alert.alert('Error', 'No se pudo conectar al servidor');
+      } catch (error) {
+        Alert.alert('Error', 'No se pudo cargar el perfil');
         setCargando(false);
-      });
-  }, [id]);
+        console.error('Error:', error);
+      }
+    };
+
+    cargarPerfil();
+  }, [id, role]);
 
   const editarPerfil = async () => {
-    if (!nombre) {
-      Alert.alert('Campos incompletos', 'El nombre es obligatorio.');
+    // Validación básica
+    if (!nuevoNombre && !nuevaPassword) {
+      Alert.alert('Error', 'Debes cambiar al menos el nombre o la contraseña');
       return;
     }
-    const body: { nombre: string; password?: string } = { nombre };
-    if (password) body.password = password;
+
+    if (nuevoNombre === nombre && !nuevaPassword) {
+      Alert.alert('Error', 'No has realizado ningún cambio');
+      return;
+    }
 
     try {
-      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + '/usuarios/' + id, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      if (response.ok) {
-        Alert.alert('¡Éxito!', 'Los cambios han sido guardados!', [
-          { text: 'OK', onPress: () => router.back() }
-        ]);
+      let endpoint = '';
+      let bodyData: any = {};
+
+      if (role === "Proveedor") {
+        endpoint = `/provedores/${id}`;
+        if (nuevoNombre !== nombre) bodyData.nombre = nuevoNombre;
+        if (nuevaPassword) {
+          bodyData.contrasenia = nuevaPassword;
+          bodyData.currentPassword = password;
+        }
+      } else if (role === "Cliente") {
+        endpoint = `/cliente/actualizar/${id}`; // Cambiado para coincidir con tu backend
+        if (nuevoNombre !== nombre) bodyData.nombre = nuevoNombre;
+        if (nuevaPassword) {
+          bodyData.contrasena = nuevaPassword;
+          bodyData.currentPassword = password;
+        }
       } else {
-        const errorText = await response.text();
-        Alert.alert('Error', errorText || 'No se pudo editar el perfil');
+        Alert.alert('Error', 'Rol no válido');
+        return;
       }
-    } catch (error) {
-      Alert.alert('Error', 'Problema de conexión');
+
+      // Si se cambia la contraseña, requerir la contraseña actual
+      if (nuevaPassword && !password) {
+        Alert.alert('Error', 'Debes ingresar tu contraseña actual para cambiar la contraseña');
+        return;
+      }
+
+      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + endpoint, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bodyData)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Error al actualizar el perfil');
+      }
+
+      const updatedData = await response.json();
+      
+      // Actualizar el estado global
+      if (nuevoNombre !== nombre) {
+        dispatch(setName(nuevoNombre));
+      }
+      
+      // Actualizar AsyncStorage
+      const session = await AsyncStorage.getItem('session');
+      if (session) {
+        const parsedSession = JSON.parse(session);
+        const updatedSession = {
+          ...parsedSession,
+          name: nuevoNombre || parsedSession.name,
+        };
+        
+        if (nuevaPassword) {
+          updatedSession.contrasenia = nuevaPassword;
+        }
+
+        await AsyncStorage.setItem('session', JSON.stringify(updatedSession));
+      }
+
+      Alert.alert('Éxito', 'Perfil actualizado correctamente');
+      router.push('/perfil');
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'No se pudo actualizar el perfil');
+      console.error('Error al actualizar:', error);
     }
   };
 
@@ -67,7 +158,6 @@ export default function EditarPerfil() {
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#f6f8fa' }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={[styles.container_articulo, { maxWidth: 400, alignSelf: 'center', paddingTop: 40 }]}>
-        {/* Flecha de volver a la derecha, negra */}
         <Pressable
           onPress={() => router.back()}
           style={{
@@ -89,15 +179,22 @@ export default function EditarPerfil() {
         <TextInput
           style={styles.input}
           placeholder="Nombre"
-          value={nombre}
-          onChangeText={setNombre}
+          value={nuevoNombre}
+          onChangeText={setNuevoNombre}
           autoCapitalize="words"
         />
         <TextInput
           style={styles.input}
-          placeholder="Nueva contraseña (opcional)"
+          placeholder="Contraseña actual (solo para cambios de contraseña)"
           value={password}
           onChangeText={setPassword}
+          secureTextEntry
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Nueva contraseña (opcional)"
+          value={nuevaPassword}
+          onChangeText={setNuevaPassword}
           secureTextEntry
         />
         <Pressable style={styles.pressableButton} onPress={editarPerfil}>
@@ -108,5 +205,4 @@ export default function EditarPerfil() {
   );
 }
 
-// Oculta la barra de navegación/tab bar
 export const unstable_settings = { initialRouteName: null };
