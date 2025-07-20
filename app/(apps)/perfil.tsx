@@ -7,6 +7,7 @@ import styles from './styles';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 export default function PerfilPage() {
   interface RootState {
     user: {
@@ -158,6 +159,12 @@ export default function PerfilPage() {
   }
 
   async function confirmarYBorrarPerfil() {
+    console.log('Confirmar y borrar perfil',role);
+    const url =
+      role === 'Proveedor'
+        ? `/provedores/eliminar/${id}`
+        : `/cliente/eliminar/${id}`;
+    console.log('Confirmar y borrar perfil',role,url);
     Alert.alert(
       'Confirmar',
       '¿Seguro que deseas borrar este perfil?',
@@ -168,7 +175,7 @@ export default function PerfilPage() {
           style: 'destructive',
           onPress: async () => {
             try {
-              const response = await fetch(`${process.env.EXPO_PUBLIC_URL_SERVIDOR}/usuarios/${id}`, {
+              const response = await fetch(`${process.env.EXPO_PUBLIC_URL_SERVIDOR}${url}`, {
                 method: 'DELETE',
               });
               if (response.ok) {
