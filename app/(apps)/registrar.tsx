@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Pressable, TextInput, Vibration, Alert } from 'react-native';
+import { StyleSheet, Text, View, Pressable, TextInput, Vibration, Alert ,ScrollView} from 'react-native';
 import styles from './styles';
 
 export default function App() {
@@ -149,6 +149,7 @@ export default function App() {
   }
 
   return (
+     <ScrollView contentContainerStyle={styles.containers} keyboardShouldPersistTaps="handled">
     <View style={styles.container}>
       {!showRoleSelection && (
         <View style={styles.loginFields}>
@@ -301,5 +302,6 @@ export default function App() {
         <Text style={styles.linkText}>Iniciar sesión</Text>
       </Pressable>
     </View>
+</ScrollView>
   );
 }

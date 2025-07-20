@@ -246,10 +246,21 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: '#ef4444',
-    marginBottom: 10,
+    marginBottom: 1,
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  containers: {
+  flexGrow: 1,
+  padding: 20,
+  justifyContent: 'center',
+},
+  formContainer: {
+  flex: 1,
+  justifyContent: 'space-between',
+  padding: 20,
+},
+
 
   //pagina pedidos pendientes
   rowContainer: {
