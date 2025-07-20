@@ -298,7 +298,7 @@ export default function App() {
         </View>
       )}
 
-      <Pressable style={styles.linkButton} onPress={() => router.push('../')}>
+      <Pressable style={styles.linkButton} onPress={() => router.push('/')}>
         <Text style={styles.linkText}>Iniciar sesión</Text>
       </Pressable>
     </View>
