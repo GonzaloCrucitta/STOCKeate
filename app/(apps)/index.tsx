@@ -72,7 +72,7 @@ function AppComponent() {
               urifoto: proveedor.foto,
               contrasenia: proveedor.contrasenia,
             }));
-            router.push(`/main_providers`);
+            router.replace(`/main_providers`);
             return;
           } else {
             Alert.alert('Contraseña incorrecta', 'La contraseña ingresada es incorrecta.');
@@ -101,7 +101,7 @@ function AppComponent() {
               urifoto: cliente.foto,
               contrasenia: cliente.contrasena,
             }));
-            router.push(`/cliente`);
+            router.replace(`/cliente`);
             return;
           } else {
             Alert.alert('Contraseña incorrecta', 'La contraseña ingresada es incorrecta.');

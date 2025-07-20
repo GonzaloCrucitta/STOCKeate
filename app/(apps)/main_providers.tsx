@@ -1,4 +1,6 @@
 import React from 'react';
+import { useEffect } from 'react'; 
+import { useFocusEffect } from '@react-navigation/native';
 import { Text, View, Pressable } from 'react-native';
 import styles from './styles';
 import { useRouter } from 'expo-router';
@@ -16,6 +18,11 @@ interface RootState {
 export default function ProvidersMainApp() {
   const nombre = useSelector((state: RootState) => state.user.name);
   const router = useRouter();
+  useFocusEffect(() => {
+    if (!nombre) {
+      router.replace('/'); // o el path que tengas para login
+    }
+  }) ;
 
   return (
     <View style={styles.mainContainer}>
