@@ -14,11 +14,13 @@ export default function EditarPerfil() {
       name: string;
       id: number;
       role: string;
+      contrasenia: string;
     };
   }
 
   const email = useSelector((state: RootState) => state.user.email);
   const nombre = useSelector((state: RootState) => state.user.name);
+  const contrasenia = useSelector((state: RootState) => state.user.contrasenia);
   const id = useSelector((state: RootState) => state.user.id);
   const role = useSelector((state: RootState) => state.user.role);
   const [nuevoNombre, setNuevoNombre] = useState(nombre);
@@ -36,7 +38,7 @@ export default function EditarPerfil() {
         if (role === "Proveedor") {
           endpoint = `/provedores/${id}`;
         } else if (role === "Cliente") {
-          endpoint = `/cliente/buscar/id/${id}`; // Cambiado para coincidir con tu backend
+          endpoint = `/cliente/buscar/id/${id}`;
         } else {
           setCargando(false);
           return;
@@ -74,6 +76,12 @@ export default function EditarPerfil() {
       return;
     }
 
+    // Verificar contraseña actual si se quiere cambiar la contraseña
+    if (nuevaPassword && password !== contrasenia) {
+      Alert.alert('Error', 'La contraseña actual no es correcta');
+      return;
+    }
+
     try {
       let endpoint = '';
       let bodyData: any = {};
@@ -83,23 +91,17 @@ export default function EditarPerfil() {
         if (nuevoNombre !== nombre) bodyData.nombre = nuevoNombre;
         if (nuevaPassword) {
           bodyData.contrasenia = nuevaPassword;
-          bodyData.currentPassword = password;
+          bodyData.currentPassword = password; // Enviar contraseña actual para verificación en el servidor
         }
       } else if (role === "Cliente") {
-        endpoint = `/cliente/actualizar/${id}`; // Cambiado para coincidir con tu backend
+        endpoint = `/cliente/actualizar/${id}`;
         if (nuevoNombre !== nombre) bodyData.nombre = nuevoNombre;
         if (nuevaPassword) {
           bodyData.contrasena = nuevaPassword;
-          bodyData.currentPassword = password;
+          bodyData.currentPassword = password; // Enviar contraseña actual para verificación en el servidor
         }
       } else {
         Alert.alert('Error', 'Rol no válido');
-        return;
-      }
-
-      // Si se cambia la contraseña, requerir la contraseña actual
-      if (nuevaPassword && !password) {
-        Alert.alert('Error', 'Debes ingresar tu contraseña actual para cambiar la contraseña');
         return;
       }
 
@@ -121,6 +123,10 @@ export default function EditarPerfil() {
       // Actualizar el estado global
       if (nuevoNombre !== nombre) {
         dispatch(setName(nuevoNombre));
+      }
+      
+      if (nuevaPassword) {
+        dispatch(setContrasenia(nuevaPassword));
       }
       
       // Actualizar AsyncStorage
@@ -185,7 +191,7 @@ export default function EditarPerfil() {
         />
         <TextInput
           style={styles.input}
-          placeholder="Contraseña actual (solo para cambios de contraseña)"
+          placeholder="Contraseña actual (requerida para cambiar contraseña)"
           value={password}
           onChangeText={setPassword}
           secureTextEntry
