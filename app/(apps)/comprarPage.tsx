@@ -1,12 +1,26 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Text, View, FlatList, TouchableOpacity, Alert, Image, ActivityIndicator, RefreshControl } from 'react-native';
+import { Text, View, FlatList, TouchableOpacity, Alert, Image, ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { agregarProducto, eliminarProducto } from './redux/store';
 import styles from './styles';
 
+interface Producto {
+  id_producto: number;
+  nombre_producto: string;
+  precio: number;
+  foto: string;
+}
+
+interface CarritoItem {
+  id_producto: number;
+  nombre: string;
+  precio: number;
+  cantidad: number;
+}
+
 const ComprarPage: React.FC = () => {
-  const [articulos, setArticulos] = useState<{ id_producto: number, nombre_producto: string, precio: number, foto: string }[]>([]);
+  const [articulos, setArticulos] = useState<Producto[]>([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const carrito = useSelector((state: any) => state.carrito.items);
@@ -56,11 +70,42 @@ const ComprarPage: React.FC = () => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#f6f8fa', paddingTop: 24 }}>
+    <View style={{ flex: 1, backgroundColor: '#f6f8fa' }}>
       {loading && articulos.length === 0 ? (
         <ActivityIndicator size="large" color="#0000ff" style={{ flex: 1 }} />
       ) : (
-        <>
+        <View style={{ flex: 1 }}>
+          {carrito.length > 0 && (
+            <View style={styles.carritoContainer}>
+              <Text style={styles.carritoTitle}>Artículos en el carrito:</Text>
+              <ScrollView 
+                style={styles.carritoList}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+              >
+                {carrito.map((item: CarritoItem) => (
+                  <View key={item.id_producto.toString()} style={styles.carritoItem}>
+                    <Text style={styles.carritoItemText} numberOfLines={1}>
+                      {item.nombre} ({item.cantidad})
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => handleEliminarArticulo(item.id_producto)}
+                      style={styles.carritoDeleteButton}
+                    >
+                      <Text style={styles.carritoDeleteText}>X</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </ScrollView>
+              <TouchableOpacity
+                style={styles.confirmButton}
+                onPress={handleConfirmarCompra}
+              >
+                <Text style={styles.confirmButtonText}>Confirmar Compra</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
           <FlatList
             data={articulos}
             keyExtractor={(item) => item.id_producto.toString()}
@@ -90,48 +135,21 @@ const ComprarPage: React.FC = () => {
                 tintColor="#0000ff"
               />
             }
-            contentContainerStyle={{ paddingBottom: 40 }}
+            contentContainerStyle={{ 
+              paddingBottom: 20,
+              paddingTop: carrito.length > 0 ? 0 : 20
+            }}
             ListEmptyComponent={
               <Text style={{ textAlign: 'center', color: '#64748b', marginTop: 40 }}>
                 No hay productos disponibles.
               </Text>
             }
+            style={{ 
+              flex: 1,
+              marginTop: carrito.length > 0 ? 0 : 20
+            }}
           />
-
-          {carrito.length > 0 && (
-            <View style={{ padding: 20 }}>
-              <Text style={{ fontSize: 18, marginBottom: 10, fontWeight: 'bold', color: '#1e293b' }}>
-                Artículos en el carrito:
-              </Text>
-              <FlatList
-                data={carrito}
-                keyExtractor={(item) => item.id_producto.toString()}
-                renderItem={({ item }) => (
-                  <View style={[styles.itemContainer, { marginBottom: 10 }]}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.text}>
-                        {item.nombre} - {item.cantidad} {item.cantidad > 1 ? 'unidades' : 'unidad'}
-                      </Text>
-                      <Text style={styles.stock}>${item.precio.toFixed(2)} c/u</Text>
-                    </View>
-                    <TouchableOpacity
-                      onPress={() => handleEliminarArticulo(item.id_producto)}
-                      style={[styles.pressableButton, { backgroundColor: '#ef4444', paddingVertical: 8, paddingHorizontal: 16 }]}
-                    >
-                      <Text style={styles.buttonText}>Eliminar</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-              />
-              <TouchableOpacity
-                style={[styles.pressableButton, { marginTop: 20 }]}
-                onPress={handleConfirmarCompra}
-              >
-                <Text style={styles.buttonText}>Confirmar Compra</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </>
+        </View>
       )}
     </View>
   );

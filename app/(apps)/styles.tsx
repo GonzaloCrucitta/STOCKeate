@@ -555,6 +555,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
+  /*
   confirmButton: {
     backgroundColor: '#22c55e',
     marginTop: 20,
@@ -563,6 +564,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
+  */
   addButton: {
     backgroundColor: '#2563eb',
     padding: 12,
@@ -916,6 +918,70 @@ menuCardText: {
   letterSpacing: 0.5,
   textAlign: 'center',
 },
+
+carritoContainer: {
+    backgroundColor: '#ffffff',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e2e8f0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  carritoTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#1e293b',
+  },
+  carritoList: {
+    maxHeight: 100,
+    marginBottom: 10,
+  },
+  carritoItem: {
+    backgroundColor: '#f1f5f9',
+    borderRadius: 15,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    marginRight: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  carritoItemText: {
+    color: '#334155',
+    maxWidth: 120,
+  },
+  carritoDeleteButton: {
+    marginLeft: 8,
+    backgroundColor: '#ef4444',
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  carritoDeleteText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+  confirmButton: {
+    backgroundColor: '#22c55e', 
+    padding: 12, 
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 10, 
+    width: '100%', 
+  },
+  confirmButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+
+
 });
 
 export default styles;
