@@ -31,19 +31,13 @@ export default function TabLayout() {
     <Provider store={store}>
 
       <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
-      <Tabs.Screen
-          name="index"
-          options={{
-            title: 'Home',
-            tabBarStyle: { display: 'none' }
-          }}
-        />
+      
         <Tabs.Screen
           name="main_providers"
           options={{
             title: nombre,
+            href: null,
             tabBarStyle: { display: 'none' },
-            tabBarIcon: ({ color }) => <FontAwesome size={28} name="industry" color={color} />,
             headerRight: () => (
               <Pressable onPress={() => router.push('../perfil')}>
                 <Image
@@ -58,8 +52,8 @@ export default function TabLayout() {
           name="cliente"
           options={{
             title: nombre,
+            href: null,
             tabBarStyle: { display: 'none' },
-            tabBarIcon: ({ color }) => <FontAwesome size={28} name='user-circle' color={color} />,
             headerRight: () => (
               <Pressable onPress={() => router.push('../perfil')}>
                 <Image
@@ -247,16 +241,17 @@ export default function TabLayout() {
         <Tabs.Screen
           name="redux/store"
           options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
-          />
+        />
+        <Tabs.Screen
+          name="index"
+          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+         />
+         <Tabs.Screen
+          name="editarPerfil"
+          options={{ href: null, headerShown: false, tabBarStyle: { display: 'none' }}}
+        /> 
         <Tabs.Screen
           name="comprarPage"
-          //options={{
-          //  href: null,
-          //  title: 'Comprar',
-          //  headerShown: false, 
-          //  tabBarStyle: { display: 'none' },
-            
-          //}}
           options={{
             title: 'Compra Cliente',
             href: null,
@@ -269,14 +264,7 @@ export default function TabLayout() {
             ),
           }}
         />
-        <Tabs.Screen
-            name="editarPerfil"
-            options={{
-              title: 'Editar Perfil',
-              tabBarStyle: { display: 'none' },
-              headerShown: false,
-            }}
-          />
+        
       </Tabs>
     </Provider>
   );

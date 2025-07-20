@@ -175,7 +175,7 @@ export default function EditarPerfil() {
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#f6f8fa' }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={[styles.container_articulo, { maxWidth: 400, alignSelf: 'center', paddingTop: 40 }]}>
         <Pressable
-          onPress={() => router.back()}
+          onPress={() => router.push('../perfil')}
           style={{
             position: 'absolute',
             right: 16,
