@@ -30,6 +30,9 @@ export default function EditarPerfil() {
   const router = useRouter();
   const dispatch = useDispatch();
 
+  // Misma regex que en registrar.tsx
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
   useEffect(() => {
     const cargarPerfil = async () => {
       try {
@@ -76,6 +79,15 @@ export default function EditarPerfil() {
       return;
     }
 
+    // Validar nueva contraseña si se proporciona
+    if (nuevaPassword && !passwordRegex.test(nuevaPassword)) {
+      Alert.alert(
+        'Error',
+        'La nueva contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial'
+      );
+      return;
+    }
+
     // Verificar contraseña actual si se quiere cambiar la contraseña
     if (nuevaPassword && password !== contrasenia) {
       Alert.alert('Error', 'La contraseña actual no es correcta');
@@ -91,14 +103,14 @@ export default function EditarPerfil() {
         if (nuevoNombre !== nombre) bodyData.nombre = nuevoNombre;
         if (nuevaPassword) {
           bodyData.contrasenia = nuevaPassword;
-          bodyData.currentPassword = password; // Enviar contraseña actual para verificación en el servidor
+          bodyData.currentPassword = password;
         }
       } else if (role === "Cliente") {
         endpoint = `/cliente/actualizar/${id}`;
         if (nuevoNombre !== nombre) bodyData.nombre = nuevoNombre;
         if (nuevaPassword) {
           bodyData.contrasena = nuevaPassword;
-          bodyData.currentPassword = password; // Enviar contraseña actual para verificación en el servidor
+          bodyData.currentPassword = password;
         }
       } else {
         Alert.alert('Error', 'Rol no válido');
@@ -120,7 +132,6 @@ export default function EditarPerfil() {
 
       const updatedData = await response.json();
       
-      // Actualizar el estado global
       if (nuevoNombre !== nombre) {
         dispatch(setName(nuevoNombre));
       }
@@ -129,7 +140,6 @@ export default function EditarPerfil() {
         dispatch(setContrasenia(nuevaPassword));
       }
       
-      // Actualizar AsyncStorage
       const session = await AsyncStorage.getItem('session');
       if (session) {
         const parsedSession = JSON.parse(session);
@@ -198,7 +208,7 @@ export default function EditarPerfil() {
         />
         <TextInput
           style={styles.input}
-          placeholder="Nueva contraseña (opcional)"
+          placeholder="Nueva contraseña (mín. 8 caracteres, mayúscula, minúscula, número y especial)"
           value={nuevaPassword}
           onChangeText={setNuevaPassword}
           secureTextEntry
