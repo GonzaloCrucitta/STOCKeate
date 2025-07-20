@@ -1,14 +1,30 @@
-import React, { useEffect, useState, useCallback} from 'react';
-import { View, Text, FlatList, ScrollView, Image,ActivityIndicator, StyleSheet, Button, Pressable, RefreshControl } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, FlatList, ScrollView, Image, ActivityIndicator, StyleSheet, RefreshControl } from 'react-native';
 import { useSelector } from 'react-redux';
 import { router } from 'expo-router';
-import { time } from 'console';
+
 interface RootState {
   user: {
     email: string;
     name: string;
     id: number;
   };
+}
+
+interface DetallePedido {
+  id_detalle_pedido: number;
+  cantidad: number;
+  precio_unitario: number;
+  estado_proveedor: string;
+  producto: {
+    nombre_producto: string;
+  };
+}
+
+interface Pedido {
+  id_pedido: number;
+  fecha_pedido: string;
+  detalles: DetallePedido[];
 }
 
 const OrderStatus = ({ status }: { status: string }) => {
@@ -19,7 +35,7 @@ const OrderStatus = ({ status }: { status: string }) => {
       case "rechazado":
         return "red";
       default:
-        return "orange"; // Color para "pendiente" o cualquier otro estado no reconocido
+        return "orange";
     }
   };
 
@@ -32,20 +48,35 @@ const OrderStatus = ({ status }: { status: string }) => {
   );
 };
 
+const OrderItem = ({ pedido }: { pedido: Pedido }) => {
+  return (
+    <View style={styles.orderItem}>
+      <Text style={styles.orderDate}>Pedido # {pedido.id_pedido}</Text>
+      <Text style={styles.orderDate}>Fecha: {new Date(pedido.fecha_pedido).toLocaleDateString()}</Text>
+      
+      {pedido.detalles.map((detalle, index) => (
+        <View key={detalle.id_detalle_pedido} style={styles.productItem}>
+          <Text style={styles.productText}>• {detalle.producto.nombre_producto}</Text>
+          <Text style={styles.productText}>  Cantidad: {detalle.cantidad}</Text>
+          <OrderStatus status={detalle.estado_proveedor} />
+        </View>
+      ))}
+    </View>
+  );
+};
+
 const OrderPage = () => {
-  const [pedidos, setPedidos] = useState<any[]>([]);
+  const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  // Obtener el ID del cliente desde el store
   const idCliente = useSelector((state: RootState) => state.user.id);
   const emptyBoxImage = require('../../components/empty-box.png');
+
   const fetchPedidos = async () => {
-    const sleep = (ms: number | undefined) => new Promise(r => setTimeout(r, ms));
     setLoading(true);
-    await sleep(1300)
     try {
-      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR+`/crearpedidos/estado-pedido-cliente/${idCliente}`);
+      const response = await fetch(process.env.EXPO_PUBLIC_URL_SERVIDOR + `/crearpedidos/estado-pedido-cliente/${idCliente}`);
       if (!response.ok) {
         if (response.status !== 404) {
           throw new Error('Error al obtener los pedidos');
@@ -68,6 +99,7 @@ const OrderPage = () => {
       setRefreshing(false);
     }
   };
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchPedidos();
@@ -85,49 +117,43 @@ const OrderPage = () => {
     return <Text style={styles.errorText}>{error}</Text>;
   }
 
-return (
-  <View style={styles.container}>
-    <Text style={styles.title}>Estado de Pedidos</Text>
-    
-    <ScrollView
-      contentContainerStyle={{ flexGrow: 1 }}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          colors={['#0000ff']}
-          tintColor="#0000ff"
-        />
-      }
-    >
-      {pedidos.length === 0 ? (
-        <View style={styles.emptyState}>
-          <Image 
-            source={emptyBoxImage}
-            style={styles.emptyImage}
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Estado de Pedidos</Text>
+      
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#0000ff']}
+            tintColor="#0000ff"
           />
-          <Text style={styles.emptyText}>📭 No tienes pedidos pendientes</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={pedidos}
-          keyExtractor={(item) => item.id_pedido.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.orderItem}>
-              <Text style={styles.productText}>Producto: {item.detalles?.[0]?.producto?.nombre_producto || 'Desconocido'}</Text>
-              <Text style={styles.productText}>Cantidad Pedida: {item.detalles?.[0]?.cantidad || '0'}</Text>
-              <Text style={styles.productText}>Fecha de Pedido: {new Date(item.fecha_pedido).toLocaleDateString()}</Text>
-              <OrderStatus status={item.detalles?.[0]?.estado_proveedor || 'pendiente'} />
-            </View>
-          )}
-          scrollEnabled={false} // Desactiva el scroll del FlatList para que no interfiera con el ScrollView
-          contentContainerStyle={{ paddingBottom: 20 }}
-        />
-      )}
-    </ScrollView>
-  </View>
+        }
+      >
+        {pedidos.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Image 
+              source={emptyBoxImage}
+              style={styles.emptyImage}
+            />
+            <Text style={styles.emptyText}>📭 No tienes pedidos pendientes</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={pedidos}
+            keyExtractor={(item) => item.id_pedido.toString()}
+            renderItem={({ item }) => <OrderItem pedido={item} />}
+            scrollEnabled={false}
+            contentContainerStyle={{ paddingBottom: 20 }}
+          />
+        )}
+      </ScrollView>
+    </View>
   );
-}
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -143,7 +169,7 @@ const styles = StyleSheet.create({
   orderItem: {
     backgroundColor: '#fff',
     padding: 15,
-    marginBottom: 10,
+    marginBottom: 20,
     borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -151,15 +177,26 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+  orderDate: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  productItem: {
+    marginBottom: 10,
+    paddingLeft: 10,
+    borderLeftWidth: 2,
+    borderLeftColor: '#ddd',
+  },
   productText: {
     fontSize: 16,
     marginBottom: 5,
   },
   orderStatusContainer: {
-    marginTop: 10,
+    marginTop: 5,
   },
   stageText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   errorText: {
@@ -167,20 +204,6 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 18,
     marginTop: 20,
-  },
-  backButton: {
-    marginTop: 20,
-    backgroundColor: '#007bff',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  backButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   emptyState: {
     flex: 1,
