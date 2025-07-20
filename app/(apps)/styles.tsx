@@ -37,7 +37,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   buttonContainer: {
-    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 20,
   },
   pressableButton: {
     backgroundColor: '#2563eb',
@@ -75,15 +76,17 @@ const styles = StyleSheet.create({
   },
   loginFields: {
     width: '100%',
-    marginVertical: 10,
+    //marginVertical: 10,
   },
   input: {
     borderWidth: 1,
     borderColor: '#e5e7eb',
     padding: 14,
-    borderRadius: 10,
-    marginBottom: 14,
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginBottom: 15,
     width: '100%',
+    height: 50,
     backgroundColor: '#f9fafb',
     fontSize: 16,
   },
